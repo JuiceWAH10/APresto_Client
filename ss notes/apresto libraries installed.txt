@@ -1,0 +1,95 @@
+on start:
+npm install
+npm rebuild
+expo start
+
+if used npm and yarn at the same time please do the following:
+npm install
+yarn install
+this is to sync each manager records...
+
+if requiring peer of react related libraries (ex. reac, react-dom...) use the line below:
+npm install --save react@latest
+		   this part can be changed into what library to be updated to latest like:
+npm install --save react-dom@latest if react dom is the library to update.
+alternative from yarn:
+yarn upgrade react@latest
+
+react navigation: 
+npm i @react-navigation/stack @react-navigation/drawer @react-navigation/bottom-tabs @react-navigation/native
+
+expo dependency on reactnav:
+yarn add react-native-screens react-native-safe-area-context
+
+
+expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
+
+qr code:
+yarn add react-qr-code
+expo install react-native-svg
+
+qr code scanner:
+expo install expo-barcode-scanner
+
+npm install react-native-qrcode-scanner --save
+react-native link react-native-qrcode-scanner
+npm install react-native-permissions --save
+react-native link react-native-permissions
+
+check react:
+npm ls react
+
+neil:
+npm install --save react-native-flash-message
+yarn upgrade prop-types@latest
+
+npm install validator
+
+firebase:
+# Install & setup the app module
+yarn add @react-native-firebase/app
+
+# Install the firestore module
+yarn add @react-native-firebase/firestore
+
+# Install the storage module
+yarn add @react-native-firebase/storage
+
+# Install the authentication module
+yarn add @react-native-firebase/auth
+
+# If you're developing your app using iOS, run this command
+cd ios/ && pod install
+
+
+
+react native vector icons:
+npm install --save react-native-vector-icons
+
+react native paper:
+yarn add react-native-paper
+react-native link react-native-vector-icons
+
+redux:
+yarn add @reduxjs/toolkit
+
+react redux:
+yarn add react-redux
+
+image picker:
+expo install expo-image-picker
+
+uuid:
+npm install react-native-uuid
+
+toast:
+yarn add react-native-toast-message
+
+elements:
+npm install react-native-elements
+
+# or with yarn
+yarn add react-native-elements
+
+#dependent to vector icons so:
+npx react-native link react-native-vector-icons

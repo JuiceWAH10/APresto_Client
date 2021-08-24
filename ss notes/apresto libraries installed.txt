@@ -46,6 +46,8 @@ yarn upgrade prop-types@latest
 npm install validator
 
 firebase:
+npm install --save firebase #from google directly, this one's better than the package below (react-native-firebase)
+
 # Install & setup the app module
 yarn add @react-native-firebase/app
 
@@ -93,3 +95,10 @@ yarn add react-native-elements
 
 #dependent to vector icons so:
 npx react-native link react-native-vector-icons
+
+
+responsive screen:
+npm install react-native-responsive-screen --save
+
+snap carousel:
+npm install --save react-native-snap-carousel

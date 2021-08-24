@@ -15,9 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { Input } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
-//import * as firebase from "firebase";
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+import * as firebase from "firebase";
 import uuid from 'react-native-uuid';
 import { showMessage } from "react-native-flash-message";
 import Toast from 'react-native-toast-message';
@@ -83,7 +81,7 @@ function clientRewardAdd(props) {
         const blob = await response.blob(); 
         
         return new Promise(function(resolve) {
-            var ref = storage().ref().child("images_Reward/" + imageName);
+            var ref = firebase.storage().ref().child("images_Reward/" + imageName);
             ref.put(blob).then((snapshot) => {
                 snapshot.ref.getDownloadURL().then((downloadURL)=>{
                     console.log('File available at', downloadURL);

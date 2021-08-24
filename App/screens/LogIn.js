@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Image, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
+import CheckBox from '@react-native-community/checkbox';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import validator from "validator";
-//import { auth } from "firebase";
-import auth from '@react-native-firebase/auth';
+import { auth } from "firebase";
 import { Input } from 'react-native-elements';
 import { showMessage } from "react-native-flash-message";
 

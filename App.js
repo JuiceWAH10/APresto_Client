@@ -7,7 +7,7 @@ import FlashMessage from "react-native-flash-message";
 
 import SplashScreen from './App/screens/SplashScreen';
 import LogIn from './App/screens/LogIn';
-import SignupCustomer from './App/screens/customer/signupCustomer';
+import SignupCustomer from './App/screens/signupCustomer';
 import Screens from './App/navigation/screensNavigation'
 import { Provider } from 'react-redux'
 

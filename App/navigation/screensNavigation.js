@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStackNavigator, createAppContainer } from "@react-navigation/stack";
-import { customerBottomTabs } from './bottomTabs';
 
 // Client Screens
 import ClientHomepage from '../screens/owners/clientHomepage';

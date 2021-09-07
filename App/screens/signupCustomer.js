@@ -9,9 +9,15 @@ import { Input } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { showMessage } from "react-native-flash-message";
 
+
 //validation function of email
-const validateFields = (email, password, firstName) => {
+const validateFields = (email, password, firstname, lastname, address, contact, username) => {
     const isValid = {
+        firstname: validator.matches(firstname, "^[a-z A-Z]+$"),
+        lastname: validator.matches(lastname, "^[a-z A-Z]+$"),
+        address: validator.matches(address, "^[0-9 a-z A-Z \.\,\-]+$"),
+        contact: validator.isMobilePhone(contact),
+        username: validator.matches(username, "^[0-9a-z\_]{1,15}$"),
         email: validator.isEmail(email),
         password: validator.isStrongPassword(password, {
         minLength: 8,
@@ -26,12 +32,17 @@ const validateFields = (email, password, firstName) => {
 };
 
 //sign up function to create user/ CREATE ACCOUNT FUNCTION
-const createAccount = (email, password) => {
+const createAccount = (email, password, firstname, lastname, address, contact, username) => {
     auth()
         .createUserWithEmailAndPassword(email, password)
         .then(({ user }) => {
             console.log("Creating user...");   
             firebase.firestore().collection("users").doc(user.uid).set({
+                firstname,
+                lastname,
+                address,
+                contact,
+                username,
                 email
             });
         })
@@ -50,33 +61,52 @@ const createAccount = (email, password) => {
         })
 };
 
-
 function signupCustomer(props) {
     const navigation = useNavigation();
 
-    //below statements are not used
-    const [firstName, setTextFN] = React.useState('');
-    const [lastName, setTextLN] = React.useState('');
-    const [address, setTextA] = React.useState('');
-    const [contactNo, setTextCN] = React.useState('');
-    const [userName, setTextUN] = React.useState('');
-    //const [email, setTextE] = React.useState('');
-    //const [password, setTextPW] = React.useState('');
-    //const [retypePassword, setTextRPW] = React.useState('');
+    //First name var
+    const [firstnameField, setFirstnameField] = useState({
+        text: "", 
+        errorMessage: "",
+    });
 
-    //Email variables
+    //Last name var
+    const [lastnameField, setLastnameField] = useState({
+        text: "", 
+        errorMessage: "",
+    });
+
+    //Address var
+    const [addressField, setAddressField] = useState({
+        text: "", 
+        errorMessage: "",
+    });
+
+    //Contact var
+    const [contactField, setContactField] = useState({
+        text: "", 
+        errorMessage: "",
+    });
+
+    //Username var
+    const [usernameField, setUsernameField] = useState({
+        text: "", 
+        errorMessage: "",
+    });
+
+    //Email var
     const [emailField, setEmailField] = useState({
         text: "", 
         errorMessage: "",
     });
 
-    //Password variables
+    //Password var
     const [passwordField, setPasswordField] = useState({
         text: "", 
         errorMessage: "",
     });
 
-    //Re-enter password variables
+    //Re-enter password var
     const [passwordReentryField, setPasswordReentryField] = useState({
         text: "", 
         errorMessage: "",
@@ -96,49 +126,59 @@ function signupCustomer(props) {
                     <Text style={styles.formTitles}>Basic Information</Text>
                     <View style={styles.textView}>
                         <Input
+                            //First Name input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'list-alt' }}
                             placeholder="First Name"
-                            onChangeText={text => setTextFN(text)}
-                            value={firstName}
+                            text={firstnameField.text}
+                            onChangeText={(text) => {setFirstnameField({text});}}
+                            errorMessage={firstnameField.errorMessage}
                         />
                     </View>
                     <View style={styles.textView}>
                         <Input
+                            //Last Name input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'list-alt' }}
                             placeholder="Last Name"
-                            onChangeText={text => setTextLN(text)}
-                            value={lastName}
+                            text={lastnameField.text}
+                            onChangeText={(text) => {setLastnameField({text});}}
+                            errorMessage={lastnameField.errorMessage}
                         />
                     </View>
                     <View style={styles.textView}>
                         <Input
+                            //Address input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'home' }}
                             placeholder="Address"
-                            onChangeText={text => setTextA(text)}
-                            value={address}
+                            text={addressField.text}
+                            onChangeText={(text) => {setAddressField({text});}}
+                            errorMessage={addressField.errorMessage}
                         />
                     </View>
                     <View style={styles.textView}>
                         <Input
+                            //Contact input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'phone' }}
                             placeholder="Contact Number"
-                            onChangeText={text => setTextCN(text)}
-                            value={contactNo}
+                            text={contactField.text}
+                            onChangeText={(text) => {setContactField({text});}}
+                            errorMessage={contactField.errorMessage}
                             keyboardType="numeric"
                         />
                     </View>
                     <Text style={styles.formTitles}>Account Information</Text>
                     <View style={styles.textView}>
                         <Input
+                            //Username input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'user' }}
-                            placeholder="User Name"
-                            onChangeText={text => setTextUN(text)}
-                            value={userName}
+                            placeholder="Username"
+                            text={usernameField.text}
+                            onChangeText={(text) => {setUsernameField({text});}}
+                            errorMessage={usernameField.errorMessage}
                         />
                     </View>
                     <View style={styles.textView}>
@@ -184,39 +224,69 @@ function signupCustomer(props) {
                 
                 {/*CONTINUE BUTTON AND ERROR MESSAGES*/}
                 <TouchableOpacity style={styles.button} onPress={() => {
-                    const isValid = validateFields(emailField.text, passwordField.text);
+                    const isValid = validateFields(emailField.text, passwordField.text, firstnameField.text, lastnameField.text, addressField.text, contactField.text, usernameField.text);
 
                     let isAllValid = true;
 
-                    // if (!textInputName.trim()) {
-                    //     alert('Please Enter Name');
-                        
-                    // }
+                    if(!isValid.firstname){
+                        console.log("Input a valid firstname...")
+                        firstnameField.errorMessage = "Please enter your firstname";
+                        setFirstnameField({...firstnameField});
+                        isAllValid = false;
+                    }
+
+                    if(!isValid.lastname){
+                        console.log("Input a valid lastname...")
+                        lastnameField.errorMessage = "Please enter your lastname";
+                        setLastnameField({...lastnameField});
+                        isAllValid = false;
+                    }
+
+                    if(!isValid.address){
+                        console.log("Input a valid address...")
+                        addressField.errorMessage = "Please enter a valid address";
+                        setAddressField({...addressField});
+                        isAllValid = false;
+                    }
+
+                    if(!isValid.contact){
+                        console.log("Input a valid number...")
+                        contactField.errorMessage = "Please enter a valid contact number";
+                        setContactField({...contactField});
+                        isAllValid = false;
+                    }
+
+                    if(!isValid.username){
+                        console.log("Input a valid username...")
+                        usernameField.errorMessage = "Username must be in lowercase with at least (15) fifteen characters and do not contain a space or symbol";
+                        setUsernameField({...usernameField});
+                        isAllValid = false;
+                    }
 
                     if(!isValid.email){
-                        console.log("Please enter a valid email...")
+                        console.log("Input a valid email...")
                         emailField.errorMessage = "Please enter a valid email";
                         setEmailField({...emailField});
                         isAllValid = false;
                     }
                     
                     if(!isValid.password){
-                        console.log("Password must be at least 8 long characters with numbers")
-                        passwordField.errorMessage = "Password must be at least 8 characters long with atleast one (1) Uppercase, Lowercase, number and symbol";
+                        console.log("Input a strong password...")
+                        passwordField.errorMessage = "Password must be at least (8) eight characters long with an uppercase, lowercase, number and symbol";
                         setPasswordField({...passwordField});
                         isAllValid = false;
                     }
 
                     if(passwordReentryField.text != passwordField.text){
-                        console.log("Passwords do not match")
-                        passwordReentryField.errorMessage="Passwords do not match"
+                        console.log("Password didn't match...")
+                        passwordReentryField.errorMessage="Password did not match"
                         setPasswordReentryField({...passwordReentryField});
                         isAllValid = false;
                     }
 
                     //IF ALL INPUTS ARE VALID THIS IS WILL CREATE ACCOUNT FUNCTION 
                     if(isAllValid){
-                        createAccount(emailField.text, passwordField.text);
+                        createAccount(emailField.text, passwordField.text, firstnameField.text, lastnameField.text, addressField.text, contactField.text, usernameField.text);
                         //props.navigation.navigate('login');                   
                     }
 

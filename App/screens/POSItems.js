@@ -10,29 +10,26 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
-function cartItems(props) {
+function allShopItem(props) {
     return (
         <View style={styles.container}>
             <Image style={styles.itemImage}
                     source={{uri:props.imgLink}}>
             </Image>
-
             <View style={styles.itemContainer}>
                 <Text style={styles.itemName}>{props.product_Name}</Text>
-                <Text style={styles.itemInfo}>Qty: {props.quantity}</Text>
-                <Text style={styles.itemInfo}>Price: {props.price}</Text>                  
-                <Text style={styles.itemPrice}>Total: {props.total}</Text>
-                
+                <Text style={styles.itemPrice}>Php{props.price.toFixed(2)}</Text>
+                <Text style={styles.itemInfo}>{props.definition}</Text>
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity style={styles.button} onPress={props.removeFromCart}>
-                        <Text style={styles.quantity}>remove from cart</Text>
-                    </TouchableOpacity>
-                    {/* (juswa) di pa ma apply bawas dagdag ng quantity since nasa parent nito ang reducer
-                    <Icon name="add-circle" size={35} color="#356288" />
-                    <TouchableOpacity onPress={()=>console.log("Pressed")}>
-                        <Icon name="add-circle" size={35} color="#ee4b43" />
-                    </TouchableOpacity>   
-                    */} 
+                    <TouchableOpacity style={styles.button} onPress={props.addToCart}>
+                            <Text style={styles.quantity}>Add To Cart</Text>
+                        </TouchableOpacity>
+                        {/** (juswa) mahirap maimplement ganto add to cart button nalang hehe, sa cart nalang din gawin yung dagdag bawas qty
+                         <Icon2 name="minus-circle" size={30} color="#ee4b43" />
+                        <TouchableOpacity onPress={()=>console.log("Pressed")}>
+                            <Icon name="add-circle" size={30} color="#ee4b43" />
+                        </TouchableOpacity>    
+                        */}
                 </View>
             </View>
         </View>
@@ -54,7 +51,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         flexDirection: "row",
         justifyContent: "center",
-        marginTop: 10,
+        marginTop: 20,
         height: 40,
         width: 80
     },
@@ -68,11 +65,9 @@ const styles = StyleSheet.create({
         width: wp('90%'),
     },
     itemContainer:{
-        marginTop: 10,
         flexDirection: "column",
         width: wp('50%'),
     },
-
     itemImage: {
         alignSelf: "center",
         borderRadius: 15,
@@ -83,14 +78,13 @@ const styles = StyleSheet.create({
     },
     itemInfo: {
         alignSelf: "center",
-        fontSize: 10,
-        marginRight: 10,
-
+        fontSize: 14,
+        marginRight: 10
     },
     itemName: {
         alignSelf: "center",
         marginBottom: 2,
-        marginTop: 2,
+        marginTop: 6,
         fontSize: 16,
         fontWeight: "bold"
     },
@@ -108,4 +102,4 @@ const styles = StyleSheet.create({
         marginRight: 4      
     },
 })
-export default cartItems;
+export default allShopItem;

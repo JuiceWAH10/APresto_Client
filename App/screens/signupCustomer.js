@@ -291,7 +291,7 @@ function signupCustomer(props) {
                     }
 
                 }}>
-                    <Text style={styles.buttonLabel}>Continue</Text>
+                    <Text style={styles.buttonLabel}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
             

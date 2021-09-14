@@ -10,10 +10,14 @@ import {
     SafeAreaView, 
     TouchableOpacity 
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import clientHomepage from './owners/clientHomepage';
+import checkoutPage from './checkoutPage';
 
 export default function QRCodeScanner(props){
+    const navigation = useNavigation();
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
 
@@ -27,6 +31,7 @@ export default function QRCodeScanner(props){
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
         alert(`Scanned: ${data}`);
+        navigation.navigate(checkoutPage);
     };
 
     if (hasPermission === null) {

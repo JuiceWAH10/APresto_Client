@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStackNavigator, createAppContainer } from "@react-navigation/stack";
-import { customerBottomTabs } from './bottomTabs';
 
 // Client Screens
 import ClientHomepage from '../screens/owners/clientHomepage';
@@ -13,6 +12,8 @@ import ClientRewardList from '../screens/owners/clientReward/clientRewardList';
 import ClientSukiList from '../screens/owners/clientSuki/clientSukiList';
 import ClientEditProfile from '../screens/owners/clientProfile/clientEditProfile';
 import QRCodeScanner from '../screens/QRCodeScanner';
+import CheckoutPage from '../screens/checkoutPage';
+import POS from '../screens/POS';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,8 @@ export default Screens = () => {
       <Stack.Screen name="clientSukiList" component={ClientSukiList} />
       <Stack.Screen name="clientEditProfile" component={ClientEditProfile} />
       <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} />  
+      <Stack.Screen name="checkoutPage" component={CheckoutPage} />
+      <Stack.Screen name="POS" component={POS} />
     </Stack.Navigator>
     
   );

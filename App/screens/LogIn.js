@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Image, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import CheckBox from '@react-native-community/checkbox';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
@@ -50,7 +48,6 @@ const login = (email, password) => {
 function LogIn(props) {
     //const [userName] = React.useState('');
     //const [passWord, setTextPW] = React.useState('');
-    const [toggleCheckBox, setToggleCheckBox] = useState({check: false});
     const navigation = useNavigation();
 
     //Email variables
@@ -64,17 +61,6 @@ function LogIn(props) {
       text: "", 
       errorMessage: "",
     });
-
-    function handleCheck(){
-      setToggleCheckBox({check: !toggleCheckBox.check});
-    }
-    
-    function checkboxLogin(){
-      if(toggleCheckBox.check == true)
-        props.navigation.navigate('clientHomepage');
-      else
-        props.navigation.navigate('customerShops');
-    } 
 
     return (
       <ImageBackground

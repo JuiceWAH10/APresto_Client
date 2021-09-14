@@ -112,6 +112,20 @@ function clientHomepage(props) {
                 </TouchableOpacity>    
                 {/* End of QR Code Scanner */}
 
+                {/* POS */}
+                <TouchableOpacity onPress={()=> props.navigation.navigate('POS')}>
+                    <View style={styles.scanQRContainer}>
+                        <View style={styles.scanQRWrap}>
+                            <Icon name="qrcode" size={45} color="#fff" style={styles.scanQRIcon} />
+                            <View>
+                                <Text style={styles.scanQRContainerLabel}>Scan QR Code</Text>
+                                <Text style={styles.scanQRContainerLabelSmall}>Scan QR code provided by customers.</Text>
+                            </View>
+                        </View>        
+                    </View>
+                </TouchableOpacity>    
+                {/* End of QR Code Scanner */}
+
                 {/* APresto Products */}
                 <View style={styles.dualShadow}>
                     <View style={styles.dualTitleContainer}>

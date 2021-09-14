@@ -18,8 +18,8 @@ function allShopItem(props) {
             </Image>
             <View style={styles.itemContainer}>
                 <Text style={styles.itemName}>{props.product_Name}</Text>
-                <Text style={styles.itemPrice}>Php{props.price.toFixed(2)}</Text>
-                <Text style={styles.itemInfo}>{props.definition}</Text>
+                <Text style={styles.itemPrice}>{props.type=='product' ? 'Php '+ props.price.toFixed(2) : props.price + ' Pts'}</Text>
+                <Text style={styles.itemInfo}>{props.description}</Text>
                 <View style={styles.buttonsContainer}>
                     <TouchableOpacity style={styles.button} onPress={props.addToCart}>
                             <Text style={styles.quantity}>Add To Cart</Text>

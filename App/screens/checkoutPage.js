@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import CartItems from './cartItems';
 import * as cartAction from '../functions/cartFunction';
+import * as rewardCart from '../functions/rewardsCartFunction';
 
 function checkoutPage(props) {
     const navigation = useNavigation();
@@ -33,10 +34,30 @@ function checkoutPage(props) {
                 productPrice: state.cart.items[key].productPrice,
                 quantity: state.cart.items[key].quantity,
                 total: state.cart.items[key].total,
-                imgLink: state.cart.items[key].imgLink
+                imgLink: state.cart.items[key].imgLink,
+                type: state.cart.items[key].type
             });
         }
         return cartItemsArray.sort((a,b) => a.product_ID > b.product_ID ? 1 : -1);
+    });
+
+
+    const totalPoints = useSelector(state => state.rewCart.totalPoints);
+    const rewCartItems = useSelector(state => {
+        //(juswa) cart items are placed in array to be more manageable
+        const rewCartItemsArray = [];
+        for (const key in state.rewCart.rewItems){
+            rewCartItemsArray.push({
+                reward_ID: key,
+                productTitle: state.rewCart.rewItems[key].productTitle,
+                productPrice: state.rewCart.rewItems[key].productPrice,
+                quantity: state.rewCart.rewItems[key].quantity,
+                total: state.rewCart.rewItems[key].total,
+                imgLink: state.rewCart.rewItems[key].imgLink,
+                type: state.rewCart.rewItems[key].type
+            });
+        }
+        return rewCartItemsArray.sort((a,b) => a.reward_ID > b.reward_ID ? 1 : -1);
     });
 
     const proceed = () =>{
@@ -68,13 +89,14 @@ function checkoutPage(props) {
             {/* End of Top Navigation */}
             
             <View style={[styles.formContainer, {flex:15}]}>
-                
 
                 <FlatList style ={styles.cartContainer}
+                    ListHeaderComponent={<Text>Products</Text>}
                     data={cartItems}
                     keyExtractor={item => item.product_ID}
                     renderItem={itemData => 
                         <CartItems
+                            type = {itemData.item.type}
                             quantity = {itemData.item.quantity} 
                             product_Name = {itemData.item.productTitle}
                             price = {itemData.item.productPrice.toFixed(2)}
@@ -87,11 +109,37 @@ function checkoutPage(props) {
                         />}
                 />
 
+                {rewCartItems ?
+                    <FlatList style ={styles.cartContainer}
+                        ListHeaderComponent={<Text>Rewards</Text>}
+                        data={rewCartItems}
+                        keyExtractor={item => item.reward_ID}
+                        renderItem={itemData => 
+                            <CartItems
+                                type = {itemData.item.type}
+                                product_Name = {itemData.item.productTitle}
+                                price = {itemData.item.productPrice.toFixed(2)}
+                                total = {itemData.item.total.toFixed(2)}
+                                imgLink= {itemData.item.imgLink}
+                                removeFromCart = {() => {
+                                    dispatch(rewardCart.cancelRedeem(itemData.item.reward_ID))
+                                }}
+                                addToCart = {() => {dispatch(rewardCart.redeemToCart(itemData.item))}}
+                            />}
+                    />
+                : null }
+                
                 {/* Footer */}
                 <View style={styles.footer}>
                     <View style={styles.footerTextContainer}>
                         <Text style={styles.footerLabelSmall}>Total Amount</Text>
-                        <Text style={styles.footerLabel}>Php{totalAmount.toFixed()}</Text>
+                        <Text style={styles.footerLabel}>Php{totalAmount.toFixed(2)}</Text>
+                        
+                    </View>
+
+                    <View style={styles.footerTextContainer}>
+                        <Text style={styles.footerLabelSmall}>Total Points Spent</Text>
+                        <Text style={styles.footerLabel}>{totalPoints.toFixed(2)} Pts</Text>
                     </View>
 
                     <TouchableOpacity 
@@ -179,17 +227,15 @@ const styles = StyleSheet.create({
     },
     footerLabel: {
         textAlign: "center",
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: "bold",
     },
     footerLabelSmall: {
         textAlign: "center",
-        fontSize: 12,
-        marginTop: 8,
+        fontSize: 8,
     },
     footerTextContainer:{
-        alignContent: "center",
-        marginLeft: wp('5%')
+        alignContent: "center"
     },
     title: {
         textAlign: "center",

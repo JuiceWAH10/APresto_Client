@@ -11,6 +11,7 @@ import {
     LogBox
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Icon2 from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { auth } from "firebase";
@@ -116,10 +117,10 @@ function clientHomepage(props) {
                 <TouchableOpacity onPress={()=> props.navigation.navigate('POS')}>
                     <View style={styles.scanQRContainer}>
                         <View style={styles.scanQRWrap}>
-                            <Icon name="qrcode" size={45} color="#fff" style={styles.scanQRIcon} />
+                            <Icon2 name="shopping-pos-machine" size={45} color="#fff" style={styles.scanQRIcon} />
                             <View>
-                                <Text style={styles.scanQRContainerLabel}>Scan QR Code</Text>
-                                <Text style={styles.scanQRContainerLabelSmall}>Scan QR code provided by customers.</Text>
+                                <Text style={styles.scanQRContainerLabel}>Sell an item</Text>
+                                <Text style={styles.scanQRContainerLabelSmall}>Take orders from your customers.</Text>
                             </View>
                         </View>        
                     </View>

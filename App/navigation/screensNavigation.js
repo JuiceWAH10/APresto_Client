@@ -13,7 +13,7 @@ import ClientSukiList from '../screens/owners/clientSuki/clientSukiList';
 import ClientEditProfile from '../screens/owners/clientProfile/clientEditProfile';
 import QRCodeScanner from '../screens/QRCodeScanner';
 import CheckoutPage from '../screens/checkoutPage';
-import POS from '../screens/POS';
+import POStabs from '../navigation/POStabs';
 
 const Stack = createStackNavigator();
 
@@ -31,7 +31,7 @@ export default Screens = () => {
       <Stack.Screen name="clientEditProfile" component={ClientEditProfile} />
       <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} />  
       <Stack.Screen name="checkoutPage" component={CheckoutPage} />
-      <Stack.Screen name="POS" component={POS} />
+      <Stack.Screen name="POS" component={POStabs} />
     </Stack.Navigator>
     
   );

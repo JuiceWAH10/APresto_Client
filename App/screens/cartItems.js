@@ -20,7 +20,7 @@ function cartItems(props) {
             <View style={styles.itemContainer}>
                 <Text style={styles.itemName}>{props.product_Name}</Text>
                 <Text style={styles.itemInfo}>Qty: {props.quantity}</Text>
-                <Text style={styles.itemInfo}>Price: {props.price}</Text>                  
+                <Text style={styles.itemInfo}>{props.type=='product' ? 'Price: '+ props.price : props.price + ' Pts'}</Text>                  
                 <Text style={styles.itemPrice}>Total: {props.total}</Text>
                 
                 <View style={styles.buttonsContainer}>

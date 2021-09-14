@@ -1,5 +1,3 @@
-//baka burahin nalang to
-
 import React, { useRef, useEffect,useState } from 'react';
 import firebase from 'firebase';
 import { 
@@ -26,6 +24,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import POSItems from '../screens/POSItems';
 
 import * as cartAction from '../functions/cartFunction';
+import * as rewardCart from '../functions/rewardsCartFunction';
+import { createStackNavigator } from '@react-navigation/stack';
 
 LogBox.ignoreAllLogs();
 
@@ -50,38 +50,55 @@ function ProductPOS(props){
     }, []);
 
     return (
-                <Animated.ScrollView
-                    onScroll={Animated.event(
-                        [{nativeEvent: {contentOffset: {y: scrollPosition}}}],
-                        {useNativeDriver: false},
-                    )}
-                    contentInsetAdjustmentBehavior="automatic"
-                    style={[styles.container]}
-                    nestedScrollEnabled={true}
-                >                   
+        <Animated.ScrollView
+            onScroll={Animated.event(
+                [{nativeEvent: {contentOffset: {y: scrollPosition}}}],
+                    {useNativeDriver: false},
+                )}
+            contentInsetAdjustmentBehavior="automatic"
+                style={[styles.container]}
+                nestedScrollEnabled={true}
+        >                   
 
-                    {/* All Items */}
-                    <View style={styles.allItemsContainer}>
-                        {/* List of all items !note that items in Popular Items is also included here* */}
-                        <Text style={styles.allItemsTitle}>All Items</Text>
-                            <FlatList
-                                data={sortedProducts}
-                                keyExtractor={item => item.product_ID}
-                                renderItem={itemData => 
-                                    <POSItems
-                                        product_Name = {itemData.item.product_Name}
-                                        price = {itemData.item.price}
-                                        definition = {itemData.item.definition}
-                                        imgLink = {itemData.item.imgLink}
-                                        addToCart = {() => {dispatch(cartAction.addToCart(itemData.item))}}
-                                    />}
-                            />
-                        {/* End of List */}
+            {/* All Items */}
+                <View style={styles.allItemsContainer}>
+                    {/* List of all items !note that items in Popular Items is also included here* */}
+                    <Text style={styles.allItemsTitle}>All Items</Text>
+                        <FlatList
+                            data={sortedProducts}
+                            keyExtractor={item => item.product_ID}
+                            renderItem={itemData => 
+                                <POSItems
+                                    type={itemData.item.type}
+                                    product_Name = {itemData.item.product_Name}
+                                    price = {itemData.item.price}
+                                    description = {itemData.item.description}
+                                    imgLink = {itemData.item.imgLink}
+                                    addToCart = {() => {dispatch(cartAction.addToCart(itemData.item))}}
+                                />}
+                        />
+                    {/* End of List */}
+                </View>
+            {/* End of All Items
+            <SafeAreaView>
+        <View style={styles.topNav}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} >
+                            <Icon2 name="left" size={30} color="#ee4b43" />
+                        </TouchableOpacity>
+                        <View style={styles.topNavRight}>
+                            <TouchableOpacity onPress={() => console.log('pressed')} >  
+                                <Icon2 name="heart" size={25} color="#ee4b43" />
+                            </TouchableOpacity>    
+                            <TouchableOpacity onPress={() => navigation.navigate('checkoutPage')} > 
+                                <Icon2 name="shoppingcart" size={25} color="#ee4b43" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    {/* End of All Items */}
+    </SafeAreaView>
+            
+            */}
 
-                </Animated.ScrollView>
-
+        </Animated.ScrollView>
     );
 }
 
@@ -106,86 +123,81 @@ function RewardsPOS(props){
     }, []);
 
     return (
-                <Animated.ScrollView
-                    onScroll={Animated.event(
-                        [{nativeEvent: {contentOffset: {y: scrollPosition}}}],
+        <Animated.ScrollView
+            onScroll={Animated.event(
+                [{nativeEvent: {contentOffset: {y: scrollPosition}}}],
                         {useNativeDriver: false},
-                    )}
-                    contentInsetAdjustmentBehavior="automatic"
-                    style={[styles.container]}
-                    nestedScrollEnabled={true}
-                >                   
+                )}
+            contentInsetAdjustmentBehavior="automatic"
+            style={[styles.container]}
+            nestedScrollEnabled={true}
+        >                   
 
-                    {/* All Items */}
-                    <View style={styles.allItemsContainer}>
-                        {/* List of all items !note that items in Popular Items is also included here* */}
-                        <Text style={styles.allItemsTitle}>All Rewards</Text>
-                            <FlatList
-                                data={sortedProducts}
-                                keyExtractor={item => item.reward_ID}
-                                renderItem={itemData => 
-                                    <POSItems
-                                        product_Name = {itemData.item.reward_Name}
-                                        price = {itemData.item.pointsReq}
-                                        definition = {itemData.item.description}
-                                        imgLink = {itemData.item.imgLink}
-                                        addToCart = {() => {dispatch(cartAction.addToCart(itemData.item))}}
-                                    />}
-                            />
-                        {/* End of List */}
-                    </View>
-                    {/* End of All Items */}
+            {/* All Items */}
+                <View style={styles.allItemsContainer}>
+                    {/* List of all items !note that items in Popular Items is also included here* */}
+                    <Text style={styles.allItemsTitle}>All Rewards</Text>
+                        <FlatList
+                            data={sortedProducts}
+                            keyExtractor={item => item.reward_ID}
+                            renderItem={itemData => 
+                                <POSItems
+                                    type={itemData.item.type}
+                                    product_Name = {itemData.item.reward_Name}
+                                    price = {itemData.item.pointsReq}
+                                    description = {itemData.item.description}
+                                    imgLink = {itemData.item.imgLink}
+                                    addToCart = {() => {dispatch(rewardCart.redeemToCart(itemData.item))}}
+                                />}
+                        />
+                    {/* End of List */}
+                </View>
+            {/* End of All Items */}
 
-                </Animated.ScrollView>
-
+        </Animated.ScrollView>
     );
 }
 
-const POStabs = createMaterialTopTabNavigator();
+const tabs = createMaterialTopTabNavigator();
+const POSstack = createStackNavigator();
 
 function POSnav(){
     return(
-        <POStabs.Navigator>
-            <POStabs.Screen name='Products' component={ProductPOS} options={{tabBarLabel:'Products'}}/>
-            <POStabs.Screen name='Rewards' component={RewardsPOS} options={{tabBarLabel:'Rewards'}}/>
-        </POStabs.Navigator>
+        <tabs.Navigator >
+            <tabs.Screen name='Products' component={ProductPOS} options={{tabBarLabel:'Products'}}/>
+            <tabs.Screen name='Rewards' component={RewardsPOS} options={{tabBarLabel:'Rewards'}}/>
+        </tabs.Navigator>
     );
 }
 
-function POS(props) {
+function POStabs(){
     const navigation = useNavigation();
-    const router = POStabs.router;
-
-    const scrollPosition = useRef(new Animated.Value(0)).current;
-    const minHeaderHeight = 0
-    const maxHeaderHeight = 200
-
-    const dispatch = useDispatch();
-    const [sortedProducts, setProducts] = useState([]);
-
     
-    return (
-        <SafeAreaView style={styles.droidSafeArea} >
-            {/* Top Navigation */}
-            <View style={styles.topNav}>
-                <TouchableOpacity onPress={() => navigation.goBack()} >
-                    <Icon2 name="left" size={30} color="#ee4b43" />
-                </TouchableOpacity>
-                <View style={styles.topNavRight}>
-                    <TouchableOpacity onPress={() => console.log('pressed')} >  
-                        <Icon2 name="heart" size={25} color="#ee4b43" />
-                    </TouchableOpacity>    
-                    <TouchableOpacity onPress={() => navigation.navigate('checkoutPage')} > 
-                        <Icon2 name="shoppingcart" size={25} color="#ee4b43" />
+    
+    return(
+        <POSstack.Navigator 
+            screenOptions={{header: props => 
+                <View style={styles.topNav}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} >
+                        <Icon2 name="left" size={30} color="#ee4b43" />
                     </TouchableOpacity>
+                    <View style={styles.topNavRight}>
+                        <TouchableOpacity onPress={() => console.log('pressed')} >  
+                            <Icon2 name="heart" size={25} color="#ee4b43" />
+                        </TouchableOpacity>    
+                        <TouchableOpacity onPress={() => navigation.navigate('checkoutPage')} > 
+                            <Icon2 name="shoppingcart" size={25} color="#ee4b43" />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-            {/* End of Top Navigation */}            
-            <View>
-                <POSnav />
-            </View>
-        </SafeAreaView>
-    );
+            }} 
+        >
+            <POSstack.Screen 
+                name='POSnav' 
+                children={POSnav} 
+            />
+        </POSstack.Navigator>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -385,4 +397,4 @@ const styles = StyleSheet.create({
     },     
 })
 
-export default POS;
+export default POStabs;

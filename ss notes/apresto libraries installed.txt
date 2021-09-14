@@ -102,3 +102,10 @@ npm install react-native-responsive-screen --save
 
 snap carousel:
 npm install --save react-native-snap-carousel
+
+json pack:
+expo install jsonpack
+
+material top nav:
+expo install @react-navigation/material-top-tabs react-native-tab-view
+expo install react-native-pager-view

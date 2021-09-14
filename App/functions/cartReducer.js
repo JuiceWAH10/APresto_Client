@@ -16,6 +16,7 @@ export default (state = initialState, action) => {
             const prodPrice = addedProduct.price;
             const prodTitle = addedProduct.product_Name;
             const imgLink = addedProduct.imgLink;
+            const type = addedProduct.type;
             let cartItem;
             
             //check if cart has the item to be added
@@ -25,11 +26,12 @@ export default (state = initialState, action) => {
                     prodPrice,
                     prodTitle,
                     state.items[addedProduct.product_ID].total + prodPrice,
-                    imgLink
+                    imgLink,
+                    type
                 );
             }
             else{
-                cartItem = new CartItem(1, prodPrice, prodTitle, prodPrice, imgLink)
+                cartItem = new CartItem(1, prodPrice, prodTitle, prodPrice, imgLink, type)
             }
             return {
                 ...state,
@@ -47,7 +49,8 @@ export default (state = initialState, action) => {
                     selectedCartItem.productPrice, 
                     selectedCartItem.productTitle, 
                     selectedCartItem.total - selectedCartItem.productPrice,
-                    selectedCartItem.imgLink
+                    selectedCartItem.imgLink,
+                    selectedCartItem.type
                 );
                 cartItems = { ...state.items, [action.product_ID]: updatedCartItem}
             }

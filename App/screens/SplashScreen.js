@@ -7,17 +7,17 @@ function SplashScreen(props) {
         <ImageBackground
             // resizeMode={'contain'}
             style={styles.BGImage}
-            source={require('../assets/images/splashScreen2.jpg')}>
+            source={require('../assets/images/client_SplashScreen2.jpg')}>
           {/* <Image style={styles.Image} source={require('../assets/images/splashScreen.jpg')}/> */}
           <SafeAreaView style={styles.droidSafeArea}>
             <TouchableOpacity onPress={() => props.navigation.navigate('signupCustomer')}>
-              <View style={styles.SignUpButton}>
+              {/* <View style={styles.SignUpButton}>
                 <Text style={{color: '#fff', fontSize: 16}}>Sign Up</Text>
-              </View>
+              </View> */}
             </TouchableOpacity>
             <TouchableOpacity onPress={() => props.navigation.navigate('login')}>
               <View style={styles.LogInButton}>
-                <Text style={{color: '#ee4b43', fontSize: 16}}>Log In</Text>
+                <Text style={{color: '#fff', fontSize: 16}}>Log In</Text>
               </View>
             </TouchableOpacity>
             {/* <View style={styles.LogoContainer}>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     LogInButton: {
       width: wp('90%'),
       height: hp('6%'),
-      backgroundColor: '#fff',
+      backgroundColor: '#071964',
       borderRadius: 30,
       alignSelf: 'center',
       alignItems: 'center',

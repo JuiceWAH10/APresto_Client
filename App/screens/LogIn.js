@@ -78,8 +78,8 @@ function LogIn(props) {
 
             <View style={styles.LogoContainer}>
               <Image style={styles.Logo}
-                source={require('../assets/images/logo.png')}></Image>
-                <Text style={{color: '#fff', fontSize: 12, marginTop: 10}}>Loyalty and Rewards on your Hands</Text>
+                source={require('../assets/images/client_logo.png')}></Image>
+                <Text style={{color: '#fff', fontSize: 12, marginTop: 10}}>Loyalty of Customers on your Hands</Text>
             </View>
             {/* <View style={styles.title}>
               <Text style={{color: '#fe1100', fontSize: 45}}>APresto</Text>
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     height: 100,
     borderRadius: 100,
-    borderWidth: 1
+    // borderWidth: 1
   },
   LogoContainer:{
     // position: "absolute",

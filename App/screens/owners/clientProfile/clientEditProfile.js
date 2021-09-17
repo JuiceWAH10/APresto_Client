@@ -1,9 +1,15 @@
 import React, {useState} from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { Input } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import * as firebase from "firebase";
+import uuid from 'react-native-uuid';
+import { showMessage } from "react-native-flash-message";
+import Dialog from "react-native-dialog";
+
 
 
 function clientEditProfile(props) {
@@ -17,6 +23,91 @@ function clientEditProfile(props) {
     const [email, setTextEmail] = React.useState('');
     const [password, setTextPassword] = React.useState('');
     const [passwordReentry, setTextPasswordReentry] = React.useState('');
+    
+    //For Dialog Box
+    const [visible, setVisible] = useState(false);
+
+    const showDialog = () => {
+        setVisible(true);
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+    };
+
+    const handleUpdate = () => {
+        editProfile();
+        setVisible(false);
+    };
+    //End of Dialogbox
+
+    const [URI, setURI] = React.useState(null);
+
+    const image = {
+        url: "wew",
+        get gURL(){
+            return this.url;
+        },
+        set sURL(u){
+            this.url = u;
+        }
+    }
+
+    var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
+        
+    // Code for Image Picker and Uploading to Firebase storage
+    const pickImage = async () => {
+        //For choosing photo in the library and crop the photo
+        let result = await 
+            ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+        if (!result.cancelled) {
+            setURI(result.uri);
+        }
+        console.log(result); // To Display the information of image on the console
+
+    };
+
+    //Function to upload to Firebase storage
+    const uploadImage = async(uri, imageName) => {
+        const response = await fetch(uri);
+        const blob = await response.blob(); 
+        
+        return new Promise(function(resolve) {
+            var ref = firebase.storage().ref().child("images_ShopImages/" + imageName);
+            ref.put(blob).then((snapshot) => {
+                snapshot.ref.getDownloadURL().then((downloadURL)=>{
+                    console.log('File available at', downloadURL);
+                    image.sURL = downloadURL;
+                    console.log('from upload image: ' + image.gURL)
+                    resolve('wew');
+                });
+            });
+        })
+    };
+
+    const editProfile = async () => {
+
+        showMessage({
+            message: "Profile Updated Successfully",
+            type: "success",
+            color: "#fff",
+            position: "top",
+            floating: "true",
+            icon: { icon: "info", position: "left" },
+            autoHide:"true", 
+            duration: 2000,
+        });
+        await uploadImage(URI, imageUUID)
+
+        console.log('from add function: ', image.gURL);
+        crud.createShop(image.gURL);
+        navigation.goBack();
+    };
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>       
@@ -28,7 +119,17 @@ function clientEditProfile(props) {
             <View style={[styles.formContainer, {flex:15}]}>          
                 <Text style={styles.title}>Edit Profile</Text>
                 <Text style={styles.subtitle}>Update infos about your shop.</Text>
+
                 <ScrollView style={styles.form}>
+                    <Text style={styles.formTitles}>Upload Shop Image</Text>
+                    {/* Display the selected Image*/}
+                    {URI && <Image source={{ uri: URI }} style={styles.imageUpload} />} 
+
+                    {/* Button for Image Picker */}
+                    <TouchableOpacity style={styles.imageButton} onPress={pickImage} >
+                        <Text style={styles.imageButtonLabel}>Upload Image</Text>
+                    </TouchableOpacity>
+               
                     <Text style={styles.formTitles}>Shop Information</Text>
                     <View style={styles.textView}>
                         <Input
@@ -109,9 +210,15 @@ function clientEditProfile(props) {
                 {/* Navigation isn't final */}
                 
                 {/*CONTINUE BUTTON AND ERROR MESSAGES*/}
-                <TouchableOpacity style={styles.button} onPress={() => console.log("Profile Updated")}>
+                <TouchableOpacity style={styles.button} onPress={showDialog}>
                     <Text style={styles.buttonLabel}>Update Information</Text>
                 </TouchableOpacity>
+                <Dialog.Container visible={visible}>
+                    <Dialog.Title>Edit Profile</Dialog.Title>
+                    <Dialog.Description>Do you really want to update Shop Information?</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={handleCancel} />
+                    <Dialog.Button label="Ok" onPress={handleUpdate} />
+                </Dialog.Container>
             </View>
             
         </SafeAreaView>
@@ -152,6 +259,29 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 16,
         fontWeight: "bold"
+    },
+    imageButton:{
+        backgroundColor: '#ee4b43',
+        borderRadius: 30,
+        alignItems: 'center',
+        alignSelf: "center",
+        justifyContent: 'center',
+        width: 150,
+        height: hp('6%'),
+        marginTop: 5,
+        marginBottom: 10
+    },
+    imageButtonLabel: {
+        color: "#fff",
+        fontSize: 14
+    },
+    imageUpload: {
+        alignSelf: "center",
+        width: 250,
+        height: 200,
+        marginVertical: 10,
+        borderWidth: 2,
+        borderColor: "#ee4b43"
     },
     input: {
         height: 50,

@@ -100,13 +100,6 @@ function LogIn(props) {
                 <Text style={{color: '#fff', fontSize: 12, marginTop: 10}}>Loyalty of Customers on your Hands</Text>
             </View>
 
-            <Dialog.Container visible={visible}>
-                <Dialog.Title>Forgot Password</Dialog.Title>
-                <Dialog.Description>Do you want to send an a reset confirmation to you email?</Dialog.Description>
-                <Dialog.Button label="Cancel" onPress={handleCancel} />
-                <Dialog.Button label="Ok" onPress={handleOk} />
-            </Dialog.Container>
-
             {/* <View style={styles.title}>
               <Text style={{color: '#fe1100', fontSize: 45}}>APresto</Text>
               <Text style={{color: '#fe1100', fontSize: 12}}>Loyalty and Rewards on your Hands</Text>
@@ -142,6 +135,13 @@ function LogIn(props) {
                 <TouchableOpacity style={styles.profileButton} onPress={showDialog} >
                   <Text style={{color: '#071964', fontSize: 13, marginVertical: 15}}>Forgot Password?</Text>
                 </TouchableOpacity>
+
+                <Dialog.Container visible={visible}>
+                  <Dialog.Title>Forgot Password</Dialog.Title>
+                  <Dialog.Description>Do you want to send an a reset confirmation to you email?</Dialog.Description>
+                  <Dialog.Button label="Cancel" onPress={handleCancel} />
+                  <Dialog.Button label="Ok" onPress={handleOk} />
+                </Dialog.Container>
 
               </View>
               

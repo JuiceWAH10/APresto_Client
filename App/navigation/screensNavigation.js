@@ -12,6 +12,7 @@ import ClientRewardList from '../screens/owners/clientReward/clientRewardList';
 import ClientSukiList from '../screens/owners/clientSuki/clientSukiList';
 import ClientEditProfile from '../screens/owners/clientProfile/clientEditProfile';
 import QRCodeScanner from '../screens/QRCodeScanner';
+import QRInfo from '../screens/QRInfo';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +29,7 @@ export default Screens = () => {
       <Stack.Screen name="clientSukiList" component={ClientSukiList} />
       <Stack.Screen name="clientEditProfile" component={ClientEditProfile} />
       <Stack.Screen name="QRCodeScanner" component={QRCodeScanner} />  
+      <Stack.Screen name="QRInfo" component={QRInfo} /> 
     </Stack.Navigator>
     
   );

@@ -154,7 +154,7 @@ function clientRewardEdit(props) {
                 <TouchableOpacity onPress={() => navigation.goBack()} >
                     <Icon name="left" size={30} color="#ee4b43" />
                 </TouchableOpacity>
-                <Text style={styles.title}>Add Reward</Text>   
+                <Text style={styles.title}>Edit Reward</Text>   
             </View>  
             {/* End of Top Navigation */}
 

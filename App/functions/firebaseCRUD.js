@@ -199,3 +199,27 @@ export function deleteReward(reward_ID, imgLink){
         console.error("Error removing document: ", error);
     });
 }
+
+export function createShop(imgLink){
+
+    const db = firebase.firestore();
+    const ref = db.collection('Shop').doc();
+    const id = ref.id;
+
+    <Toast ref={Toast.setRef} />
+    
+    firebase.firestore()
+    .collection('Shop')
+    .doc(id)
+    .set({
+        imgLink: imgLink
+    })
+    .then((data)=>{
+        //success callback
+        console.log('data ' , data)
+        
+    }).catch((error)=>{
+        //error callback
+        console.log('error ' , error)
+    });
+}

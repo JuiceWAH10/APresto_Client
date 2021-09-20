@@ -7,6 +7,7 @@ import validator from "validator";
 import { auth } from "firebase";
 import { Input } from 'react-native-elements';
 import { showMessage } from "react-native-flash-message";
+import Dialog from "react-native-dialog";
 
 
 //validation function of email
@@ -45,6 +46,7 @@ const login = (email, password) => {
     })
 };
 
+
 function LogIn(props) {
     //const [userName] = React.useState('');
     //const [passWord, setTextPW] = React.useState('');
@@ -62,6 +64,22 @@ function LogIn(props) {
       errorMessage: "",
     });
 
+    //For DialogBox
+    const [visible, setVisible] = useState(false);
+
+    const showDialog = () => {
+        setVisible(true);
+    };
+    
+    const handleCancel = () => {
+        setVisible(false);
+    };
+    
+    const handleOk = () => {
+        //Enter code here for sending reset confirmation
+        setVisible(false);
+    };
+        //End DialogBox
     return (
       <ImageBackground
           style={styles.BGImage}
@@ -78,9 +96,10 @@ function LogIn(props) {
 
             <View style={styles.LogoContainer}>
               <Image style={styles.Logo}
-                source={require('../assets/images/logo.png')}></Image>
-                <Text style={{color: '#fff', fontSize: 12, marginTop: 10}}>Loyalty and Rewards on your Hands</Text>
+                source={require('../assets/images/client_logo.png')}></Image>
+                <Text style={{color: '#fff', fontSize: 12, marginTop: 10}}>Loyalty of Customers on your Hands</Text>
             </View>
+
             {/* <View style={styles.title}>
               <Text style={{color: '#fe1100', fontSize: 45}}>APresto</Text>
               <Text style={{color: '#fe1100', fontSize: 12}}>Loyalty and Rewards on your Hands</Text>
@@ -113,15 +132,17 @@ function LogIn(props) {
                       autoCompleteType="password"
                   />
                 </View>  
-                {/* <View style={styles.checkbox}>
-                  <CheckBox
-                    disabled={false}
-                    value={toggleCheckBox.check}
-                    onChange={()=>handleCheck()}
-                    checked={setToggleCheckBox}
-                  />
-                  <Text> Log in as store owner. </Text>
-                </View> */}
+                <TouchableOpacity style={styles.profileButton} onPress={showDialog} >
+                  <Text style={{color: '#071964', fontSize: 13, marginVertical: 15}}>Forgot Password?</Text>
+                </TouchableOpacity>
+
+                <Dialog.Container visible={visible}>
+                  <Dialog.Title>Forgot Password</Dialog.Title>
+                  <Dialog.Description>Do you want to send an a reset confirmation to you email?</Dialog.Description>
+                  <Dialog.Button label="Cancel" onPress={handleCancel} />
+                  <Dialog.Button label="Ok" onPress={handleOk} />
+                </Dialog.Container>
+
               </View>
               
                 <TouchableOpacity style={styles.LogInButton} onPress={() => {
@@ -215,7 +236,7 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     height: 100,
     borderRadius: 100,
-    borderWidth: 1
+    // borderWidth: 1
   },
   LogoContainer:{
     // position: "absolute",

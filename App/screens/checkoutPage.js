@@ -19,9 +19,12 @@ import CartItems from './cartItems';
 import * as cartAction from '../functions/cartFunction';
 import * as rewardCart from '../functions/rewardsCartFunction';
 
+import * as crud from '../functions/firebaseCRUD';
+
 function checkoutPage(props) {
     const navigation = useNavigation();
-
+    const ptsPerPrice = 50;
+    const dispatch = useDispatch();
     //(juswa) fetch data from redux store in App.js using useSelector. the data is from the state managed by reducers
     const totalAmount = useSelector(state => state.cart.totalAmount);
     const cartItems = useSelector(state => {
@@ -60,16 +63,34 @@ function checkoutPage(props) {
         return rewCartItemsArray.sort((a,b) => a.reward_ID > b.reward_ID ? 1 : -1);
     });
 
-    const proceed = () =>{
-        let orderDetails = {
-            'items':{
-                'totalAmount':totalAmount,
-                'orderedItems':cartItems
-            }
-        };
+    function proceed(customer_ID, totalAmount, ptsDeduct, purchasedProducts, redeemedRewards){
+        dispatch(cartAction.clearCart());
+        dispatch(rewardCart.clearCart());
+        var ptsEarned;
+        //if may account -> if totalamt < ptsPerAmount then totalamt / ptsPerAmt else ptsPerAmt/totalamt; else no account customer_ID guest
+        // for rounding off Math.round((num + Number.EPSILON) * 100) / 100
+        
+        //incomplete need to verify if customer has an account or non
+        if(totalAmount > ptsPerPrice){
+            ptsEarned = totalAmount / ptsPerPrice;
+        } 
+        else {
+            ptsEarned = ptsPerPrice / totalAmount;
+        }
+
+        ptsEarned = Math.round((ptsEarned + Number.EPSILON)*100)/100;
+        var trans_ID = crud.recordTransaction(customer_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards);
+        navigation.navigate('Done', {
+            customer_ID: customer_ID,
+            totalAmount: totalAmount,
+            ptsEarned: ptsEarned,
+            ptsDeduct: ptsDeduct,
+            purchasedProducts:purchasedProducts,
+            redeemedRewards: redeemedRewards
+        });
     }
 
-    const dispatch = useDispatch();
+    
     
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -145,7 +166,7 @@ function checkoutPage(props) {
                     <TouchableOpacity 
                         style={styles.button}
                         disabled={cartItems.length === 0}
-                        onPress={() => alert('hehe')} 
+                        onPress={() => proceed('Guest', totalAmount, totalPoints, cartItems, rewCartItems)} 
                     >
                         <Text style={styles.buttonLabel}>Proceed</Text>
                     </TouchableOpacity>

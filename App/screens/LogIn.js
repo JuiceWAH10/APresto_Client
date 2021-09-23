@@ -158,7 +158,7 @@ function LogIn(props) {
 
                   if(!isValid.password){
                     console.log("Password must be at least 8 long characters with numbers")
-                    passwordField.errorMessage = "Incorrect Password. Makke sure you entered the password correctly.";
+                    passwordField.errorMessage = "Incorrect Password. Make sure you entered the password correctly.";
                     setPasswordField({...passwordField})
                     isAllValid = false;
                   }

@@ -15,6 +15,7 @@ import QRCodeScanner from '../screens/QRCodeScanner';
 import CheckoutPage from '../screens/checkoutPage';
 import POStabs from '../navigation/POStabs';
 import QRInfo from '../screens/QRInfo';
+import DoneTransaction from '../screens/doneTransaction';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ export default Screens = () => {
       <Stack.Screen name="checkoutPage" component={CheckoutPage} />
       <Stack.Screen name="POS" component={POStabs} />
       <Stack.Screen name="QRInfo" component={QRInfo} /> 
+      <Stack.Screen name="Done" component={DoneTransaction} />
     </Stack.Navigator>
     
   );

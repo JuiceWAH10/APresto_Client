@@ -46,7 +46,8 @@ export function createProduct(prodName, prodDes, prodPrice, prodQty, status, img
         price: parseFloat(prodPrice),
         quantity: parseInt(prodQty),
         status: status,
-        imgLink: imgLink
+        imgLink: imgLink,
+        type: 'product'
     })
     .then((data)=>{
         //success callback
@@ -77,7 +78,8 @@ export function createReward(rewName, rewDes, rewPoints, rewQty, status, imgLink
         pointsReq: parseFloat(rewPoints),
         quantity: parseInt(rewQty),
         status: status,
-        imgLink: imgLink
+        imgLink: imgLink,
+        type: 'reward'
     })
     .then((data)=>{
         //success callback
@@ -209,7 +211,7 @@ export function createShop(imgLink){
     <Toast ref={Toast.setRef} />
     
     firebase.firestore()
-    .collection('Shop')
+    .collection('Shops')
     .doc(id)
     .set({
         imgLink: imgLink
@@ -222,4 +224,36 @@ export function createShop(imgLink){
         //error callback
         console.log('error ' , error)
     });
+}
+
+export function recordTransaction(customer_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards){
+
+    const db = firebase.firestore();
+    const ref = db.collection('Transactions').doc();
+    const id = ref.id;
+
+    <Toast ref={Toast.setRef} />
+    
+    firebase.firestore()
+    .collection('Transactions')
+    .doc(id)
+    .set({
+        trans_ID: id,
+        customer_ID: customer_ID,
+        store_ID: 'DdMGRnmbou1yL467083R',
+        totalAmount: parseFloat(totalAmount),
+        ptsEarned: parseFloat(ptsEarned),
+        ptsDeduct:parseFloat(ptsDeduct),
+        purchasedProducts:purchasedProducts,
+        redeemedRewards:redeemedRewards
+    })
+    .then((data)=>{
+        //success callback
+        console.log('data ' , data)
+        
+    }).catch((error)=>{
+        //error callback
+        console.log('error ' , error)
+    });
+    return id;
 }

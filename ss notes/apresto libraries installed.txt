@@ -109,3 +109,6 @@ expo install jsonpack
 material top nav:
 expo install @react-navigation/material-top-tabs react-native-tab-view
 expo install react-native-pager-view
+
+dialog:
+expo install react-native-dialog

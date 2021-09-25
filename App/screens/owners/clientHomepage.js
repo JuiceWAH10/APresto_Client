@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { auth } from "firebase";
+import auth from "@react-native-firebase/auth";
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 import * as crud from '../../functions/firebaseCRUD';
 

@@ -4,7 +4,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import validator from "validator";
-import { auth } from "firebase";
+import auth from "@react-native-firebase/auth";
 import { Input } from 'react-native-elements';
 import { showMessage } from "react-native-flash-message";
 import Dialog from "react-native-dialog";

@@ -1,11 +1,8 @@
 import React, { useRef, useEffect,useState } from 'react';
-import firebase from 'firebase';
+import firestore from '@react-native-firebase/firestore';
 import { 
     Animated,
-    ImageBackground,
     Platform,
-    SafeAreaView,
-    ScrollView,
     StyleSheet,
     Text, 
     TouchableOpacity, 
@@ -37,7 +34,7 @@ function ProductPOS(props){
 
     //fetch data from firestore
     useEffect(()=>{
-        const subscriber = firebase.firestore()
+        const subscriber = firestore()
         .collection('Products')
         .onSnapshot(querySnapshot => {
             const prod = [];
@@ -110,7 +107,7 @@ function RewardsPOS(props){
 
     //fetch data from firestore
     useEffect(()=>{
-        const subscriber = firebase.firestore()
+        const subscriber = firestore()
         .collection('Rewards')
         .onSnapshot(querySnapshot => {
             const prod = [];

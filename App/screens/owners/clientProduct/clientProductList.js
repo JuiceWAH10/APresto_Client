@@ -16,7 +16,7 @@ import Icon2 from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import { Searchbar } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import * as firebase from 'firebase';
+import firestore from '@react-native-firebase/firestore';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -37,7 +37,7 @@ function clientProductList(props) {
     const [products, setProducts] = React.useState([]);
 
         React.useEffect(()=>{
-            const subscriber = firebase.firestore()
+            const subscriber = firestore()
             .collection('Products')
             .onSnapshot(querySnapshot => {
                 const prod = [];

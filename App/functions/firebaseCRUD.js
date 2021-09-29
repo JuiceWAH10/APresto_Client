@@ -1,5 +1,6 @@
 //iedit pa to
-import firebase from "firebase";
+import firestore from "@react-native-firebase/firestore";
+import storage from '@react-native-firebase/storage';
 import Toast from 'react-native-toast-message';
 import React from 'react';
 
@@ -29,13 +30,13 @@ import Products from '../models/products';
 
 export function createProduct(prodName, prodDes, prodPrice, prodQty, status, imgLink){
 
-    const db = firebase.firestore();
+    const db = firestore();
     const ref = db.collection('Products').doc();
     const id = ref.id;
 
     <Toast ref={Toast.setRef} />
     
-    firebase.firestore()
+    firestore()
     .collection('Products')
     .doc(id)
     .set({
@@ -61,13 +62,13 @@ export function createProduct(prodName, prodDes, prodPrice, prodQty, status, img
 
 export function createReward(rewName, rewDes, rewPoints, rewQty, status, imgLink){
 
-    const db = firebase.firestore();
+    const db = firestore();
     const ref = db.collection('Products').doc();
     const id = ref.id;
 
     <Toast ref={Toast.setRef} />
     
-    firebase.firestore()
+    firestore()
     .collection('Rewards')
     .doc(id)
     .set({
@@ -151,7 +152,7 @@ export function readAllProducts(){
 
 //too slow needs adjustment
 export function updateProduct(prod_ID, prodName, prodDes, prodPrice, prodQty, status, imgLink){
-    firebase.firestore()
+    firestore()
     .collection('Products')
     .doc(prod_ID)
     .update({
@@ -165,7 +166,7 @@ export function updateProduct(prod_ID, prodName, prodDes, prodPrice, prodQty, st
 }
 
 export function updateReward(rewID, rewName, rewDes, rewPoints, rewQty, status, imgLink){
-    firebase.firestore()
+    firestore()
     .collection('Rewards')
     .doc(rewID)
     .update({
@@ -179,9 +180,9 @@ export function updateReward(rewID, rewName, rewDes, rewPoints, rewQty, status, 
 }
 
 export function deleteProduct(product_ID, imgLink){
-    firebase.firestore().collection('Products').doc(product_ID).delete().then(() => {
+    firestore().collection('Products').doc(product_ID).delete().then(() => {
         console.log("Document successfully deleted!");
-        var imageRef = firebase.storage().refFromURL(imgLink);
+        var imageRef = storage().refFromURL(imgLink);
             imageRef.delete().then(() => {
                 console.log("Deleted")
             }).catch(err => console.log(err))
@@ -191,9 +192,9 @@ export function deleteProduct(product_ID, imgLink){
 }
 
 export function deleteReward(reward_ID, imgLink){
-    firebase.firestore().collection('Rewards').doc(reward_ID).delete().then(() => {
+    firestore().collection('Rewards').doc(reward_ID).delete().then(() => {
         console.log("Document successfully deleted!");
-        var imageRef = firebase.storage().refFromURL(imgLink);
+        var imageRef = storage().refFromURL(imgLink);
             imageRef.delete().then(() => {
                 console.log("Deleted")
             }).catch(err => console.log(err))
@@ -204,13 +205,13 @@ export function deleteReward(reward_ID, imgLink){
 
 export function createShop(imgLink){
 
-    const db = firebase.firestore();
+    const db = firestore();
     const ref = db.collection('Shop').doc();
     const id = ref.id;
 
     <Toast ref={Toast.setRef} />
     
-    firebase.firestore()
+    firestore()
     .collection('Shops')
     .doc(id)
     .set({
@@ -228,13 +229,13 @@ export function createShop(imgLink){
 
 export function recordTransaction(customer_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards){
 
-    const db = firebase.firestore();
+    const db = firestore();
     const ref = db.collection('Transactions').doc();
     const id = ref.id;
 
     <Toast ref={Toast.setRef} />
     
-    firebase.firestore()
+    firestore()
     .collection('Transactions')
     .doc(id)
     .set({

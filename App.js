@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import firebase from "@react-native-firebase/app";
+import firebase from "firebase";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 

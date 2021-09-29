@@ -4,8 +4,7 @@ import { TextInput } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/AntDesign';
 import validator from "validator";
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
+import firebase, { auth } from "firebase";
 import { Input } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { showMessage } from "react-native-flash-message";
@@ -38,7 +37,7 @@ const createAccount = (email, password, firstname, lastname, address, contact, u
         .createUserWithEmailAndPassword(email, password)
         .then(({ user }) => {
             console.log("Creating user...");   
-            firestore().collection("users").doc(user.uid).set({
+            firebase.firestore().collection("users").doc(user.uid).set({
                 firstname,
                 lastname,
                 address,

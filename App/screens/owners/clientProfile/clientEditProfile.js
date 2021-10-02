@@ -15,11 +15,14 @@ import Dialog from "react-native-dialog";
 function clientEditProfile(props) {
     const navigation = useNavigation();
 
-    const [shopName, setTextShopName] = React.useState('');
+    const {store_ID, owner_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
+
+    const [shop_Name, setTextStoreName] = React.useState('');
     const [shopDetails, setTextShopDetails] = React.useState('');
-    const [address, setTextAddress] = React.useState('');
+    const [shopAddress, setTextShopAddress] = React.useState('');
     const [contactNo, setTextContactNo] = React.useState('');
     const [tags, setTextTags] = React.useState('');
+    const [shopPts, setShopPts] = React.useState('');
     const [email, setTextEmail] = React.useState('');
     const [password, setTextPassword] = React.useState('');
     const [passwordReentry, setTextPasswordReentry] = React.useState('');

@@ -26,6 +26,7 @@ LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 
 function clientProductList(props) {
     const [searchQuery, setSearchQuery] = React.useState('');
+    const {store_ID} = props.route.params;
     const onChangeSearch = query => setSearchQuery(query);
     const navigation = useNavigation();
 
@@ -37,8 +38,9 @@ function clientProductList(props) {
     const [products, setProducts] = React.useState([]);
 
         React.useEffect(()=>{
-            const subscriber = firebase.firestore()
+            const subsciber = firebase.firestore()
             .collection('Products')
+            .where("shop_ID","==",store_ID)
             .onSnapshot(querySnapshot => {
                 const prod = [];
                 querySnapshot.forEach(function (product){         
@@ -46,7 +48,9 @@ function clientProductList(props) {
                 });
                 setProducts(prod);
             });
-            return () => subscriber();
+
+            return ()=> subsciber()
+            
         }, []);
 
     return (
@@ -59,7 +63,7 @@ function clientProductList(props) {
                 </TouchableOpacity>   
                 <Searchbar
                         style={styles.searchBar}
-                        placeholder="Search"
+                        placeholder={store_ID}
                         onChangeText={onChangeSearch}
                         value={searchQuery}
                 />

@@ -26,6 +26,8 @@ function clientRewardList(props) {
     const onChangeSearch = query => setSearchQuery(query);
     const navigation = useNavigation();
 
+    const {store_ID} = props.route.params;
+
     const dispatch = useDispatch();
     //(juswa) fetch data from redux store in App.js using useSelector. the data is from the state managed by reducers
     //const rewards = useSelector(state => state.rewards.allRewards);
@@ -35,6 +37,7 @@ function clientRewardList(props) {
         React.useEffect(()=>{
             const subscriber = firebase.firestore()
             .collection('Rewards')
+            .where("shop_ID","==",store_ID)
             .onSnapshot(querySnapshot => {
                 const rew = [];
                 querySnapshot.forEach(function (reward){         

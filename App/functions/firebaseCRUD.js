@@ -5,7 +5,108 @@ import React from 'react';
 
 import Products from '../models/products';
 
+
 /*
+export async function getStoreList(){
+    let storeList = [];
+    const uID = await firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const ref = db.collection('Owners').doc(uID);
+    const stores = await ref.get(result =>{
+        //for(i = 0; i < result.data().stores.length; i++){
+        result.data().stores.forEach(i => {
+            storeList.push(i);
+        });
+            
+        
+    });
+
+    return storeList;
+}
+
+
+firebase.firestore()
+            .collection('Products')
+            .onSnapshot(querySnapshot => {
+                const prod = [];
+                querySnapshot.forEach(function (product){         
+                    prod.push(product.data());
+                });
+                setProducts(prod);
+            });
+
+
+            firebase.firestore().collection('Shops').doc('iKEURTQ2qIYY3UB76LCa')
+            .get()
+            .then(doc => {
+                return doc.data().ownerShops
+            })
+            // then search the participants sub collection of the event
+            .then(shops => {
+                firebase.firestore().doc('EvsNQiBqKjJmTF5Fi0zY').collection('Products')
+                .get()
+                .then(querySnapshot => {
+                    querySnapshot.forEach(function (product){         
+                        prod.push(product.data());
+                    });
+                    setProducts(prod);
+                })
+                .catch(e => {console.error(e)})
+            })
+/*
+// will try later
+            firebase.firestore().doc(`users/${this.props.currentUser.uid}`)
+            .get()
+            .then(doc => {
+                return doc.data().friends
+            })
+            // then search the participants sub collection of the event
+            .then(friends => {
+                firebase.firestore().collection('events')
+                .get()
+                .then(eventsSnapshot => {
+                    eventsSnapshot.forEach(doc => {
+                        const { type, date, event_author, comment } = doc.data();
+                        let event = {
+                            doc, 
+                            id: doc.id,
+                            type,
+                            event_author,
+                            participants: [],
+                            date,
+                            comment,
+                        }
+                        firebase.firestore().collection('events').doc(doc.id).collection('participants')
+                        .get()
+                        .then(participantsSnapshot => {
+                            for(let i=0; i<participantsSnapshot.size;i++) {
+                                if(participantsSnapshot.docs[i].exists) {
+                                    // if participant uid is in friends array, add event to events array
+                                    if(friends.includes(participantsSnapshot.docs[i].data().uid)) {
+                                        // add participant to event
+                                        let { displayName, uid } = participantsSnapshot.docs[i].data();
+                                        let participant = { displayName, uid }
+                                        event['participants'].push(participant)
+                                        events.push(event)
+                                        break;
+                                    }
+                                }
+                            }
+                        })
+                        .then(() => {
+                            console.log(events)
+                            this.props.dispatch(updateEvents(events))
+                        })
+                        .catch(e => {console.error(e)})
+                    })
+                })
+                .catch(e => {console.error(e)})
+            })
+
+
+
+
+
 {
         product_ID: id,
         shop_ID: "1",

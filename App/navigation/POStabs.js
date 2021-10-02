@@ -29,167 +29,170 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 LogBox.ignoreAllLogs();
 
-function ProductPOS(props){
-    const scrollPosition = useRef(new Animated.Value(0)).current;
-
-    const dispatch = useDispatch();
-    const [sortedProducts, setProducts] = useState([]);
-
-    //fetch data from firestore
-    useEffect(()=>{
-        const subscriber = firebase.firestore()
-        .collection('Products')
-        .onSnapshot(querySnapshot => {
-            const prod = [];
-            querySnapshot.forEach(function (product){         
-                prod.push(product.data());
-            });
-            setProducts(prod);
-        });
-        return () => subscriber();
-    }, []);
-
-    return (
-        <Animated.ScrollView
-            onScroll={Animated.event(
-                [{nativeEvent: {contentOffset: {y: scrollPosition}}}],
-                    {useNativeDriver: false},
-                )}
-            contentInsetAdjustmentBehavior="automatic"
-                style={[styles.container]}
-                nestedScrollEnabled={true}
-        >                   
-
-            {/* All Items */}
-                <View style={styles.allItemsContainer}>
-                    {/* List of all items !note that items in Popular Items is also included here* */}
-                    <Text style={styles.allItemsTitle}>All Items</Text>
-                        <FlatList
-                            data={sortedProducts}
-                            keyExtractor={item => item.product_ID}
-                            renderItem={itemData => 
-                                <POSItems
-                                    type={itemData.item.type}
-                                    product_Name = {itemData.item.product_Name}
-                                    price = {itemData.item.price}
-                                    description = {itemData.item.description}
-                                    imgLink = {itemData.item.imgLink}
-                                    addToCart = {() => {dispatch(cartAction.addToCart(itemData.item))}}
-                                />}
-                        />
-                    {/* End of List */}
-                </View>
-            {/* End of All Items
-            <SafeAreaView>
-        <View style={styles.topNav}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} >
-                            <Icon2 name="left" size={30} color="#ee4b43" />
-                        </TouchableOpacity>
-                        <View style={styles.topNavRight}>
-                            <TouchableOpacity onPress={() => console.log('pressed')} >  
-                                <Icon2 name="heart" size={25} color="#ee4b43" />
-                            </TouchableOpacity>    
-                            <TouchableOpacity onPress={() => navigation.navigate('checkoutPage')} > 
-                                <Icon2 name="shoppingcart" size={25} color="#ee4b43" />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-    </SafeAreaView>
-            
-            */}
-
-        </Animated.ScrollView>
-    );
-}
-
-function RewardsPOS(props){
-    const scrollPosition = useRef(new Animated.Value(0)).current;
-
-    const dispatch = useDispatch();
-    const [sortedProducts, setProducts] = useState([]);
-
-    //fetch data from firestore
-    useEffect(()=>{
-        const subscriber = firebase.firestore()
-        .collection('Rewards')
-        .onSnapshot(querySnapshot => {
-            const prod = [];
-            querySnapshot.forEach(function (product){         
-                prod.push(product.data());
-            });
-            setProducts(prod);
-        });
-        return () => subscriber();
-    }, []);
-
-    return (
-        <Animated.ScrollView
-            onScroll={Animated.event(
-                [{nativeEvent: {contentOffset: {y: scrollPosition}}}],
-                        {useNativeDriver: false},
-                )}
-            contentInsetAdjustmentBehavior="automatic"
-            style={[styles.container]}
-            nestedScrollEnabled={true}
-        >                   
-
-            {/* All Items */}
-                <View style={styles.allItemsContainer}>
-                    {/* List of all items !note that items in Popular Items is also included here* */}
-                    <Text style={styles.allItemsTitle}>All Rewards</Text>
-                        <FlatList
-                            data={sortedProducts}
-                            keyExtractor={item => item.reward_ID}
-                            renderItem={itemData => 
-                                <POSItems
-                                    type={itemData.item.type}
-                                    product_Name = {itemData.item.reward_Name}
-                                    price = {itemData.item.pointsReq}
-                                    description = {itemData.item.description}
-                                    imgLink = {itemData.item.imgLink}
-                                    addToCart = {() => {dispatch(rewardCart.redeemToCart(itemData.item))}}
-                                />}
-                        />
-                    {/* End of List */}
-                </View>
-            {/* End of All Items */}
-
-        </Animated.ScrollView>
-    );
-}
-
 const tabs = createMaterialTopTabNavigator();
 const POSstack = createStackNavigator();
 
-function POSnav(){
-    return(
-        <tabs.Navigator >
-            <tabs.Screen name='Products' component={ProductPOS} options={{tabBarLabel:'Products'}}/>
-            <tabs.Screen name='Rewards' component={RewardsPOS} options={{tabBarLabel:'Rewards'}}/>
-        </tabs.Navigator>
-    );
-}
 
-function POStabs(){
+
+function POStabs(props){
     const navigation = useNavigation();
+
+    const {store_ID} = props.route.params;
+
+    function ProductPOS(){
+        const scrollPosition = useRef(new Animated.Value(0)).current;
     
+        const dispatch = useDispatch();
+        const [sortedProducts, setProducts] = useState([]);
+    
+        //fetch data from firestore
+        useEffect(()=>{
+            const subscriber = firebase.firestore()
+            .collection('Products')
+            .where("shop_ID","==",store_ID)
+            .onSnapshot(querySnapshot => {
+                const prod = [];
+                querySnapshot.forEach(function (product){         
+                    prod.push(product.data());
+                });
+                setProducts(prod);
+            });
+            return () => subscriber();
+        }, []);
+    
+        return (
+            <Animated.ScrollView
+                onScroll={Animated.event(
+                    [{nativeEvent: {contentOffset: {y: scrollPosition}}}],
+                        {useNativeDriver: false},
+                    )}
+                contentInsetAdjustmentBehavior="automatic"
+                    style={[styles.container]}
+                    nestedScrollEnabled={true}
+            >                   
+    
+                {/* All Items */}
+                    <View style={styles.allItemsContainer}>
+                        {/* List of all items !note that items in Popular Items is also included here* */}
+                        <Text style={styles.allItemsTitle}>All Items</Text>
+                            <FlatList
+                                data={sortedProducts}
+                                keyExtractor={item => item.product_ID}
+                                renderItem={itemData => 
+                                    <POSItems
+                                        type={itemData.item.type}
+                                        product_Name = {itemData.item.product_Name}
+                                        price = {itemData.item.price}
+                                        description = {itemData.item.description}
+                                        imgLink = {itemData.item.imgLink}
+                                        addToCart = {() => {dispatch(cartAction.addToCart(itemData.item))}}
+                                    />}
+                            />
+                        {/* End of List */}
+                    </View>
+                {/* End of All Items
+                <SafeAreaView>
+            <View style={styles.topNav}>
+                            <TouchableOpacity onPress={() => navigation.goBack()} >
+                                <Icon2 name="left" size={30} color="#ee4b43" />
+                            </TouchableOpacity>
+                            <View style={styles.topNavRight}>
+                                <TouchableOpacity onPress={() => console.log('pressed')} >  
+                                    <Icon2 name="heart" size={25} color="#ee4b43" />
+                                </TouchableOpacity>    
+                                <TouchableOpacity onPress={() => navigation.navigate('checkoutPage')} > 
+                                    <Icon2 name="shoppingcart" size={25} color="#ee4b43" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+        </SafeAreaView>
+                
+                */}
+    
+            </Animated.ScrollView>
+        );
+    }
+    
+    function RewardsPOS(){
+        const scrollPosition = useRef(new Animated.Value(0)).current;
+    
+        const dispatch = useDispatch();
+        const [sortedProducts, setProducts] = useState([]);
+    
+        //fetch data from firestore
+        useEffect(()=>{
+            const subscriber = firebase.firestore()
+            .collection('Rewards')
+            .where("shop_ID","==",store_ID)
+            .onSnapshot(querySnapshot => {
+                const prod = [];
+                querySnapshot.forEach(function (product){         
+                    prod.push(product.data());
+                });
+                setProducts(prod);
+            });
+            return () => subscriber();
+        }, []);
+    
+        return (
+            <Animated.ScrollView
+                onScroll={Animated.event(
+                    [{nativeEvent: {contentOffset: {y: scrollPosition}}}],
+                            {useNativeDriver: false},
+                    )}
+                contentInsetAdjustmentBehavior="automatic"
+                style={[styles.container]}
+                nestedScrollEnabled={true}
+            >                   
+    
+                {/* All Items */}
+                    <View style={styles.allItemsContainer}>
+                        {/* List of all items !note that items in Popular Items is also included here* */}
+                        <Text style={styles.allItemsTitle}>All Rewards</Text>
+                            <FlatList
+                                data={sortedProducts}
+                                keyExtractor={item => item.reward_ID}
+                                renderItem={itemData => 
+                                    <POSItems
+                                        type={itemData.item.type}
+                                        product_Name = {itemData.item.reward_Name}
+                                        price = {itemData.item.pointsReq}
+                                        description = {itemData.item.description}
+                                        imgLink = {itemData.item.imgLink}
+                                        addToCart = {() => {dispatch(rewardCart.redeemToCart(itemData.item))}}
+                                    />}
+                            />
+                        {/* End of List */}
+                    </View>
+                {/* End of All Items */}
+    
+            </Animated.ScrollView>
+        );
+    }
+
+    function POSnav(){
+        return(
+            <tabs.Navigator >
+                <tabs.Screen name='Products' component={ProductPOS} options={{tabBarLabel:'Products'}}/>
+                <tabs.Screen name='Rewards' component={RewardsPOS} options={{tabBarLabel:'Rewards'}}/>
+            </tabs.Navigator>
+        );
+    }
     
     return(
         <POSstack.Navigator 
-            screenOptions={{header: props => 
-                <View style={styles.topNav}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} >
+            screenOptions={{
+                headerLeft: props =>
+                <TouchableOpacity onPress={() => navigation.goBack()} >
                         <Icon2 name="left" size={30} color="#ee4b43" />
-                    </TouchableOpacity>
-                    <View style={styles.topNavRight}>
-                        <TouchableOpacity onPress={() => console.log('pressed')} >  
-                            <Icon2 name="heart" size={25} color="#ee4b43" />
-                        </TouchableOpacity>    
+                    </TouchableOpacity>,
+                headerTitle: '',
+                headerRight: props => 
+                    <View style={{paddingRight: 10}}> 
                         <TouchableOpacity onPress={() => navigation.navigate('checkoutPage')} > 
                             <Icon2 name="shoppingcart" size={25} color="#ee4b43" />
                         </TouchableOpacity>
                     </View>
-                </View>
             }} 
         >
             <POSstack.Screen 

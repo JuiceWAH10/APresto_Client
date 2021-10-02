@@ -112,3 +112,6 @@ expo install react-native-pager-view
 
 dialog:
 expo install react-native-dialog
+
+picker:
+expo install @react-native-picker/picker

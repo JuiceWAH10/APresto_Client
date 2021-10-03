@@ -285,7 +285,7 @@ function clientHomepage(props) {
                         <View style={styles.sukiDarken}>
                             <Text style={styles.sukiLabel}>Sukis are essential for your business growth</Text>
                             <Text style={styles.sukiLabelSmall}>You can know who among your suki loves you most.</Text>
-                            <TouchableOpacity style={styles.sukiButton} onPress={() => navigation.navigate('clientSukiList', {store_ID:currentStore.owner_ID})} >
+                            <TouchableOpacity style={styles.sukiButton} onPress={() => navigation.navigate('clientSukiList', {owner_ID:currentStore.owner_ID, store_ID: currentStore.store_ID})} >
                                 <Text style={styles.sukiButtonLabel}>View Suki</Text>
                             </TouchableOpacity>
                         </View>    

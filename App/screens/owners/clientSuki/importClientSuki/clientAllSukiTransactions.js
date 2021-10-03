@@ -8,35 +8,25 @@ import {
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
-
-function clientAllSuki(props) {
+//map shit keme of purchaseProducts and redeemedRewards is not functioning well, maybe just add transaction details screen
+function ClientAllSukiTransactions(props) {
     const navigation = useNavigation();
-
     return (
         <View style={styles.container}>
             <Image style={styles.sukiImage}
                     source={require('../../../../assets/eat.jpg')}>
             </Image>
             <View style={styles.sukiContainer}>
-                <Text style={styles.sukiName}>Suki Name: {props.username}</Text>
-                <Text style={styles.sukiInfo}>Points: {props.points}</Text>
-                <Text style={styles.sukiInfo}>Used Points: {props.points_Used}</Text>
-                <TouchableOpacity 
-                    onPress={() => navigation.navigate('clientSukiTransactions', 
-                        {
-                            customer_ID: props.customer_ID,
-                            owner_ID: props.owner_ID,
-                            points: props.points,
-                            points_Used: props.points_Used,
-                            suki_ID: props.suki_ID,
-                            username: props.username,
-                            transactions: props.transactions,
-                            store_ID: props.store_ID
-                        })
-                    }
-                >
-                    <Text style={styles.sukiInfo}>Transactions: {props.transactions}</Text>
-                </TouchableOpacity>
+                <Text style={styles.sukiName}>Transaction ID: {props.trans_ID}</Text>
+                <Text style={styles.sukiInfo}>Total Amount: {props.total}</Text>
+                <Text style={styles.sukiInfo}>Points Earned: {props.ptsEarned}</Text>
+                <Text style={styles.sukiInfo}>Points Used: {props.ptsDeduct}</Text>
+                {props.purchasedProducts.map((store, key) =>{
+                    <Text style={styles.sukiInfo}>{store.productTitle, store.productPrice, store.quantity, store.total}</Text>
+                })}
+                {props.redeemedRewards.map((store, key) =>{
+                    <Text style={styles.sukiInfo}>{store[key]}</Text>
+                })}
             </View>
         </View>
     );
@@ -104,4 +94,4 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
 })
-export default clientAllSuki;
+export default ClientAllSukiTransactions;

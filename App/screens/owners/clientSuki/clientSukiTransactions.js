@@ -7,7 +7,7 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity, 
-    View,
+    View, 
     FlatList
 } from 'react-native';
 import Icon2 from 'react-native-vector-icons/AntDesign';
@@ -16,28 +16,30 @@ import { Searchbar } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import firebase from 'firebase';
 
-import ClientAllSuki from './importClientSuki/clientAllSuki';
+import ClientAllSukiTransactions from './importClientSuki/clientAllSukiTransactions';
 
-function clientSukiList(props) {
+function clientSukiTransactions(props) {
     const [searchQuery, setSearchQuery] = useState('');
-    const [sukiList, setSukiList] = useState([]);
+    const [transList, setTransList] = useState([]);
     const onChangeSearch = query => setSearchQuery(query);
     const navigation = useNavigation();
 
-    const {owner_ID, store_ID} = props.route.params;
+    const {customer_ID, owner_ID, points, points_Used, username, transactions, store_ID} = props.route.params;
 
     useEffect(() => {
         firebase.firestore()
-            .collection('Suki')
-            .where("owner_ID", "==", owner_ID).get()
+            .collection('Transactions')
+            .where("store_ID", "==", store_ID)
+            .where("customer_ID", "==", customer_ID)
+            .get()
             .then(result => {
                 const st = [];
                 result.forEach(function (store){         
                     st.push(store.data());
                 });
                 console.log(st);
-                setSukiList(st);
-                console.log(sukiList);
+                setTransList(st);
+                console.log(transList);
             });
     }, [])
 
@@ -61,18 +63,18 @@ function clientSukiList(props) {
             <ScrollView style={styles.container}>
                 <FlatList
                     style={styles.container}
-                    data={sukiList}
-                    keyExtractor={item => item.suki_ID}
+                    data={transList}
+                    keyExtractor={item => item.trans_ID}
                     renderItem={itemData => 
-                        <ClientAllSuki
+                        <ClientAllSukiTransactions
                             customer_ID = {itemData.item.customer_ID}
-                            owner_ID = {itemData.item.owner_ID}
-                            points = {itemData.item.points}
-                            points_Used = {itemData.item.points_Used}
-                            suki_ID = {itemData.item.suki_ID}
-                            username = {itemData.item.username}
-                            transactions = {itemData.item.transactions}
-                            store_ID = {store_ID}
+                            ptsDeduct = {itemData.item.ptsDeduct}
+                            ptsEarned = {itemData.item.ptsEarned} 
+                            purchasedProducts = {itemData.item.purchasedProducts}
+                            redeemedRewards= {itemData.item.redeemedRewards}
+                            store_ID = {itemData.item.store_ID}
+                            trans_ID = {itemData.item.trans_ID}
+                            total = {itemData.item.totalAmount}
                         />
                     }
                 />
@@ -171,4 +173,4 @@ const styles = StyleSheet.create({
         elevation: 7,
     },
 })
-export default clientSukiList;
+export default clientSukiTransactions;

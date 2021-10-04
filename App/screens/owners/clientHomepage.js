@@ -49,8 +49,8 @@ function clientHomepage(props) {
         console.log(uID);
         firebase.firestore()
             .collection('Stores')
-            .where("owner_ID", "==", uID).get()
-            .then(result => {
+            .where("owner_ID", "==", uID)
+            .onSnapshot(result => {
                 const st = [];
                 result.forEach(function (store){         
                     st.push(store.data());
@@ -73,7 +73,7 @@ function clientHomepage(props) {
             <ScrollView style={styles.container}>
                 {/* Profile Header for Shops */}
                 <ImageBackground style={styles.profileBgImage}
-                    source={require('../../assets/Liked_Shop.jpg')}>
+                    source={{uri: currentStore.imgLink}}>
 
                     <View style={styles.profileDarken}>
                         {/* Profile Informations */}

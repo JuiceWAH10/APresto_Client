@@ -5,24 +5,26 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { Input } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import * as firebase from "firebase";
+import firebase from "firebase";
 import uuid from 'react-native-uuid';
 import { showMessage } from "react-native-flash-message";
 import Dialog from "react-native-dialog";
+
+import * as crud from '../../../functions/firebaseCRUD';
 
 
 
 function clientEditProfile(props) {
     const navigation = useNavigation();
 
-    const {store_ID, owner_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
+    const {store_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
 
-    const [shop_Name, setTextStoreName] = React.useState('');
-    const [shopDetails, setTextShopDetails] = React.useState('');
-    const [shopAddress, setTextShopAddress] = React.useState('');
-    const [contactNo, setTextContactNo] = React.useState('');
+    const [shopName, setTextStoreName] = React.useState(store_Name);
+    const [shopDetails, setTextShopDetails] = React.useState(specialty);
+    const [shopAddress, setTextShopAddress] = React.useState(address);
+    const [contactNo, setTextContactNo] = React.useState(contact_Number);
     const [tags, setTextTags] = React.useState('');
-    const [shopPts, setShopPts] = React.useState('');
+    const [shopPts, setShopPts] = React.useState(ptsPerAmount);
     const [email, setTextEmail] = React.useState('');
     const [password, setTextPassword] = React.useState('');
     const [passwordReentry, setTextPasswordReentry] = React.useState('');
@@ -44,10 +46,8 @@ function clientEditProfile(props) {
     };
     //End of Dialogbox
 
-    const [URI, setURI] = React.useState(null);
-
     const image = {
-        url: "wew",
+        url: imgLink,
         get gURL(){
             return this.url;
         },
@@ -58,6 +58,9 @@ function clientEditProfile(props) {
 
     var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
         
+    const [URI, setURI] = React.useState({link:image.gURL});
+    const [changedIMG, setChangedIMG] = React.useState({bool: false});
+    
     // Code for Image Picker and Uploading to Firebase storage
     const pickImage = async () => {
         //For choosing photo in the library and crop the photo
@@ -69,9 +72,10 @@ function clientEditProfile(props) {
                 quality: 1,
             });
         if (!result.cancelled) {
-            setURI(result.uri);
+            setURI({link: result.uri});
+            setChangedIMG({bool: true});
         }
-        console.log(result); // To Display the information of image on the console
+        console.log(result, changedIMG.bool); // To Display the information of image on the console
 
     };
 
@@ -79,7 +83,7 @@ function clientEditProfile(props) {
     const uploadImage = async(uri, imageName) => {
         const response = await fetch(uri);
         const blob = await response.blob(); 
-        
+        console.log('oof nakapasok pa din here');
         return new Promise(function(resolve) {
             var ref = firebase.storage().ref().child("images_ShopImages/" + imageName);
             ref.put(blob).then((snapshot) => {
@@ -90,6 +94,10 @@ function clientEditProfile(props) {
                     resolve('wew');
                 });
             });
+            var imageRef = firebase.storage().refFromURL(imgLink);
+            imageRef.delete().then(() => {
+                console.log("Deleted")
+            }).catch(err => console.log(err))
         })
     };
 
@@ -105,10 +113,10 @@ function clientEditProfile(props) {
             autoHide:"true", 
             duration: 2000,
         });
-        await uploadImage(URI, imageUUID)
+        await uploadImage(URI.link, imageUUID)
 
         console.log('from add function: ', image.gURL);
-        crud.createShop(image.gURL);
+        crud.editStore(image.gURL, store_ID, address, contact_Number, ptsPerAmount, specialty, store_Name);
         navigation.goBack();
     };
 
@@ -126,7 +134,7 @@ function clientEditProfile(props) {
                 <ScrollView style={styles.form}>
                     <Text style={styles.formTitles}>Upload Shop Image</Text>
                     {/* Display the selected Image*/}
-                    {URI && <Image source={{ uri: URI }} style={styles.imageUpload} />} 
+                    {URI && <Image source={{ uri: URI.link }} style={styles.imageUpload} />} 
 
                     {/* Button for Image Picker */}
                     <TouchableOpacity style={styles.imageButton} onPress={pickImage} >

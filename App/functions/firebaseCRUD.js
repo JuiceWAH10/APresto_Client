@@ -303,19 +303,22 @@ export function deleteReward(reward_ID, imgLink){
     });
 }
 
-export function createShop(imgLink){
+export function editStore(imgLink, store_ID, address, contact_Number, ptsPerAmount, specialty, store_Name){
 
-    const db = firebase.firestore();
-    const ref = db.collection('Shop').doc();
-    const id = ref.id;
+    const id = store_ID;
 
     <Toast ref={Toast.setRef} />
-    
+
     firebase.firestore()
-    .collection('Shops')
+    .collection('Stores')
     .doc(id)
-    .set({
-        imgLink: imgLink
+    .update({
+        imgLink: imgLink,
+        address: address,
+        contact_Number: contact_Number,
+        ptsPerAmount: ptsPerAmount,
+        specialty: specialty,
+        store_Name: store_Name
     })
     .then((data)=>{
         //success callback

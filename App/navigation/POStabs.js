@@ -37,7 +37,9 @@ const POSstack = createStackNavigator();
 function POStabs(props){
     const navigation = useNavigation();
 
-    const {store_ID} = props.route.params;
+    const {customer_ID, username, points, store_ID} = props.route.params;
+
+    const [sukiPoints, setSukiPoints] = useState(points);
 
     function ProductPOS(){
         const scrollPosition = useRef(new Animated.Value(0)).current;
@@ -124,6 +126,7 @@ function POStabs(props){
             const subscriber = firebase.firestore()
             .collection('Rewards')
             .where("shop_ID","==",store_ID)
+            .where("pointsReq",  "<=", sukiPoints)
             .onSnapshot(querySnapshot => {
                 const prod = [];
                 querySnapshot.forEach(function (product){         
@@ -186,10 +189,19 @@ function POStabs(props){
                 <TouchableOpacity onPress={() => navigation.goBack()} >
                         <Icon2 name="left" size={30} color="#ee4b43" />
                     </TouchableOpacity>,
-                headerTitle: '',
+                headerTitle: 'Serving: ' + username,
                 headerRight: props => 
                     <View style={{paddingRight: 10}}> 
-                        <TouchableOpacity onPress={() => navigation.navigate('checkoutPage')} > 
+                        <TouchableOpacity 
+                            onPress={() => navigation.navigate('checkoutPage', 
+                                {
+                                    customer_ID: customer_ID, 
+                                    username: username, 
+                                    sukiPoints: sukiPoints, 
+                                    store_ID: store_ID
+                                })
+                            } 
+                        > 
                             <Icon2 name="shoppingcart" size={25} color="#ee4b43" />
                         </TouchableOpacity>
                     </View>

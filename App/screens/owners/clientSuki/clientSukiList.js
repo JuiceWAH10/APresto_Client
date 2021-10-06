@@ -57,8 +57,6 @@ function clientSukiList(props) {
                 />
             </View>
             {/* End of Top Nav and Search Bar */}
-
-            <ScrollView style={styles.container}>
                 <FlatList
                     style={styles.container}
                     data={sukiList}
@@ -88,7 +86,6 @@ function clientSukiList(props) {
                 </ImageBackground> */}
                 {/* End of Banner */}
                 
-            </ScrollView>
 
         </SafeAreaView>
     );

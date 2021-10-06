@@ -175,7 +175,7 @@ function clientHomepage(props) {
                 </Picker>
 
                 {/* QR code Scanner */}
-                <TouchableOpacity onPress={()=> props.navigation.navigate('QRCodeScanner', {store_ID: currentStore.store_ID})}>
+                <TouchableOpacity onPress={()=> props.navigation.navigate('QRCodeScanner', {store_ID: currentStore.store_ID, owner_ID: currentStore.owner_ID})}>
                     <View style={styles.scanQRContainer}>
                         <View style={styles.scanQRWrap}>
                             <Icon name="qrcode" size={45} color="#fff" style={styles.scanQRIcon} />
@@ -189,7 +189,7 @@ function clientHomepage(props) {
                 {/* End of QR Code Scanner */}
 
                 {/* POS */}
-                <TouchableOpacity onPress={()=> props.navigation.navigate('POS', {store_ID: currentStore.store_ID})}>
+                <TouchableOpacity onPress={()=> props.navigation.navigate('selectCustomer', {store_ID: currentStore.store_ID, owner_ID: currentStore.owner_ID})}>
                     <View style={styles.scanQRContainer}>
                         <View style={styles.scanQRWrap}>
                             <Icon2 name="shopping-pos-machine" size={45} color="#fff" style={styles.scanQRIcon} />

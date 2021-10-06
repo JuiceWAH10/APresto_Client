@@ -17,6 +17,7 @@ import POStabs from '../navigation/POStabs';
 import QRInfo from '../screens/QRInfo';
 import DoneTransaction from '../screens/doneTransaction';
 import ClientSukiTransactions from '../screens/owners/clientSuki/clientSukiTransactions';
+import SelectCustomer from '../screens/selectCustomer'
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,7 @@ export default Screens = () => {
       <Stack.Screen name="QRInfo" component={QRInfo} /> 
       <Stack.Screen name="Done" component={DoneTransaction} />
       <Stack.Screen name="clientSukiTransactions" component={ClientSukiTransactions} />
+      <Stack.Screen name="selectCustomer" component={SelectCustomer} />
     </Stack.Navigator>
     
   );

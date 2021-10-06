@@ -23,8 +23,8 @@ export default function QRCodeScanner(props){
 
     useEffect(() => {
         (async () => {
-        const { status } = await BarCodeScanner.requestPermissionsAsync();
-        setHasPermission(status === 'granted');
+            const { status } = await BarCodeScanner.requestPermissionsAsync();
+            setHasPermission(status === 'granted');
         })();
     }, []);
 

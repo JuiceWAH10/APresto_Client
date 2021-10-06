@@ -22,25 +22,27 @@ function SelectCustomer(props) {
     const [pickedSuki, setPickedSuki] = useState('');
 
     useEffect(() => {
-        firebase.firestore()
+        const subscriber = firebase.firestore()
             .collection('Suki')
-            .where("owner_ID", "==", owner_ID).get()
-            .then(result => {
+            .where("owner_ID", "==", owner_ID)
+            .onSnapshot(result => {
                 const st = [];
                 result.forEach(function (store){         
                     st.push(store.data());
                 });
-                console.log("st: ", st);
+
                 setSukiList(st);
                 setPickedSuki(st[0]);
-                console.log("list ", sukiList);
+                
             });
+        return ()=> subscriber();
     }, []);
 
-    function navigateToPOS(customer_ID, username, points){
+    function navigateToPOS(customer_ID, suki_ID, username, points){
         navigation.navigate('POS', 
             {
                 customer_ID: customer_ID,
+                suki_ID: suki_ID,
                 username: username,
                 points: points,
                 store_ID: store_ID
@@ -62,6 +64,7 @@ function SelectCustomer(props) {
                     <Text style={styles.qrLabel}>Pick a suki</Text>
                        
                     <Picker
+                        style={{ height: 10, width: 180 }}
                         selectedValue={pickedSuki}
                         onValueChange={(itemValue, itemIndex) =>
                             setPickedSuki(itemValue)
@@ -72,7 +75,7 @@ function SelectCustomer(props) {
                         })}  
                     </Picker>
                     <View style={styles.buttonContainer} > 
-                        <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS(pickedSuki.customer_ID, pickedSuki.username, pickedSuki.points) }>
+                        <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS(pickedSuki.customer_ID, pickedSuki.suki_ID, pickedSuki.username, pickedSuki.points) }>
                             <Text style={styles.buttonLabel}>Sell to Suki</Text>
                         </TouchableOpacity>
                     </View>
@@ -86,7 +89,7 @@ function SelectCustomer(props) {
 
                     <Text style={styles.qrLabel}>Customer is a guest?</Text>
                     <View style={styles.buttonContainer} > 
-                        <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS("Guest", "Guest", 0) }>
+                        <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS("Guest", "Guest", "Guest", 0) }>
                             <Text style={styles.buttonLabel}>Sell to Guest</Text>
                         </TouchableOpacity> 
                     </View>

@@ -23,6 +23,8 @@ import * as crud from '../functions/firebaseCRUD';
 
 function checkoutPage(props) {
     const navigation = useNavigation();
+    const {customer_ID, suki_ID, username, sukiPoints, store_ID} = props.route.params;
+
     const ptsPerPrice = 50;
     const dispatch = useDispatch();
     //(juswa) fetch data from redux store in App.js using useSelector. the data is from the state managed by reducers
@@ -63,7 +65,7 @@ function checkoutPage(props) {
         return rewCartItemsArray.sort((a,b) => a.reward_ID > b.reward_ID ? 1 : -1);
     });
 
-    function proceed(customer_ID, totalAmount, ptsDeduct, purchasedProducts, redeemedRewards){
+    function proceed(totalAmount, ptsDeduct, purchasedProducts, redeemedRewards){
         dispatch(cartAction.clearCart());
         dispatch(rewardCart.clearCart());
         var ptsEarned;
@@ -79,7 +81,7 @@ function checkoutPage(props) {
         }
 
         ptsEarned = Math.round((ptsEarned + Number.EPSILON)*100)/100;
-        var trans_ID = crud.recordTransaction(customer_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards);
+        var trans_ID = crud.recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards);
         navigation.navigate('Done', {
             customer_ID: customer_ID,
             totalAmount: totalAmount,
@@ -166,7 +168,7 @@ function checkoutPage(props) {
                     <TouchableOpacity 
                         style={styles.button}
                         disabled={cartItems.length === 0}
-                        onPress={() => proceed('Guest', totalAmount, totalPoints, cartItems, rewCartItems)} 
+                        onPress={() => proceed(totalAmount, totalPoints, cartItems, rewCartItems)} 
                     >
                         <Text style={styles.buttonLabel}>Proceed</Text>
                     </TouchableOpacity>

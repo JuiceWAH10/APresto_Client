@@ -330,7 +330,27 @@ export function editStore(imgLink, store_ID, address, contact_Number, ptsPerAmou
     });
 }
 
-export function recordTransaction(customer_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards){
+export function addCustomerPoints(suki_ID, ptsEarned){
+    firebase.firestore()
+    .collection('Suki')
+    .doc(suki_ID)
+    .update({
+        points: firebase.firestore.FieldValue.increment(ptsEarned)
+    })
+}
+
+export function subtCustomerPoints(suki_ID, ptsDeduct){
+    const subt = Math.abs(ptsDeduct) * -1
+    firebase.firestore()
+    .collection('Suki')
+    .doc(suki_ID)
+    .update({
+        points: firebase.firestore.FieldValue.increment(subt),
+        points_Used: firebase.firestore.FieldValue.increment(ptsDeduct)
+    })
+}
+
+export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards){
 
     const db = firebase.firestore();
     const ref = db.collection('Transactions').doc();
@@ -349,12 +369,14 @@ export function recordTransaction(customer_ID, totalAmount, ptsEarned, ptsDeduct
         ptsEarned: parseFloat(ptsEarned),
         ptsDeduct:parseFloat(ptsDeduct),
         purchasedProducts:purchasedProducts,
-        redeemedRewards:redeemedRewards
+        redeemedRewards:redeemedRewards,
+        date: firebase.firestore.Timestamp.now()
     })
     .then((data)=>{
         //success callback
-        console.log('data ' , data)
-        
+        console.log('data ' , data);
+        addCustomerPoints(suki_ID, ptsEarned);
+        subtCustomerPoints(suki_ID, ptsDeduct);
     }).catch((error)=>{
         //error callback
         console.log('error ' , error)

@@ -25,6 +25,8 @@ LogBox.ignoreLogs(['Setting a timer']);// To ignore the warning on uploading
 import * as crud from '../../../functions/firebaseCRUD';
 
 function clientRewardAdd(props) {
+    const {store_ID} =  props.route.params;
+
     const [rewName, setTextRewName] = React.useState({
         text: "",
         errorMessage: ""
@@ -135,7 +137,7 @@ function clientRewardAdd(props) {
         await uploadImage(URI, imageUUID)
 
         console.log('from add function: ', image.gURL);
-        crud.createReward(rewName, rewDes, rewPrice, rewQty, status, image.gURL);
+        crud.createReward(rewName, rewDes, rewPrice, rewQty, status, image.gURL, store_ID);
         navigation.goBack();
     };
 

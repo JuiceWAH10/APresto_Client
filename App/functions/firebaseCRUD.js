@@ -1,7 +1,7 @@
 //iedit pa to
 import firebase from "firebase";
 import Toast from 'react-native-toast-message';
-import React from 'react';
+import React, {useState} from 'react';
 
 import Products from '../models/products';
 
@@ -128,7 +128,7 @@ firebase.firestore()
         })
 */
 
-export function createProduct(prodName, prodDes, prodPrice, prodQty, status, imgLink){
+export function createProduct(prodName, prodDes, prodPrice, prodQty, status, imgLink, shop_ID){
 
     const db = firebase.firestore();
     const ref = db.collection('Products').doc();
@@ -141,7 +141,7 @@ export function createProduct(prodName, prodDes, prodPrice, prodQty, status, img
     .doc(id)
     .set({
         product_ID: id,
-        shop_ID: "1",
+        shop_ID: shop_ID,
         product_Name: prodName,
         description: prodDes,
         price: parseFloat(prodPrice),
@@ -153,6 +153,7 @@ export function createProduct(prodName, prodDes, prodPrice, prodQty, status, img
     .then((data)=>{
         //success callback
         console.log('data ' , data)
+        addNewProductToSales(shop_ID, prodName);
         
     }).catch((error)=>{
         //error callback
@@ -160,7 +161,7 @@ export function createProduct(prodName, prodDes, prodPrice, prodQty, status, img
     });
 }
 
-export function createReward(rewName, rewDes, rewPoints, rewQty, status, imgLink){
+export function createReward(rewName, rewDes, rewPoints, rewQty, status, imgLink, shop_ID){
 
     const db = firebase.firestore();
     const ref = db.collection('Products').doc();
@@ -173,7 +174,7 @@ export function createReward(rewName, rewDes, rewPoints, rewQty, status, imgLink
     .doc(id)
     .set({
         reward_ID: id,
-        shop_ID: "1",
+        shop_ID: shop_ID,
         reward_Name: rewName,
         description: rewDes,
         pointsReq: parseFloat(rewPoints),
@@ -185,6 +186,7 @@ export function createReward(rewName, rewDes, rewPoints, rewQty, status, imgLink
     .then((data)=>{
         //success callback
         console.log('data ' , data)
+        addNewRewardToSales(shop_ID, rewName)
         
     }).catch((error)=>{
         //error callback
@@ -279,19 +281,29 @@ export function updateReward(rewID, rewName, rewDes, rewPoints, rewQty, status, 
     });
 }
 
-export function deleteProduct(product_ID, imgLink){
-    firebase.firestore().collection('Products').doc(product_ID).delete().then(() => {
+export function deleteProduct(product_ID, imgLink, shop_ID, product_Name){
+    firebase.firestore()
+    .collection('Products')
+    .doc(product_ID)
+    .delete()
+    .then(() => {
         console.log("Document successfully deleted!");
         var imageRef = firebase.storage().refFromURL(imgLink);
-            imageRef.delete().then(() => {
+        
+        imageRef.delete()
+            .then(() => {
                 console.log("Deleted")
-            }).catch(err => console.log(err))
-    }).catch((error) => {
+            })
+            .catch(err => console.log(err))
+        
+        deleteProductSales(shop_ID, product_Name);
+    })
+    .catch((error) => {
         console.error("Error removing document: ", error);
     });
 }
 
-export function deleteReward(reward_ID, imgLink){
+export function deleteReward(reward_ID, imgLink, shop_ID, product_Name){
     firebase.firestore().collection('Rewards').doc(reward_ID).delete().then(() => {
         console.log("Document successfully deleted!");
         var imageRef = firebase.storage().refFromURL(imgLink);
@@ -350,7 +362,89 @@ export function subtCustomerPoints(suki_ID, ptsDeduct){
     })
 }
 
-export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards){
+export function addNewProductToSales(store_ID, product_Name){
+    firebase.firestore().collection('Sales')
+    .doc(store_ID)
+    .set({
+        Products: {
+          [product_Name]: 0
+        }
+      }, {merge:true})
+}
+
+export function addNewRewardToSales(store_ID, reward_Name){
+    firebase.firestore().collection('Sales')
+    .doc(store_ID)
+    .set({
+        Rewards: {
+            [reward_Name]: 0
+        }
+      }, {merge:true})
+}
+
+export function deleteProductSales(store_ID, product_Name){
+    firebase.firestore().collection("Sales")
+    .doc(store_ID)
+    .set({
+        Products: {
+            [product_Name]: firebase.firestore.FieldValue.delete(),
+        }
+    }, {merge:true})
+}
+
+export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalAmount, ptsDeduct){
+    const db = firebase.firestore();
+    const ref = db.collection('Sales').doc(store_ID);
+    var prodTally = 0;
+    var rewTally = 0;
+    purchasedProducts.map(product => {
+        prodTally = prodTally + product.quantity,
+        ref.set({
+            Products:{
+                [product.productTitle]: firebase.firestore.FieldValue.increment(product.quantity)
+            }
+        }, {merge:true}),
+        updateProductQuantity(product.product_ID, product.quantity)}
+    )
+
+    redeemedRewards.map(reward => {
+        ref.set({
+            Rewards:{
+                [reward.productTitle]: firebase.firestore.FieldValue.increment(reward.quantity)
+            } 
+        }, {merge:true}),
+        rewTally = rewTally + reward.quantity,
+        updateRewardQuantity(reward.reward_ID, reward.quantity)}
+    )
+
+
+    ref.set({
+        totalRedeem: firebase.firestore.FieldValue.increment(ptsDeduct),
+        totalSales: firebase.firestore.FieldValue.increment(totalAmount),
+        salesTally: firebase.firestore.FieldValue.increment(prodTally),
+        redeemTally: firebase.firestore.FieldValue.increment(rewTally)
+    }, {merge:true})
+}
+
+export function updateProductQuantity(product_ID, quantity){
+    const qty = Math.abs(quantity) * -1
+    firebase.firestore().collection('Products')
+    .doc(product_ID)
+    .update({
+        quantity: firebase.firestore.FieldValue.increment(qty)
+    })
+}
+
+export function updateRewardQuantity(reward_ID, quantity){
+    const qty = Math.abs(quantity) * -1
+    firebase.firestore().collection('Rewards')
+    .doc(reward_ID)
+    .update({
+        quantity: firebase.firestore.FieldValue.increment(qty)
+    })
+}
+
+export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID){
 
     const db = firebase.firestore();
     const ref = db.collection('Transactions').doc();
@@ -364,7 +458,7 @@ export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, 
     .set({
         trans_ID: id,
         customer_ID: customer_ID,
-        store_ID: 'DdMGRnmbou1yL467083R',
+        store_ID: store_ID,
         totalAmount: parseFloat(totalAmount),
         ptsEarned: parseFloat(ptsEarned),
         ptsDeduct:parseFloat(ptsDeduct),
@@ -377,6 +471,7 @@ export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, 
         console.log('data ' , data);
         addCustomerPoints(suki_ID, ptsEarned);
         subtCustomerPoints(suki_ID, ptsDeduct);
+        updateSales(store_ID, purchasedProducts, redeemedRewards, totalAmount, ptsDeduct);
     }).catch((error)=>{
         //error callback
         console.log('error ' , error)

@@ -30,6 +30,8 @@ function clientHomepage(props) {
     const [storeList, setStoreList] = useState([]);
 
     const [currentStore, setCurrentStore] = useState('');
+
+    const [sales, setSales] = useState('');
   
     const showDialog = () => {
         setVisible(true);
@@ -59,9 +61,9 @@ function clientHomepage(props) {
                 setStoreList(st);
                 setCurrentStore(st[0]);
                 console.log(currentStore);
+
             });
-    }, []);
-        
+    }, []);   
     
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -132,13 +134,7 @@ function clientHomepage(props) {
                         </View>
                     </View>    
                     <ScrollView horizontal={true} style={styles.profileInfosContainer}>
-                                <View style={styles.profileInfo1}>
-                                    <Text style={styles.profileInfoTextLabelBig}> 4.5 </Text> 
-                                    <View style={styles.profileInfoLabel} >
-                                        {/* <Icon name="star" size={15} color="#fff" /> */}
-                                        <Text style={styles.profileInfoTextLabel}>Rate</Text>
-                                    </View>   
-                                </View>
+                                
                                 <View style={styles.profileInfo2}>
                                     <Text style={styles.profileInfoTextLabelBig}> 200 </Text>
                                     <View style={styles.profileInfoLabel} >

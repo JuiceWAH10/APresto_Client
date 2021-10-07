@@ -25,6 +25,8 @@ import * as crud from '../../../functions/firebaseCRUD';
 
 function clientProductAdd(props) {
 
+    const {store_ID} =  props.route.params;
+
     const [prodName, setTextProdName] = React.useState({
         text: "",
         errorMessage: ""
@@ -134,8 +136,8 @@ function clientProductAdd(props) {
         });
         const result = await uploadImage(URI, imageUUID)
 
-        console.log('from add function: ', image.gURL);
-        crud.createProduct(prodName, prodDes, prodPrice, prodQty, status, image.gURL);
+        console.log('from add function: ', store_ID);
+        crud.createProduct(prodName, prodDes, prodPrice, prodQty, status, image.gURL, store_ID);
         navigation.goBack();
     };
 

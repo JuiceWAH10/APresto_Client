@@ -78,7 +78,7 @@ function clientAllShopItems(props) {
                     <Icon3 name="archive" size={20} color="#fff" />
                     <Text style={styles.buttonLabel}>Delist</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => crud.deleteProduct(props.product_ID, props.imgLink)} >
+                <TouchableOpacity style={styles.button} onPress={() => crud.deleteProduct(props.product_ID, props.imgLink, props.shop_ID, props.product_Name)} >
                     <Icon2 name="trash" size={20} color="#fff" />
                     <Text style={styles.buttonLabel}>Delete</Text>
                 </TouchableOpacity>

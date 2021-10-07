@@ -73,15 +73,23 @@ function checkoutPage(props) {
         // for rounding off Math.round((num + Number.EPSILON) * 100) / 100
         
         //incomplete need to verify if customer has an account or non
-        if(totalAmount > ptsPerPrice){
-            ptsEarned = totalAmount / ptsPerPrice;
-        } 
-        else {
-            ptsEarned = ptsPerPrice / totalAmount;
+        if(totalAmount != 0){
+            if(customer_ID != "Guest"){
+                if(totalAmount > ptsPerPrice){
+                    ptsEarned = totalAmount / ptsPerPrice;
+                } 
+                else {
+                    ptsEarned = ptsPerPrice / totalAmount;
+                }
+                ptsEarned = Math.round((ptsEarned + Number.EPSILON)*100)/100;
+            }
+        }
+        else{
+            ptsEarned = 0;
         }
 
-        ptsEarned = Math.round((ptsEarned + Number.EPSILON)*100)/100;
-        var trans_ID = crud.recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards);
+    const {customer_ID, suki_ID, username, sukiPoints, store_ID} = props.route.params;
+    var trans_ID = crud.recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID);
         navigation.navigate('Done', {
             customer_ID: customer_ID,
             totalAmount: totalAmount,
@@ -140,6 +148,7 @@ function checkoutPage(props) {
                         renderItem={itemData => 
                             <CartItems
                                 type = {itemData.item.type}
+                                quantity = {itemData.item.quantity}
                                 product_Name = {itemData.item.productTitle}
                                 price = {itemData.item.productPrice.toFixed(2)}
                                 total = {itemData.item.total.toFixed(2)}
@@ -167,7 +176,7 @@ function checkoutPage(props) {
 
                     <TouchableOpacity 
                         style={styles.button}
-                        disabled={cartItems.length === 0}
+                        disabled={cartItems.length === 0 && rewCartItems.length === 0}
                         onPress={() => proceed(totalAmount, totalPoints, cartItems, rewCartItems)} 
                     >
                         <Text style={styles.buttonLabel}>Proceed</Text>

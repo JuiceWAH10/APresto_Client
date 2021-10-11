@@ -1,37 +1,55 @@
-import React, {useState} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/AntDesign';
+import firebase from 'firebase';
+import validator from 'validator';
+import { AuthContext } from '../../../functions/authProvider';
 import { Input } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import firebase from "firebase";
 import uuid from 'react-native-uuid';
-import { showMessage } from "react-native-flash-message";
+import { showMessage } from 'react-native-flash-message';
 import Dialog from "react-native-dialog";
-
 import * as crud from '../../../functions/firebaseCRUD';
 
 
 
-function clientEditProfile(props) {
-    const navigation = useNavigation();
+const clientEditProfile = ({navigation}) => {
 
-    const {store_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
-
-    const [shopName, setTextStoreName] = React.useState(store_Name);
-    const [shopDetails, setTextShopDetails] = React.useState(specialty);
-    const [shopAddress, setTextShopAddress] = React.useState(address);
-    const [contactNo, setTextContactNo] = React.useState(contact_Number);
-    const [tags, setTextTags] = React.useState('');
-    const [shopPts, setShopPts] = React.useState(ptsPerAmount);
-    const [email, setTextEmail] = React.useState('');
-    const [password, setTextPassword] = React.useState('');
-    const [passwordReentry, setTextPasswordReentry] = React.useState('');
-    
-    //For Dialog Box
+    //user state
+    const {user} = useContext(AuthContext);
+    const [userData, setUserData] = useState(null);
     const [visible, setVisible] = useState(false);
+    const [URI, setURI] = useState(null);
+    const [changedIMG, setChangedIMG] = useState({bool: false});
 
+    //const {store_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
+
+    //const [shopName, setTextStoreName] = useState(store_Name);
+    //const [shopDetails, setTextShopDetails] = React.useState(specialty);
+    //const [shopAddress, setTextShopAddress] = React.useState(address);
+    //const [contactNo, setTextContactNo] = React.useState(contact_Number);
+    //const [tags, setTextTags] = React.useState('');
+    //const [shopPts, setShopPts] = React.useState(ptsPerAmount);
+    //const [email, setTextEmail] = React.useState('');
+    //const [password, setTextPassword] = React.useState('');
+    //const [passwordReentry, setTextPasswordReentry] = React.useState('');
+    
+    //access current user
+    const getUser = async() => {
+        await firebase.firestore()
+        .collection('Owners')
+        .doc(user.uid)
+        .get()
+        .then((documentSnapshot) => {
+            if(documentSnapshot.exists){
+                console.log('User Data', documentSnapshot.data());
+                setUserData(documentSnapshot.data());
+            }
+        })      
+    }
+
+    //For Dialog Box
     const showDialog = () => {
         setVisible(true);
     };
@@ -44,10 +62,9 @@ function clientEditProfile(props) {
         editProfile();
         setVisible(false);
     };
-    //End of Dialogbox
 
     const image = {
-        url: imgLink,
+        url: "wew",
         get gURL(){
             return this.url;
         },
@@ -57,10 +74,7 @@ function clientEditProfile(props) {
     }
 
     var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
-        
-    const [URI, setURI] = React.useState({link:image.gURL});
-    const [changedIMG, setChangedIMG] = React.useState({bool: false});
-    
+          
     // Code for Image Picker and Uploading to Firebase storage
     const pickImage = async () => {
         //For choosing photo in the library and crop the photo
@@ -84,6 +98,7 @@ function clientEditProfile(props) {
         const response = await fetch(uri);
         const blob = await response.blob(); 
         console.log('oof nakapasok pa din here');
+
         return new Promise(function(resolve) {
             var ref = firebase.storage().ref().child("images_ShopImages/" + imageName);
             ref.put(blob).then((snapshot) => {
@@ -94,31 +109,48 @@ function clientEditProfile(props) {
                     resolve('wew');
                 });
             });
-            var imageRef = firebase.storage().refFromURL(imgLink);
+            /*var imageRef = firebase.storage().refFromURL(imgLink);
             imageRef.delete().then(() => {
                 console.log("Deleted")
             }).catch(err => console.log(err))
+            */
         })
     };
 
     const editProfile = async () => {
 
-        showMessage({
-            message: "Profile Updated Successfully",
-            type: "success",
-            color: "#fff",
-            position: "top",
-            floating: "true",
-            icon: { icon: "info", position: "left" },
-            autoHide:"true", 
-            duration: 2000,
-        });
-        await uploadImage(URI.link, imageUUID)
+        //await uploadImage(URI.link, imageUUID)
 
-        console.log('from add function: ', image.gURL);
-        crud.editStore(image.gURL, store_ID, address, contact_Number, ptsPerAmount, specialty, store_Name);
-        navigation.goBack();
+        //console.log('from add function: ', image.gURL);
+        //crud.editStore(image.gURL, store_ID, address, contact_Number, ptsPerAmount, specialty, store_Name);
+        //navigation.goBack();
+
+        firebase.firestore()
+        .collection('Owners')
+        .doc(user.uid)
+        .update({
+            email: userData.email,
+            password: userData.password
+        })
+        .then(() => {
+            console.log("User account updated...");
+        });
+
+        showMessage({
+                message: "Profile updated successfully",
+                type: "success",
+                position: "top",
+                statusBarHeight: 25,
+                floating: "true",
+                icon: { icon: "auto", position: "left" },
+                autoHide: "true", 
+                duration: 2000
+        });  
     };
+
+    useEffect(() => {
+        getUser();
+    }, []);
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>       
@@ -148,7 +180,7 @@ function clientEditProfile(props) {
                             leftIcon={{ type: 'font-awesome', name: 'list-alt' }}
                             placeholder="Shop Name"
                             onChangeText={text => setTextShopName(text)}
-                            value={shopName}
+                            //value={shopName}
                         />
                     </View>
                     <View style={styles.textView}>
@@ -159,7 +191,7 @@ function clientEditProfile(props) {
                             multiline={true}
                             scrollEnabled={true}
                             onChangeText={text => setTextShopDetails(text)}
-                            value={shopDetails}
+                            //value={shopDetails}
                         />
                     </View>
 
@@ -169,7 +201,7 @@ function clientEditProfile(props) {
                             leftIcon={{ type: 'font-awesome', name: 'money' }}
                             placeholder="Amount required per Points"
                             onChangeText={text => setShopPts(text)}
-                            value={ptsPerAmount}
+                            //value={ptsPerAmount}
                             keyboardType="numeric"
                         />
                     </View>
@@ -180,7 +212,7 @@ function clientEditProfile(props) {
                             leftIcon={{ type: 'font-awesome', name: 'home' }}
                             placeholder="Address"
                             onChangeText={text => setTextAddress(text)}
-                            value={address}
+                            //value={address}
                         />
                     </View>
                     <View style={styles.textView}>
@@ -189,7 +221,7 @@ function clientEditProfile(props) {
                             leftIcon={{ type: 'font-awesome', name: 'phone' }}
                             placeholder="Contact Number"
                             onChangeText={text => setTextContactNo(text)}
-                            value={contactNo}
+                            //value={contactNo}
                             keyboardType="numeric"
                         />
                     </View>
@@ -202,8 +234,9 @@ function clientEditProfile(props) {
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'envelope' }}
                             placeholder="Email"
-                            onChangeText={(text) => setTextEmail(text)}
-                            value={email}
+                            onChangeText={(text) => {setUserData({...userData, email: text});}}
+                            value={userData ? userData.email : ''}
+                            autoCompleteType="email"
                         />
                     </View>
                     <View style={styles.textView}>
@@ -211,10 +244,11 @@ function clientEditProfile(props) {
                             //Password input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'lock' }}
-                            //secureTextEntry={true}
+                            secureTextEntry={true}
                             placeholder="Password"
-                            onChangeText={(text) => setTextPassword(text)}
-                            value={password}
+                            onChangeText={(text) => {setUserData({...userData, password: text});}}
+                            value={userData ? userData.password : ''}
+                            autoCompleteType="password"
                         />
                     </View>
                     <View style={styles.textView}>
@@ -222,10 +256,8 @@ function clientEditProfile(props) {
                             //Re-enter password input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'lock' }}
-                            //secureTextEntry={true}
                             placeholder="Re-enter Password"
-                            onChangeText={(text) => setTextPasswordReentry(text)}
-                            value={passwordReentry}
+                            onChangeText={(text) => {setPasswordReentryField({text});}}
                         />
                     </View>
                     
@@ -236,11 +268,10 @@ function clientEditProfile(props) {
                 <TouchableOpacity style={styles.button} onPress={showDialog}>
                     <Text style={styles.buttonLabel}>Update Information</Text>
                 </TouchableOpacity>
-                <Dialog.Container visible={visible}>
-                    <Dialog.Title>Edit Profile</Dialog.Title>
-                    <Dialog.Description>Do you really want to update Shop Information?</Dialog.Description>
-                    <Dialog.Button label="Cancel" onPress={handleCancel} />
-                    <Dialog.Button label="Ok" onPress={handleUpdate} />
+                <Dialog.Container contentStyle={{height: 110, paddingTop: 12, paddingRight: 19, alignItems: 'center', justifyContent:'center', borderRadius: 15}} visible={visible}>
+                    <Dialog.Title style={{fontSize: 16, color: '#071964'}}>Do you really want to update profile?</Dialog.Title>
+                    <Dialog.Button style={{marginRight: 30, marginLeft: 20, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Cancel" onPress={handleCancel}/>
+                    <Dialog.Button style={{marginRight: 25, marginLeft: 25, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Ok" onPress={handleUpdate}/>
                 </Dialog.Container>
             </View>
             

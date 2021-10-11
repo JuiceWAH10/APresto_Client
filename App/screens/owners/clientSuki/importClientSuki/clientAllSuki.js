@@ -18,7 +18,8 @@ function clientAllSuki(props) {
                     source={require('../../../../assets/eat.jpg')}>
             </Image>
             <View style={styles.sukiContainer}>
-                <Text style={styles.sukiName}>Suki Name: {props.username}</Text>
+                <Text style={styles.sukiNameTitle}>Suki Name:</Text>
+                <Text style={styles.sukiName}>{props.username}</Text>
                 <Text style={styles.sukiInfo}>Points: {props.points}</Text>
                 <Text style={styles.sukiInfo}>Used Points: {props.points_Used}</Text>
                 <TouchableOpacity 
@@ -91,10 +92,17 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginRight: 10
     },
-    sukiName: {
+    sukiNameTitle: {
         alignSelf: "center",
         marginBottom: 2,
         marginTop: 6,
+        fontSize: 14,
+        fontWeight: "bold"
+    },
+    sukiName: {
+        alignSelf: "center",
+        marginBottom: 4,
+        marginTop: 2,
         fontSize: 18,
         fontWeight: "bold"
     },

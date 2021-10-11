@@ -51,17 +51,19 @@ function SelectCustomer(props) {
     };
 
     return (
-        <SafeAreaView style={styles.droidSafeArea}>
-            <View style={styles.topNav}>
-                <TouchableOpacity onPress={() => navigation.goBack()} >
-                    <Icon name="left" size={30} color="#ee4b43" />
-                </TouchableOpacity>
-            </View>
+        <SafeAreaView style={styles.container}>
 
-            <ImageBackground style={styles.container} source={require('../assets/images/splashScreenDark.jpg')}>
+            <ImageBackground style={styles.droidSafeArea} source={require('../assets/images/splashScreenDark.jpg')}>
+
+                <View style={styles.topNav}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} >
+                        <Icon name="left" size={30} color="#fff" />
+                    </TouchableOpacity>
+                </View>
+
                 <View style={styles.qrContainer}>
 
-                    <Text style={styles.qrLabel}>Pick a suki</Text>
+                    <Text style={styles.qrPick}>Pick a suki</Text>
                        
                     <Picker
                         style={{ height: 10, width: 180 }}
@@ -80,19 +82,19 @@ function SelectCustomer(props) {
                         </TouchableOpacity>
                     </View>
 
-                    <Text style={styles.qrLabel}>Not on list?</Text>
+                    {/* <Text style={styles.qrLabel}>Not on list?</Text> */}
                     <View style={styles.buttonContainer} > 
                         <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('QRCodeScanner') }>
                             <Text style={styles.buttonLabel}>Scan Customer's QR</Text>
                         </TouchableOpacity> 
                     </View>
 
-                    <Text style={styles.qrLabel}>Customer is a guest?</Text>
                     <View style={styles.buttonContainer} > 
                         <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS("Guest", "Guest", "Guest", 0) }>
                             <Text style={styles.buttonLabel}>Sell to Guest</Text>
                         </TouchableOpacity> 
                     </View>
+                    <Text style={styles.qrLabel}>Customer is a guest?</Text>
                     
                 </View>
             </ImageBackground>
@@ -106,7 +108,7 @@ const styles = StyleSheet.create({
  
     droidSafeArea: {
         flex: 1,
-        // paddingTop: Platform.OS === 'android' ? 32 : 0
+        paddingTop: Platform.OS === 'android' ? 32 : 0
     },
     button: {
         alignItems: 'center',
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         justifyContent: 'center',
         marginTop: 10,
-        width: '45%',
+        width: '60%',
         height: hp('6%'),
     },
     buttonContainer: {
@@ -125,6 +127,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         justifyContent: 'space-between',
         marginTop: 10,
+        marginBottom: 20,
         width: '90%',
         height: hp('6%'),
     },
@@ -150,8 +153,16 @@ const styles = StyleSheet.create({
     },
     qrLabel:{
         textAlign: "center",
-        fontSize: 16,
-        marginBottom: 20
+        fontSize: 14,
+        marginTop: 5,
+        marginBottom: 5
+    },
+    qrPick:{
+        textAlign: "center",
+        fontSize: 20,
+        marginTop: 10,
+        marginBottom: 10,
+        fontWeight: "bold"
     },
     topNav: {
         flexDirection: "row",

@@ -120,9 +120,10 @@ function checkoutPage(props) {
             {/* End of Top Navigation */}
             
             <View style={[styles.formContainer, {flex:15}]}>
+                <Text style={styles.cartTitle}>Products</Text>
 
                 <FlatList style ={styles.cartContainer}
-                    ListHeaderComponent={<Text>Products</Text>}
+                    ListHeaderComponent={<Text></Text>}
                     data={cartItems}
                     keyExtractor={item => item.product_ID}
                     renderItem={itemData => 
@@ -140,9 +141,10 @@ function checkoutPage(props) {
                         />}
                 />
 
+                <Text style={styles.cartTitle}>Rewards</Text>
                 {rewCartItems ?
                     <FlatList style ={styles.cartContainer}
-                        ListHeaderComponent={<Text>Rewards</Text>}
+                        ListHeaderComponent={<Text></Text>}
                         data={rewCartItems}
                         keyExtractor={item => item.reward_ID}
                         renderItem={itemData => 
@@ -161,8 +163,10 @@ function checkoutPage(props) {
                     />
                 : null }
                 
-                {/* Footer */}
-                <View style={styles.footer}>
+                
+            </View>
+            {/* Footer */}
+            <View style={styles.footer}>
                     <View style={styles.footerTextContainer}>
                         <Text style={styles.footerLabelSmall}>Total Amount</Text>
                         <Text style={styles.footerLabel}>Php{totalAmount.toFixed(2)}</Text>
@@ -183,7 +187,6 @@ function checkoutPage(props) {
                     </TouchableOpacity>
                 </View>
                 {/* End of Footer */}
-            </View>
             
         </SafeAreaView>
 
@@ -245,6 +248,14 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         width: wp('90%')
     },
+    cartTitle: {
+        color: "#071964",
+        textAlign: "center",
+        fontSize: 18,
+        marginLeft: wp('5%'),
+        marginTop: 3,
+        marginBottom: 3
+    },
     droidSafeArea: {
         flex: 1,
         padding: 10,
@@ -267,13 +278,18 @@ const styles = StyleSheet.create({
         fontSize: 8,
     },
     footerTextContainer:{
-        alignContent: "center"
+        alignContent: "center",
+        marginTop: 8
     },
     title: {
         textAlign: "center",
         marginBottom: 10,
         fontSize: 30,
         fontWeight: "bold"
+    },
+    formContainer: {
+        paddingTop: 4,
+        
     },
     titlePopular: {
         textAlign: "center",

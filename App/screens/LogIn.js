@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Image, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import { useNavigation } from '@react-navigation/native';
-import validator from "validator";
-import { auth } from "firebase";
+//import { useNavigation } from '@react-navigation/native';
+import validator from 'validator';
+import { auth } from 'firebase';
+import { AuthContext } from '../functions/authProvider';
 import { Input } from 'react-native-elements';
-import { showMessage } from "react-native-flash-message";
-import Dialog from "react-native-dialog";
+import { showMessage } from 'react-native-flash-message';
+import Dialog from 'react-native-dialog';
 
 
 //validation function of email
@@ -25,7 +26,7 @@ const validateFields = (email, password) => {
   return isValid;
 };
 
-//log in function to have access
+/*
 const login = (email, password) => {
   auth()
       .signInWithEmailAndPassword(email, password)
@@ -45,12 +46,13 @@ const login = (email, password) => {
         console.log("No user");  
     })
 };
+*/
 
 
-function LogIn(props) {
-    //const [userName] = React.useState('');
-    //const [passWord, setTextPW] = React.useState('');
-    const navigation = useNavigation();
+const LogIn = ({navigation}) => {
+
+    const {login} = useContext(AuthContext);
+    const [visible, setVisible] = useState(false);
 
     //Email variables
     const [emailField, setEmailField] = useState({
@@ -64,8 +66,7 @@ function LogIn(props) {
       errorMessage: "",
     });
 
-    //For DialogBox
-    const [visible, setVisible] = useState(false);
+    const [recoveryEmail, setRecoveryEmail] = useState("");
 
     const showDialog = () => {
         setVisible(true);
@@ -75,11 +76,42 @@ function LogIn(props) {
         setVisible(false);
     };
     
-    const handleOk = () => {
-        //Enter code here for sending reset confirmation
+    const handleOk = async () => {
+        //firebase password reset
+        await auth()
+        .sendPasswordResetEmail(recoveryEmail)
+        .then(() => {
+            showMessage({
+                message: "Account recovery link sent",
+                description: "Please check your email to retrieve your account",
+                type: "success",
+                position: "bottom",
+                statusBarHeight: 20,
+                floating: "true",
+                icon: { icon: "auto", position: "left" },
+                autoHide: "true", 
+                duration: 2500
+            });
+            console.log("User account recovery link delivered...");
+        })
+        .catch((error) => {
+            showMessage({
+                message: "Account does not exist",
+                type: "warning",
+                position: "top",
+                statusBarHeight: 30,
+                floating: "true",
+                icon: { icon: "info", position: "left" },
+                autoHide: "true", 
+                duration: 2000
+            });
+            console.log("Account recovery failed...", error);
+        });
+        setRecoveryEmail("")
         setVisible(false);
     };
         //End DialogBox
+
     return (
       <ImageBackground
           style={styles.BGImage}
@@ -99,7 +131,6 @@ function LogIn(props) {
                 source={require('../assets/images/client_logo.png')}></Image>
                 <Text style={{color: '#fff', fontSize: 12, marginTop: 10}}>Loyalty of Customers on your Hands</Text>
             </View>
-
             {/* <View style={styles.title}>
               <Text style={{color: '#fe1100', fontSize: 45}}>APresto</Text>
               <Text style={{color: '#fe1100', fontSize: 12}}>Loyalty and Rewards on your Hands</Text>
@@ -132,17 +163,16 @@ function LogIn(props) {
                       autoCompleteType="password"
                   />
                 </View>  
-                <TouchableOpacity style={styles.profileButton} onPress={showDialog} >
-                  <Text style={{color: '#071964', fontSize: 13, marginVertical: 15}}>Forgot Password?</Text>
+                <TouchableOpacity style={styles.forgotButton} onPress={showDialog} >
+                  <Text style={{color: '#071964', fontSize: 13, marginVertical: 14}}>Forgot Password?</Text>
                 </TouchableOpacity>
 
-                <Dialog.Container visible={visible}>
-                  <Dialog.Title>Forgot Password</Dialog.Title>
-                  <Dialog.Description>Do you want to send an a reset confirmation to you email?</Dialog.Description>
-                  <Dialog.Button label="Cancel" onPress={handleCancel} />
-                  <Dialog.Button label="Ok" onPress={handleOk} />
+                <Dialog.Container contentStyle={{height: 210, paddingTop: 12, paddingRight: 19, alignItems: 'center', justifyContent:'center', borderRadius: 15}} visible={visible}>
+                  <Dialog.Title style={{marginBottom: 5, fontSize: 18, fontWeight: "bold"}}>Account Recovery</Dialog.Title>
+                  <Dialog.Input style={{paddingLeft: 10, fontSize: 16}} label={"Please enter your email to receive a reset password link"} value={recoveryEmail} onChangeText={(text) => setRecoveryEmail(text)}></Dialog.Input>
+                  <Dialog.Button style={{marginRight: 30, marginLeft: 20, paddingTop: 0, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Cancel" onPress={handleCancel}/>
+                  <Dialog.Button style={{marginRight: 25, marginLeft: 25, paddingTop: 0, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Ok" onPress={handleOk} />
                 </Dialog.Container>
-
               </View>
               
                 <TouchableOpacity style={styles.LogInButton} onPress={() => {
@@ -150,15 +180,15 @@ function LogIn(props) {
 
                   let isAllValid = true;
                   if(!isValid.email){
-                    console.log("Please enter a valid email...")
-                    emailField.errorMessage = "Incorrect Email. Please enter a valid email";
+                    console.log("Input a correct email...")
+                    emailField.errorMessage = "Incorrect email. Please enter a valid email";
                     setEmailField({...emailField})
                     isAllValid = false;
                   }
 
                   if(!isValid.password){
-                    console.log("Password must be at least 8 long characters with numbers")
-                    passwordField.errorMessage = "Incorrect Password. Make sure you entered the password correctly.";
+                    console.log("Input a correct password...")
+                    passwordField.errorMessage = "Incorrect password. Make sure you enter the correct password";
                     setPasswordField({...passwordField})
                     isAllValid = false;
                   }
@@ -249,7 +279,7 @@ const styles = StyleSheet.create({
   },
   LogInContainer: {
     width: wp('80%'),
-    height: hp('40%'),
+    height: hp('45%'),
     backgroundColor: '#fff',
     borderRadius: 30,
     alignItems: 'center',
@@ -289,6 +319,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  forgotButton: {
+    position: "absolute",
+    bottom: 14
   }
 });
 

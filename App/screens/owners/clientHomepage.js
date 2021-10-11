@@ -159,7 +159,9 @@ function clientHomepage(props) {
                             </ScrollView>
                         </View>    
                         {/* End of Rate, Suki, Shopped, Claimed */}
+
                 <Picker
+                    style={styles.pickerStyle}
                     selectedValue={currentStore}
                     onValueChange={(itemValue, itemIndex) =>
                        setCurrentStore(itemValue)
@@ -428,6 +430,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontSize: 24,
         fontWeight: "bold"
+    },
+    pickerStyle: {
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: wp('5%'),
+        marginRight: wp('5%'),
     },
     profileBgImage: {
         alignSelf: "center",

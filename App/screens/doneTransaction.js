@@ -18,17 +18,32 @@ function DoneTransaction(props) {
         <SafeAreaView style={styles.droidSafeArea}>
             <ImageBackground style={styles.container} source={require('../assets/images/splashScreenDark.jpg')}>
                 <View style={styles.qrContainer}>
-                    <Text style={styles.qrLabel}>Transaction Succesful</Text>
+                    <Text style={styles.qrPick}>Transaction Succesful</Text>
                        
-                    <Text>{customer_ID}</Text>
-                    <Text>{totalAmount}</Text>
-                    <Text>{ptsEarned}</Text>
-                    <Text>{ptsDeduct}</Text>
+                    <View style={styles.qrLabelContainer}> 
+                        {/* <Text style={styles.qrLabel}>{customer_ID}</Text>    */}
+                        <Text style={styles.qrLabel}>{customer_ID}</Text>
+                    </View>  
+
+                    <View style={styles.qrLabelContainer}>
+                        <Text style={styles.qrLabelTitle}>Total Amount: </Text>
+                        <Text style={styles.qrLabel}>Php {totalAmount}</Text>
+                    </View> 
+
+                    <View style={styles.qrLabelContainer}>
+                        <Text style={styles.qrLabelTitle}>Points Earned: </Text>
+                        <Text style={styles.qrLabel}>{ptsEarned} pts</Text>
+                    </View>
+
+                    <View style={styles.qrLabelContainer}> 
+                        <Text style={styles.qrLabelTitle}>Points Deducted: </Text>
+                        <Text style={styles.qrLabel}>{ptsDeduct} pts</Text>
+                    </View>
                 
 
                     <View style={styles.buttonContainer} > 
                         <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('clientHomepage') }>
-                            <Text style={styles.buttonLabel}>OK!</Text>
+                            <Text style={styles.buttonLabel}>Done</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -52,7 +67,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         justifyContent: 'center',
         marginTop: 10,
-        width: '45%',
+        width: '100%',
         height: hp('6%'),
     },
     buttonContainer: {
@@ -89,5 +104,31 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 16,
         marginBottom: 20
-    }
+    },
+    qrLabelTitle:{
+        textAlign: "center",
+        fontSize: 16,
+        marginBottom: 20,
+        fontWeight: "bold"
+    },
+    qrLabelContainer:{
+        alignSelf: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        backgroundColor: '#fff',
+        borderRadius: 30,
+        width: wp('90%'),
+        alignItems: "center",
+        marginTop: 5,
+        marginBottom: 5,
+        paddingLeft: ('20%'),
+        paddingRight: ('20%'),
+    },
+    qrPick:{
+        textAlign: "center",
+        fontSize: 22,
+        marginTop: 10,
+        marginBottom: 20,
+        fontWeight: "bold"
+    },
 })

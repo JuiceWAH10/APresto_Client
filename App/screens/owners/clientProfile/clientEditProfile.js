@@ -162,6 +162,18 @@ function clientEditProfile(props) {
                             value={shopDetails}
                         />
                     </View>
+
+                    <View style={styles.textView}>
+                        <Input
+                            style={styles.input}
+                            leftIcon={{ type: 'font-awesome', name: 'money' }}
+                            placeholder="Amount required per Points"
+                            onChangeText={text => setShopPts(text)}
+                            value={ptsPerAmount}
+                            keyboardType="numeric"
+                        />
+                    </View>
+
                     <View style={styles.textView}>
                         <Input
                             style={styles.input}

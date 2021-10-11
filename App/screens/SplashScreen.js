@@ -69,19 +69,9 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       alignItems: 'center',
       justifyContent: 'center',
-      marginVertical: 4
-    },
-    SignUpButton: {
-      width: wp('90%'),
-      height: hp('6%'),
-      backgroundColor: '#071964',
-      borderRadius: 30,
-      alignSelf: 'center',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 4,
+      marginVertical: 4,
       marginBottom: 10
-    }
+    },
   });
 
 export default SplashScreen;

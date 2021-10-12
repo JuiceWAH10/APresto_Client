@@ -88,7 +88,6 @@ function checkoutPage(props) {
             ptsEarned = 0;
         }
 
-    const {customer_ID, suki_ID, username, sukiPoints, store_ID} = props.route.params;
     var trans_ID = crud.recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID);
         navigation.navigate('Done', {
             customer_ID: customer_ID,
@@ -131,8 +130,8 @@ function checkoutPage(props) {
                             type = {itemData.item.type}
                             quantity = {itemData.item.quantity} 
                             product_Name = {itemData.item.productTitle}
-                            price = {itemData.item.productPrice.toFixed(2)}
-                            total = {itemData.item.total.toFixed(2)}
+                            price = {itemData.item.productPrice}
+                            total = {itemData.item.total}
                             imgLink= {itemData.item.imgLink}
                             removeFromCart = {() => {
                                 dispatch(cartAction.removeFromCart(itemData.item.product_ID))
@@ -152,8 +151,8 @@ function checkoutPage(props) {
                                 type = {itemData.item.type}
                                 quantity = {itemData.item.quantity}
                                 product_Name = {itemData.item.productTitle}
-                                price = {itemData.item.productPrice.toFixed(2)}
-                                total = {itemData.item.total.toFixed(2)}
+                                price = {itemData.item.productPrice}
+                                total = {itemData.item.total}
                                 imgLink= {itemData.item.imgLink}
                                 removeFromCart = {() => {
                                     dispatch(rewardCart.cancelRedeem(itemData.item.reward_ID))
@@ -169,13 +168,13 @@ function checkoutPage(props) {
             <View style={styles.footer}>
                     <View style={styles.footerTextContainer}>
                         <Text style={styles.footerLabelSmall}>Total Amount</Text>
-                        <Text style={styles.footerLabel}>Php{totalAmount.toFixed(2)}</Text>
+                        <Text style={styles.footerLabel}>Php{totalAmount}</Text>
                         
                     </View>
 
                     <View style={styles.footerTextContainer}>
                         <Text style={styles.footerLabelSmall}>Total Points Spent</Text>
-                        <Text style={styles.footerLabel}>{totalPoints.toFixed(2)} Pts</Text>
+                        <Text style={styles.footerLabel}>{totalPoints} Pts</Text>
                     </View>
 
                     <TouchableOpacity 

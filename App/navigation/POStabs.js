@@ -49,6 +49,7 @@ function POStabs(props){
     
         //fetch data from firestore
         useEffect(()=>{
+            console.log(suki_ID);
             const subscriber = firebase.firestore()
             .collection('Products')
             .where("shop_ID","==",store_ID)

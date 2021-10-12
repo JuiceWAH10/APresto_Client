@@ -84,7 +84,7 @@ function SelectCustomer(props) {
 
                     {/* <Text style={styles.qrLabel}>Not on list?</Text> */}
                     <View style={styles.buttonContainer} > 
-                        <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('QRCodeScanner') }>
+                        <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('QRCodeScanner', {store_ID:store_ID, owner_ID: owner_ID}) }>
                             <Text style={styles.buttonLabel}>Scan Customer's QR</Text>
                         </TouchableOpacity> 
                     </View>
@@ -162,7 +162,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginTop: 10,
         marginBottom: 10,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        
+
     },
     topNav: {
         flexDirection: "row",

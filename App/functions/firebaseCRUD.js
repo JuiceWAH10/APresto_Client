@@ -444,6 +444,14 @@ export function updateRewardQuantity(reward_ID, quantity){
     })
 }
 
+export function incrementSukiTrans(suki_ID){
+    firebase.firestore().collection('Suki')
+    .doc(suki_ID)
+    .update({
+        transactions: firebase.firestore.FieldValue.increment(1)
+    })
+}
+
 export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID){
 
     const db = firebase.firestore();
@@ -472,6 +480,7 @@ export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, 
         addCustomerPoints(suki_ID, ptsEarned);
         subtCustomerPoints(suki_ID, ptsDeduct);
         updateSales(store_ID, purchasedProducts, redeemedRewards, totalAmount, ptsDeduct);
+        incrementSukiTrans(suki_ID);
     }).catch((error)=>{
         //error callback
         console.log('error ' , error)

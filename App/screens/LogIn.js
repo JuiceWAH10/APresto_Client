@@ -26,28 +26,6 @@ const validateFields = (email, password) => {
   return isValid;
 };
 
-/*
-const login = (email, password) => {
-  auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-          console.log("Logged in");
-      })
-      .catch(() => {
-        showMessage({
-          message: "Account does not exist",
-          type: "warning",
-          position: "bottom",
-          floating: "true",
-          icon: { icon: "info", position: "left" },
-          autoHide:"true", 
-          duration: 1000,
-        });
-        console.log("No user");  
-    })
-};
-*/
-
 
 const LogIn = ({navigation}) => {
 

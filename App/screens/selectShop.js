@@ -1,64 +1,63 @@
-import React from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Image, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/AntDesign';
+import firebase from 'firebase';
+import { AuthContext } from '../functions/authProvider';
+
+import SelectShopItems from './owners/selectShopItems';
 
 function selectShop(props) {
+
+    const [storeList, setStoreList] = useState([]);
+    const {user} = useContext(AuthContext);
+
+    useEffect(() => {
+        const uID = user.uid;
+        console.log(uID);
+        firebase.firestore()
+            .collection('Stores')
+            .where("owner_ID", "==", uID)
+            .onSnapshot(result => {
+                const st = [];
+                result.forEach(function (store){         
+                    st.push(store.data());
+                });
+                console.log(st);
+                setStoreList(st);
+            });
+    }, []);
+
     return (
         <ImageBackground
           style={styles.BGImage}
           source={require('../assets/images/splashScreenDark.jpg')}>
             <SafeAreaView style={styles.droidSafeArea}>
                 <View style={styles.LogoContainer}>
-                <Image style={styles.Logo}
-                    source={require('../assets/images/client_logo.png')}></Image>
-                    <Text style={{color: '#fff', fontSize: 18, fontWeight: "bold", marginTop: 10}}>Select Store</Text>
+                    <Image 
+                        style={styles.Logo}
+                        source={require('../assets/images/client_logo.png')} 
+                    />
+                    <Text style={{color: '#fff', fontSize: 18, fontWeight: "bold", marginTop: 10}}>Select Shop</Text>
                 </View>
 
                 <ScrollView>
-                
-                <TouchableOpacity onPress={()=> props.navigation.navigate('clientHomepage', { })}>
-                        <View style={styles.shopContainer}>
-                            <View style={styles.shopWrap}>
-                                <Icon name="home" size={45} color="#fff" style={styles.shopIcon} />
-                                <View>
-                                    <Text style={styles.shopContainerLabel}>Shop Name</Text>
-                                    <Text style={styles.shopContainerLabelSmall}>Shop Group of Company</Text>
-                                    <Text style={styles.shopContainerLabelSmall}>Manage your own shop.</Text>
-                                </View>
-                            </View>        
-                        </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={()=> props.navigation.navigate('clientHomepage', { })}>
-                        <View style={styles.shopContainer}>
-                            <View style={styles.shopWrap}>
-                                <Icon name="home" size={45} color="#fff" style={styles.shopIcon} />
-                                <View>
-                                    <Text style={styles.shopContainerLabel}>Shop Name</Text>
-                                    <Text style={styles.shopContainerLabelSmall}>Shop Group of Company</Text>
-                                    <Text style={styles.shopContainerLabelSmall}>Manage your own shop.</Text>
-                                </View>
-                            </View>        
-                        </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={()=> props.navigation.navigate('clientHomepage', { })}>
-                        <View style={styles.shopContainer}>
-                            <View style={styles.shopWrap}>
-                                <Icon name="home" size={45} color="#fff" style={styles.shopIcon} />
-                                <View>
-                                    <Text style={styles.shopContainerLabel}>Shop Name</Text>
-                                    <Text style={styles.shopContainerLabelSmall}>Shop Group of Company</Text>
-                                    <Text style={styles.shopContainerLabelSmall}>Manage your own shop.</Text>
-                                </View>
-                            </View>        
-                        </View>
-                    </TouchableOpacity>   
-
-
-                {/* End of QR Code Scanner */}
+                    {storeList.map(store => {
+                        return(
+                            <SelectShopItems
+                                store_ID = {store.store_ID}
+                                owner_ID = {store.owner_ID}
+                                store_Name = {store.store_Name}
+                                address = {store.address}
+                                specialty = {store.specialty}
+                                imgLink = {store.imgLink}
+                                ptsPerAmount = {store.ptsPerAmount}
+                                contact_Number = {store.contact_Number}
+                            />
+                        )
+                    })}
+                    
 
                 </ScrollView>
 

@@ -1,29 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { 
-    Image,
-    ImageBackground,
-    LogBox,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text, 
-    TouchableOpacity, 
-    View, 
-} from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { Image, ImageBackground, LogBox, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { auth } from "firebase";
+import firebase, { auth } from 'firebase';
+import { AuthContext } from '../../functions/authProvider'
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 import * as crud from '../../functions/firebaseCRUD';
 import Dialog from "react-native-dialog";
-import firebase from 'firebase';
-
 import {Picker} from '@react-native-picker/picker';
 
 function clientHomepage(props) {
     const navigation = useNavigation();
+
+    const {logout} = useContext(AuthContext);
 
     const [visible, setVisible] = useState(false);
 
@@ -42,12 +33,13 @@ function clientHomepage(props) {
     };
 
     const handleLogout = () => {
-        auth().signOut();
+        /*calls logout function from authProvider.js*/
+        logout();
         setVisible(false);
     };
 
     useEffect(() => {
-        const uID = firebase.auth().currentUser.uid;
+        const uID = auth().currentUser.uid;
         console.log(uID);
         firebase.firestore()
             .collection('Stores')
@@ -105,18 +97,13 @@ function clientHomepage(props) {
                                 <Icon name="logout" size={20} color="#fff" />
                                 <Text style={styles.profileButtonLabel}>Log Out</Text>
                             </TouchableOpacity>
-                            <Dialog.Container visible={visible}>
-                                <Dialog.Title>Logout Account</Dialog.Title>
-                                <Dialog.Description>Do you really want to logout?</Dialog.Description>
-                                <Dialog.Button label="Cancel" onPress={handleCancel} />
-                                <Dialog.Button label="Logout" onPress={handleLogout} />
-                            </Dialog.Container>
-
-                            
+                            <Dialog.Container contentStyle={{height: 110, paddingTop: 12, paddingRight: 20, alignItems: 'center', justifyContent:'center', borderRadius: 15}} visible={visible}>
+                                <Dialog.Title style={{fontSize: 16, color: '#071964'}}>Do you really want to logout?</Dialog.Title>
+                                <Dialog.Button style={{marginRight: 15, marginLeft: 35, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Cancel" onPress={handleCancel} />
+                                <Dialog.Button style={{marginRight: 30, marginLeft: 20, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Logout" onPress={handleLogout} />
+                            </Dialog.Container>       
                         {/* End of Profile Informations */}
-                        </View>
-
-                       
+                        </View>                    
                     </View>    
                 </ImageBackground>
                 {/* End of Profile Header */}

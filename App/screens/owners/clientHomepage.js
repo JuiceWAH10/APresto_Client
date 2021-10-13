@@ -93,6 +93,10 @@ function clientHomepage(props) {
                                 <Icon name="user" size={20} color="#fff" />
                                 <Text style={styles.profileButtonLabel}>Edit Profile</Text>
                             </TouchableOpacity>
+                            <TouchableOpacity style={styles.profileButton} onPress={()=> props.navigation.navigate('selectShop')} >
+                                <Icon name="home" size={20} color="#fff" />
+                                <Text style={styles.profileButtonLabel}>Select Shop</Text>
+                            </TouchableOpacity>
                             <TouchableOpacity style={styles.profileButton} onPress={showDialog} >
                                 <Icon name="logout" size={20} color="#fff" />
                                 <Text style={styles.profileButtonLabel}>Log Out</Text>
@@ -445,7 +449,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         flexDirection: "row",
         justifyContent:"space-between",
-        width: '60%',
+        width: '90%',
     },
     profileButtonLabel: {
         color: "#fff",

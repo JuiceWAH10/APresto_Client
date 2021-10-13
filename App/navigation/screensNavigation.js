@@ -18,12 +18,14 @@ import QRInfo from '../screens/QRInfo';
 import DoneTransaction from '../screens/doneTransaction';
 import ClientSukiTransactions from '../screens/owners/clientSuki/clientSukiTransactions';
 import SelectCustomer from '../screens/selectCustomer'
+import SelectShop from '../screens/selectShop';
 
 const Stack = createStackNavigator();
 
 export default Screens = () => {
   return(
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="selectShop" component={SelectShop} />
       <Stack.Screen name="clientHomepage" component={ClientHomepage} />
       <Stack.Screen name="clientProductAdd" component={ClientProductAdd} />
       <Stack.Screen name="clientProductEdit" component={ClientProductEdit} />

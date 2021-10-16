@@ -1,29 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { 
-    Image,
-    ImageBackground,
-    LogBox,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text, 
-    TouchableOpacity, 
-    View, 
-} from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { Image, ImageBackground, LogBox, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { auth } from "firebase";
+import firebase, { auth } from 'firebase';
+import { AuthContext } from '../../functions/authProvider'
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 import * as crud from '../../functions/firebaseCRUD';
 import Dialog from "react-native-dialog";
-import firebase from 'firebase';
-
 import {Picker} from '@react-native-picker/picker';
 
 function clientHomepage(props) {
     const navigation = useNavigation();
+    const {store_ID, owner_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
+
+    const {logout} = useContext(AuthContext);
 
     const [visible, setVisible] = useState(false);
 
@@ -42,12 +34,13 @@ function clientHomepage(props) {
     };
 
     const handleLogout = () => {
-        auth().signOut();
+        /*calls logout function from authProvider.js*/
+        logout();
         setVisible(false);
     };
 
     useEffect(() => {
-        const uID = firebase.auth().currentUser.uid;
+        const uID = auth().currentUser.uid;
         console.log(uID);
         firebase.firestore()
             .collection('Stores')
@@ -75,11 +68,11 @@ function clientHomepage(props) {
             <ScrollView style={styles.container}>
                 {/* Profile Header for Shops */}
                 <ImageBackground style={styles.profileBgImage}
-                    source={{uri: currentStore.imgLink}}>
+                    source={{uri: imgLink}}>
 
                     <View style={styles.profileDarken}>
                         {/* Profile Informations */}
-                        <Text style={styles.profileShopName}>{currentStore.store_Name}</Text>
+                        <Text style={styles.profileShopName}>{store_Name}</Text>
                         <Text style={styles.profileLabelSmall}>Followers 478</Text>
                         <View style={styles.profileButtonContainer}>
                             <TouchableOpacity 
@@ -87,36 +80,35 @@ function clientHomepage(props) {
                                 onPress={() => navigation.navigate(
                                     'clientEditProfile', 
                                     {
-                                        store_ID: currentStore.store_ID,
-                                        owner_ID: currentStore.owner_ID,
-                                        store_Name: currentStore.store_Name,
-                                        address: currentStore.address,
-                                        specialty: currentStore.specialty,
-                                        imgLink: currentStore.imgLink,
-                                        ptsPerAmount: currentStore.ptsPerAmount,
-                                        contact_Number: currentStore.contact_Number
+                                        store_ID: store_ID,
+                                        owner_ID: owner_ID,
+                                        store_Name: store_Name,
+                                        address: address,
+                                        specialty: specialty,
+                                        imgLink: imgLink,
+                                        ptsPerAmount: ptsPerAmount,
+                                        contact_Number: contact_Number
                                     }
                                 )} 
                             >
                                 <Icon name="user" size={20} color="#fff" />
                                 <Text style={styles.profileButtonLabel}>Edit Profile</Text>
                             </TouchableOpacity>
+                            <TouchableOpacity style={styles.profileButton} onPress={()=> props.navigation.navigate('selectShop')} >
+                                <Icon name="home" size={20} color="#fff" />
+                                <Text style={styles.profileButtonLabel}>Select Shop</Text>
+                            </TouchableOpacity>
                             <TouchableOpacity style={styles.profileButton} onPress={showDialog} >
                                 <Icon name="logout" size={20} color="#fff" />
                                 <Text style={styles.profileButtonLabel}>Log Out</Text>
                             </TouchableOpacity>
-                            <Dialog.Container visible={visible}>
-                                <Dialog.Title>Logout Account</Dialog.Title>
-                                <Dialog.Description>Do you really want to logout?</Dialog.Description>
-                                <Dialog.Button label="Cancel" onPress={handleCancel} />
-                                <Dialog.Button label="Logout" onPress={handleLogout} />
-                            </Dialog.Container>
-
-                            
+                            <Dialog.Container contentStyle={{height: 110, paddingTop: 12, paddingRight: 20, alignItems: 'center', justifyContent:'center', borderRadius: 15}} visible={visible}>
+                                <Dialog.Title style={{fontSize: 16, color: '#071964'}}>Do you really want to logout?</Dialog.Title>
+                                <Dialog.Button style={{marginRight: 15, marginLeft: 35, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Cancel" onPress={handleCancel} />
+                                <Dialog.Button style={{marginRight: 30, marginLeft: 20, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Logout" onPress={handleLogout} />
+                            </Dialog.Container>       
                         {/* End of Profile Informations */}
-                        </View>
-
-                       
+                        </View>                    
                     </View>    
                 </ImageBackground>
                 {/* End of Profile Header */}
@@ -173,7 +165,7 @@ function clientHomepage(props) {
                 </Picker>
 
                 {/* QR code Scanner */}
-                <TouchableOpacity onPress={()=> props.navigation.navigate('QRCodeScanner', {store_ID: currentStore.store_ID, owner_ID: currentStore.owner_ID})}>
+                <TouchableOpacity onPress={()=> props.navigation.navigate('QRCodeScanner', {store_ID: store_ID, owner_ID: owner_ID})}>
                     <View style={styles.scanQRContainer}>
                         <View style={styles.scanQRWrap}>
                             <Icon name="qrcode" size={45} color="#fff" style={styles.scanQRIcon} />
@@ -187,7 +179,7 @@ function clientHomepage(props) {
                 {/* End of QR Code Scanner */}
 
                 {/* POS */}
-                <TouchableOpacity onPress={()=> props.navigation.navigate('selectCustomer', {store_ID: currentStore.store_ID, owner_ID: currentStore.owner_ID})}>
+                <TouchableOpacity onPress={()=> props.navigation.navigate('selectCustomer', {store_ID: store_ID, owner_ID: owner_ID})}>
                     <View style={styles.scanQRContainer}>
                         <View style={styles.scanQRWrap}>
                             <Icon2 name="shopping-pos-machine" size={45} color="#fff" style={styles.scanQRIcon} />
@@ -208,7 +200,7 @@ function clientHomepage(props) {
                         <Text style={styles.dualTitle}> APresto Products</Text>
                     </View>
                     <View style={styles.dual}>
-                        <TouchableOpacity onPress={() => navigation.navigate('clientProductList', {store_ID:currentStore.store_ID})}>
+                        <TouchableOpacity onPress={() => navigation.navigate('clientProductList', {store_ID:store_ID})}>
                             <View style={styles.dualContent}>
                                 <ImageBackground style={styles.dualBgImage}
                                     imageStyle={{ borderRadius: 30}}
@@ -220,7 +212,7 @@ function clientHomepage(props) {
                                 </ImageBackground>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('clientProductAdd', {store_ID:currentStore.store_ID})}>
+                        <TouchableOpacity onPress={()=>navigation.navigate('clientProductAdd', {store_ID:store_ID})}>
                             <View style={styles.dualContent}>
                                 <ImageBackground style={styles.dualBgImage}
                                     imageStyle={{ borderRadius: 30}}
@@ -243,7 +235,7 @@ function clientHomepage(props) {
                         <Text style={styles.dualTitle}> APresto Rewards</Text>
                     </View>
                     <View style={styles.dual}>
-                        <TouchableOpacity onPress={()=>navigation.navigate('clientRewardList', {store_ID:currentStore.store_ID})}>
+                        <TouchableOpacity onPress={()=>navigation.navigate('clientRewardList', {store_ID:store_ID})}>
                             <View style={styles.dualContent}>
                                 <ImageBackground style={styles.dualBgImage}
                                     imageStyle={{ borderRadius: 30}}
@@ -255,7 +247,7 @@ function clientHomepage(props) {
                                 </ImageBackground>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('clientRewardAdd', {store_ID:currentStore.store_ID})}>
+                        <TouchableOpacity onPress={()=>navigation.navigate('clientRewardAdd', {store_ID:store_ID})}>
                             <View style={styles.dualContent}>
                                 <ImageBackground style={styles.dualBgImage}
                                     imageStyle={{ borderRadius: 30}}
@@ -283,7 +275,7 @@ function clientHomepage(props) {
                         <View style={styles.sukiDarken}>
                             <Text style={styles.sukiLabel}>Sukis are essential for your business growth</Text>
                             <Text style={styles.sukiLabelSmall}>You can know who among your suki loves you most.</Text>
-                            <TouchableOpacity style={styles.sukiButton} onPress={() => navigation.navigate('clientSukiList', {owner_ID:currentStore.owner_ID, store_ID: currentStore.store_ID})} >
+                            <TouchableOpacity style={styles.sukiButton} onPress={() => navigation.navigate('clientSukiList', {owner_ID:owner_ID, store_ID: store_ID})} >
                                 <Text style={styles.sukiButtonLabel}>View Suki</Text>
                             </TouchableOpacity>
                         </View>    
@@ -458,7 +450,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         flexDirection: "row",
         justifyContent:"space-between",
-        width: '60%',
+        width: '90%',
     },
     profileButtonLabel: {
         color: "#fff",

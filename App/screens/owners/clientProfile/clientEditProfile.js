@@ -3,27 +3,23 @@ import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, Vi
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/AntDesign';
 import firebase from 'firebase';
-import validator from 'validator';
 import { AuthContext } from '../../../functions/authProvider';
 import { Input } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import uuid from 'react-native-uuid';
 import { showMessage } from 'react-native-flash-message';
 import Dialog from "react-native-dialog";
+import { useNavigation } from '@react-navigation/native';
 import * as crud from '../../../functions/firebaseCRUD';
 
-
-
-const clientEditProfile = ({navigation}) => {
+function clientEditProfile(props) {
+    const navigation = useNavigation();
 
     //user state
     const {user} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
-    const [visible, setVisible] = useState(false);
-    const [URI, setURI] = useState(null);
-    const [changedIMG, setChangedIMG] = useState({bool: false});
 
-    //const {store_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
+    const {store_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
 
     //const [shopName, setTextStoreName] = useState(store_Name);
     //const [shopDetails, setTextShopDetails] = React.useState(specialty);
@@ -48,6 +44,9 @@ const clientEditProfile = ({navigation}) => {
             }
         })      
     }
+
+    //For Dialog Box
+    const [visible, setVisible] = useState(false);
 
     //For Dialog Box
     const showDialog = () => {
@@ -119,12 +118,6 @@ const clientEditProfile = ({navigation}) => {
 
     const editProfile = async () => {
 
-        //await uploadImage(URI.link, imageUUID)
-
-        //console.log('from add function: ', image.gURL);
-        //crud.editStore(image.gURL, store_ID, address, contact_Number, ptsPerAmount, specialty, store_Name);
-        //navigation.goBack();
-
         firebase.firestore()
         .collection('Owners')
         .doc(user.uid)
@@ -134,7 +127,20 @@ const clientEditProfile = ({navigation}) => {
         })
         .then(() => {
             console.log("User account updated...");
+        })
+
+        showMessage({
+            message: "Profile updated successfully",
+            type: "success",
+            position: "top",
+            statusBarHeight: 25,
+            floating: "true",
+            icon: { icon: "auto", position: "left" },
+            autoHide: "true", 
+            duration: 2000
         });
+        
+        await uploadImage(URI.link, imageUUID)
 
         showMessage({
                 message: "Profile updated successfully",
@@ -236,7 +242,7 @@ const clientEditProfile = ({navigation}) => {
                             placeholder="Email"
                             onChangeText={(text) => {setUserData({...userData, email: text});}}
                             value={userData ? userData.email : ''}
-                            autoCompleteType="email"
+                            autoCompleteType="email" 
                         />
                     </View>
                     <View style={styles.textView}>

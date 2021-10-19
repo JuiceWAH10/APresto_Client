@@ -136,31 +136,35 @@ function clientHomepage(props) {
                             <Icon style={styles.dualTitleSmallIcon} name="right" size={20} />
                         </View>
                     </View>    
-                    <ScrollView horizontal={true} style={styles.profileInfosContainer}>
-                          
-                        <View style={styles.profileInfo2}>
-                            <Text style={styles.profileInfoTextLabelBig}> {sales.transTally}</Text>
-                            <View style={styles.profileInfoLabel} >
-                            {/* <Icon name="smileo" size={15} color="#fff" /> */}
-                                <Text style={styles.profileInfoTextLabel}>Transacted</Text>
-                            </View>    
-                        </View>
 
-                        <View style={styles.profileInfo3}>
-                            <Text style={styles.profileInfoTextLabelBig}> {sales.salesTally} </Text>
-                            <View style={styles.profileInfoLabel} >
-                                {/* <Icon name="shoppingcart" size={15} color="#fff" /> */}
-                                <Text style={styles.profileInfoTextLabel}>Sold</Text>
-                            </View>    
+
+                    <View style={styles.profileInfosMain}>
+                        <View style={styles.profileInfosContainer}>
+                            
+                            <View style={styles.profileInfo2}>
+                                <Text style={styles.profileInfoTextLabelBig}> {sales.transTally}</Text>
+                                <View style={styles.profileInfoLabel} >
+                                {/* <Icon name="smileo" size={15} color="#fff" /> */}
+                                    <Text style={styles.profileInfoTextLabel}>Transacted</Text>
+                                </View>    
+                            </View>
+
+                            <View style={styles.profileInfo3}>
+                                <Text style={styles.profileInfoTextLabelBig}> {sales.salesTally} </Text>
+                                <View style={styles.profileInfoLabel} >
+                                    {/* <Icon name="shoppingcart" size={15} color="#fff" /> */}
+                                    <Text style={styles.profileInfoTextLabel}>Sold</Text>
+                                </View>    
+                            </View>
+                            <View style={styles.profileInfo4}>
+                                <Text style={styles.profileInfoTextLabelBig}> {sales.redeemTally} </Text>
+                                <View style={styles.profileInfoLabel} >
+                                    {/* <Icon name="gift" size={15} color="#fff" /> */}
+                                    <Text style={styles.profileInfoTextLabel}>Claimed</Text>
+                                </View>    
+                            </View>
                         </View>
-                        <View style={styles.profileInfo4}>
-                            <Text style={styles.profileInfoTextLabelBig}> {sales.redeemTally} </Text>
-                            <View style={styles.profileInfoLabel} >
-                                {/* <Icon name="gift" size={15} color="#fff" /> */}
-                                <Text style={styles.profileInfoTextLabel}>Claimed</Text>
-                            </View>    
-                        </View>
-                    </ScrollView>
+                    </View>
                 </View>    
                         {/* End of Rate, Suki, Shopped, Claimed */}
 
@@ -517,6 +521,12 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         flexDirection: "row",
         width: wp('90%'),
+    },
+    profileInfosMain: {
+        alignSelf: "center",
+        width: wp('100%'),
+        paddingLeft: wp('20%')
+        
     },
     profileInfoLabel:{
         alignSelf: 'center',

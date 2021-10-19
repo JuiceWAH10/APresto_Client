@@ -23,9 +23,9 @@ import * as crud from '../functions/firebaseCRUD';
 
 function checkoutPage(props) {
     const navigation = useNavigation();
-    const {customer_ID, suki_ID, username, sukiPoints, store_ID} = props.route.params;
+    const {customer_ID, suki_ID, username, sukiPoints, store_ID, ptsPerAmount, owner_ID} = props.route.params;
 
-    const ptsPerPrice = 50;
+    const ptsPerPrice = ptsPerAmount;
     const dispatch = useDispatch();
     //(juswa) fetch data from redux store in App.js using useSelector. the data is from the state managed by reducers
     const totalAmount = useSelector(state => state.cart.totalAmount);
@@ -81,14 +81,21 @@ function checkoutPage(props) {
                 else {
                     ptsEarned = ptsPerPrice / totalAmount;
                 }
-                ptsEarned = Math.round((ptsEarned + Number.EPSILON)*100)/100;
+                ptsEarned = (Math.round((ptsEarned + Number.EPSILON)*100)/100).toFixed(2);
             }
         }
         else{
             ptsEarned = 0;
         }
 
-    var trans_ID = crud.recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID);
+        if(suki_ID == "newsuki"){
+            var trans = crud.afterTransAddNewSuki(customer_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID, owner_ID, username);
+        }
+        else{
+            var trans_ID = crud.recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID);
+        }
+
+    
         navigation.navigate('Done', {
             customer_ID: customer_ID,
             totalAmount: totalAmount,
@@ -99,8 +106,6 @@ function checkoutPage(props) {
         });
     }
 
-    
-    
     return (
         <SafeAreaView style={styles.droidSafeArea}>
             {/* Top Navigation */}

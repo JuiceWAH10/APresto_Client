@@ -11,6 +11,7 @@ import SignupCustomer from './App/screens/signupCustomer';
 import Screens from './App/navigation/screensNavigation'
 import { Provider } from 'react-redux'
 import { AuthProvider, AuthContext } from './App/functions/authProvider';
+import { StoreProvider, StoreContext } from './App/functions/storeProvider';
 
 //for reducers
 import productsReducer from './App/functions/productsReducer';
@@ -109,7 +110,9 @@ export default function App() {
       <Provider store={store}>
         <AuthProvider>
           {/*child props of provider*/}
-          <Routes />
+          <StoreProvider>
+            <Routes />
+          </StoreProvider>
         </AuthProvider>
         <FlashMessage position="top" animated={true} />
       </Provider>

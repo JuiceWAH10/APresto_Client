@@ -28,7 +28,7 @@ export default function QRCodeScanner(props){
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [scannedUser, setScannedUser] = useState(null);
-    const {store_ID, owner_ID} = props.route.params;
+    const {store_ID, owner_ID, ptsPerAmount} = props.route.params;
     const dispatch = useDispatch();
 
     const [sukiList, setSukiList] = useState([]);
@@ -58,59 +58,68 @@ export default function QRCodeScanner(props){
 
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
-        const qrData = jsonpack.unpack(data);
-        const sukiExists = sukiList.some(suki => suki.customer_ID === qrData.customer_ID);
-        let suki_ID = "";
-        let points = 0;
+        try{
+            const qrData = jsonpack.unpack(data);
+            const sukiExists = sukiList.some(suki => suki.customer_ID === qrData.customer_ID);
+            let suki_ID = "";
+            let points = 0;
 
-        if(sukiExists){
-            const suki = sukiList.find(suki => { return suki.customer_ID === qrData.customer_ID});
-            suki_ID = suki.suki_ID;
-            points = suki.points;
-        }
-        else{
-            suki_ID = "newsuki";
-            points = 0;
-        }
-       
-        if(qrData.QR_Type == "transaction"){
-            let purchasedProducts = qrData.purchasedProducts;
-            let redeemedRewards = qrData.redeemedRewards;
-            console.log("product",purchasedProducts);
-            console.log("reward",redeemedRewards);
+            if(sukiExists){
+                const suki = sukiList.find(suki => { return suki.customer_ID === qrData.customer_ID});
+                suki_ID = suki.suki_ID;
+                points = suki.points;
+            }
+            else{
+                suki_ID = "newsuki";
+                points = 0;
+            }
+        
+            if(qrData.QR_Type == "transaction"){
+                let purchasedProducts = qrData.purchasedProducts;
+                let redeemedRewards = qrData.redeemedRewards;
+                console.log("product",purchasedProducts);
+                console.log("reward",redeemedRewards);
 
-            purchasedProducts.map((store, key) =>{
-                dispatch(cartAction.addToCart(store))
-            })
+                purchasedProducts.map((store, key) =>{
+                    dispatch(cartAction.addToCart(store))
+                })
 
-            redeemedRewards.map((store, key) =>{
-                dispatch(rewardCart.redeemToCart(store))
-            })
+                redeemedRewards.map((store, key) =>{
+                    dispatch(rewardCart.redeemToCart(store))
+                })
 
-            navigation.navigate('checkoutPage', 
-                {
-                    customer_ID: qrData.customer_ID,
-                    suki_ID: suki_ID,
-                    username: qrData.username,
-                    points: points,
-                    store_ID: qrData.store_ID
-                }
-            );
+                navigation.navigate('POS', 
+                    {
+                        customer_ID: qrData.customer_ID,
+                        suki_ID: suki_ID,
+                        username: qrData.username,
+                        points: points,
+                        store_ID: qrData.store_ID,
+                        ptsPerAmount: ptsPerAmount,
+                        owner_ID: owner_ID
+                    }
+                );
+            }
+            else if(qrData.QR_Type == "customer_ID"){
+                console.log(qrData);
+                navigation.navigate('POS', 
+                    {
+                        customer_ID: qrData.customer_ID,
+                        suki_ID: suki_ID,
+                        username: qrData.username,
+                        points: points,
+                        store_ID: store_ID,
+                        ptsPerAmount: ptsPerAmount,
+                        owner_ID: owner_ID
+                    }
+                );
+            }
+            else{
+                alert("Invalid: Please scan Transaction and Customer QR code only.")
+            }
         }
-        else if(qrData.QR_Type == "customer_ID"){
-            console.log(qrData);
-            navigation.navigate('POS', 
-                {
-                    customer_ID: qrData.customer_ID,
-                    suki_ID: suki_ID,
-                    username: qrData.username,
-                    points: points,
-                    store_ID: store_ID
-                }
-            );
-        }
-        else{
-            alert('Invalid: Please scan Transaction and Customer QR code only.')
+        catch(e){
+            alert("ERROR occured! Possibly caused by scanning a QR code foreign to the system.")
         }
         
     };

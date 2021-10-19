@@ -315,6 +315,10 @@ export function deleteReward(reward_ID, imgLink, shop_ID, product_Name){
     });
 }
 
+export function updateProductStatus(){
+    
+}
+
 export function editStore(imgLink, store_ID, address, contact_Number, ptsPerAmount, specialty, store_Name){
 
     const id = store_ID;
@@ -349,6 +353,7 @@ export function addCustomerPoints(suki_ID, ptsEarned){
     .update({
         points: firebase.firestore.FieldValue.increment(ptsEarned)
     })
+    .catch()
 }
 
 export function subtCustomerPoints(suki_ID, ptsDeduct){
@@ -360,6 +365,7 @@ export function subtCustomerPoints(suki_ID, ptsDeduct){
         points: firebase.firestore.FieldValue.increment(subt),
         points_Used: firebase.firestore.FieldValue.increment(ptsDeduct)
     })
+    .catch()
 }
 
 export function addNewProductToSales(store_ID, product_Name){
@@ -397,6 +403,7 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
     const ref = db.collection('Sales').doc(store_ID);
     var prodTally = 0;
     var rewTally = 0;
+
     purchasedProducts.map(product => {
         prodTally = prodTally + product.quantity,
         ref.set({
@@ -416,7 +423,6 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
         rewTally = rewTally + reward.quantity,
         updateRewardQuantity(reward.reward_ID, reward.quantity)}
     )
-
 
     ref.set({
         totalRedeem: firebase.firestore.FieldValue.increment(ptsDeduct),
@@ -450,6 +456,36 @@ export function incrementSukiTrans(suki_ID){
     .update({
         transactions: firebase.firestore.FieldValue.increment(1)
     })
+    .catch()
+}
+
+export function incrementStoreTrans(store_ID){
+    firebase.firestore().collection('Sales')
+    .doc(store_ID)
+    .update({
+        transTally: firebase.firestore.FieldValue.increment(1)
+    })
+}
+
+export function afterTransAddNewSuki(customer_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID, owner_ID, username){
+    const db = firebase.firestore();
+    const ref = db.collection('Products').doc();
+    const suki_ID = ref.id;
+
+    firebase.firestore().collection('Suki')
+    .doc(suki_ID)
+    .set({
+        customer_ID: customer_ID,
+        suki_ID: suki_ID,
+        owner_ID: owner_ID,
+        points: 0,
+        points_Used: 0,
+        transactions: 0,
+        username: username
+    })
+    .then(
+        recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID)
+    )
 }
 
 export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID){
@@ -481,6 +517,7 @@ export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, 
         subtCustomerPoints(suki_ID, ptsDeduct);
         updateSales(store_ID, purchasedProducts, redeemedRewards, totalAmount, ptsDeduct);
         incrementSukiTrans(suki_ID);
+        incrementStoreTrans(store_ID);
     }).catch((error)=>{
         //error callback
         console.log('error ' , error)

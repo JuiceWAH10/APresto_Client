@@ -43,9 +43,10 @@ function selectShop(props) {
                 </View>
 
                 <ScrollView>
-                    {storeList.map(store => {
+                    {storeList.map((store, key) => {
                         return(
                             <SelectShopItems
+                                key = {key}
                                 store_ID = {store.store_ID}
                                 owner_ID = {store.owner_ID}
                                 store_Name = {store.store_Name}
@@ -56,9 +57,8 @@ function selectShop(props) {
                                 contact_Number = {store.contact_Number}
                             />
                         )
-                    })}
-                    
-
+                    })
+                    }
                 </ScrollView>
 
             </SafeAreaView>    

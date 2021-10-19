@@ -5,25 +5,22 @@ import Icon2 from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import firebase, { auth } from 'firebase';
-import { AuthContext } from '../../functions/authProvider'
+import { AuthContext } from '../../functions/authProvider';
+import { StoreContext } from '../../functions/storeProvider';
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 import * as crud from '../../functions/firebaseCRUD';
 import Dialog from "react-native-dialog";
-import {Picker} from '@react-native-picker/picker';
 
 function clientHomepage(props) {
     const navigation = useNavigation();
-    const {store_ID, owner_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
+    const {user} = useContext(AuthContext);
+    const {store} = useContext(StoreContext);
 
     const {logout} = useContext(AuthContext);
 
     const [visible, setVisible] = useState(false);
 
-    const [storeList, setStoreList] = useState([]);
-
-    const [currentStore, setCurrentStore] = useState('');
-
-    const [sales, setSales] = useState('');
+    const [sales, setSales] = useState({});
   
     const showDialog = () => {
         setVisible(true);
@@ -40,23 +37,20 @@ function clientHomepage(props) {
     };
 
     useEffect(() => {
-        const uID = auth().currentUser.uid;
+        const uID = user.uid;
         console.log(uID);
         firebase.firestore()
-            .collection('Stores')
-            .where("owner_ID", "==", uID)
-            .onSnapshot(result => {
-                const st = [];
-                result.forEach(function (store){         
-                    st.push(store.data());
-                });
-                console.log(st);
-                setStoreList(st);
-                setCurrentStore(st[0]);
-                console.log(currentStore);
-
-            });
-    }, []);   
+            .collection('Sales')
+            .doc(store.store_ID)
+            .get()
+            .then((result) => 
+                {
+                    setSales(result.data()); 
+                    console.log("set saless " + sales + " from firestore " + result)
+                }
+            );
+        console.log("after " + sales);
+    }, []);
     
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -68,11 +62,11 @@ function clientHomepage(props) {
             <ScrollView style={styles.container}>
                 {/* Profile Header for Shops */}
                 <ImageBackground style={styles.profileBgImage}
-                    source={{uri: imgLink}}>
+                    source={{uri: store.imgLink}}>
 
                     <View style={styles.profileDarken}>
                         {/* Profile Informations */}
-                        <Text style={styles.profileShopName}>{store_Name}</Text>
+                        <Text style={styles.profileShopName}>{store.store_Name}</Text>
                         <Text style={styles.profileLabelSmall}>Followers 478</Text>
                         <View style={styles.profileButtonContainer}>
                             <TouchableOpacity 
@@ -80,21 +74,21 @@ function clientHomepage(props) {
                                 onPress={() => navigation.navigate(
                                     'clientEditProfile', 
                                     {
-                                        store_ID: store_ID,
-                                        owner_ID: owner_ID,
-                                        store_Name: store_Name,
-                                        address: address,
-                                        specialty: specialty,
-                                        imgLink: imgLink,
-                                        ptsPerAmount: ptsPerAmount,
-                                        contact_Number: contact_Number
+                                        store_ID: store.store_ID,
+                                        owner_ID: store.owner_ID,
+                                        store_Name: store.store_Name,
+                                        address: store.address,
+                                        specialty: store.specialty,
+                                        imgLink: store.imgLink,
+                                        ptsPerAmount: store.ptsPerAmount,
+                                        contact_Number: store.contact_Number
                                     }
                                 )} 
                             >
                                 <Icon name="user" size={20} color="#fff" />
                                 <Text style={styles.profileButtonLabel}>Edit Profile</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.profileButton} onPress={()=> props.navigation.navigate('selectShop')} >
+                            <TouchableOpacity style={styles.profileButton} onPress={()=> navigation.navigate('selectShop')} >
                                 <Icon name="home" size={20} color="#fff" />
                                 <Text style={styles.profileButtonLabel}>Select Shop</Text>
                             </TouchableOpacity>
@@ -114,58 +108,64 @@ function clientHomepage(props) {
                 {/* End of Profile Header */}
 
                  {/* Rate, Suki, Shopped, Claimed */}
-                 <View style={styles.profileDetails}>
+                <View style={styles.profileDetails}>
                     <View style={styles.dualTitleWrap}>
                         <View style={styles.dualTitleContainer}>
                             <Icon name="gift" size={25} color="#1a9d43" />
                             <Text style={styles.dualTitle}> Shop Summary</Text>
                         </View>
                         <View style={styles.dualTitleContainer}>
-                            <Text style={styles.dualTitleSmall}> View Full Report</Text>
+                            <TouchableOpacity 
+                                onPress={() => navigation.navigate('clientSales', 
+                                    {
+                                        Products: sales.Products,
+                                        Rewards: sales.Rewards,
+                                        owner_ID: sales.owner_ID,
+                                        redeemTally: sales.redeemTally,
+                                        salesTally: sales.salesTally,
+                                        store_ID: sales.store_ID,
+                                        store_Name: sales.store_Name,
+                                        totalRedeem: sales.totalRedeem,
+                                        totalSales: sales.totalSales,
+                                        transTally: sales.transTally
+                                    }
+                                )}
+                                >
+                                <Text style={styles.dualTitleSmall}> View Full Report</Text>
+                            </TouchableOpacity>
                             <Icon style={styles.dualTitleSmallIcon} name="right" size={20} />
                         </View>
                     </View>    
                     <ScrollView horizontal={true} style={styles.profileInfosContainer}>
-                                
-                                <View style={styles.profileInfo2}>
-                                    <Text style={styles.profileInfoTextLabelBig}> 200 </Text>
-                                    <View style={styles.profileInfoLabel} >
-                                        {/* <Icon name="smileo" size={15} color="#fff" /> */}
-                                        <Text style={styles.profileInfoTextLabel}>My Suki</Text>
-                                    </View>    
-                                </View>
-                                <View style={styles.profileInfo3}>
-                                <Text style={styles.profileInfoTextLabelBig}> 389 </Text>
-                                    <View style={styles.profileInfoLabel} >
-                                        {/* <Icon name="shoppingcart" size={15} color="#fff" /> */}
-                                        <Text style={styles.profileInfoTextLabel}>Shopped</Text>
-                                    </View>    
-                                </View>
-                                <View style={styles.profileInfo4}>
-                                    <Text style={styles.profileInfoTextLabelBig}> 67 </Text>
-                                    <View style={styles.profileInfoLabel} >
-                                        {/* <Icon name="gift" size={15} color="#fff" /> */}
-                                        <Text style={styles.profileInfoTextLabel}>Claimed</Text>
-                                    </View>    
-                                </View>
-                            </ScrollView>
-                        </View>    
+                          
+                        <View style={styles.profileInfo2}>
+                            <Text style={styles.profileInfoTextLabelBig}> {sales.transTally}</Text>
+                            <View style={styles.profileInfoLabel} >
+                            {/* <Icon name="smileo" size={15} color="#fff" /> */}
+                                <Text style={styles.profileInfoTextLabel}>Transacted</Text>
+                            </View>    
+                        </View>
+
+                        <View style={styles.profileInfo3}>
+                            <Text style={styles.profileInfoTextLabelBig}> {sales.salesTally} </Text>
+                            <View style={styles.profileInfoLabel} >
+                                {/* <Icon name="shoppingcart" size={15} color="#fff" /> */}
+                                <Text style={styles.profileInfoTextLabel}>Sold</Text>
+                            </View>    
+                        </View>
+                        <View style={styles.profileInfo4}>
+                            <Text style={styles.profileInfoTextLabelBig}> {sales.redeemTally} </Text>
+                            <View style={styles.profileInfoLabel} >
+                                {/* <Icon name="gift" size={15} color="#fff" /> */}
+                                <Text style={styles.profileInfoTextLabel}>Claimed</Text>
+                            </View>    
+                        </View>
+                    </ScrollView>
+                </View>    
                         {/* End of Rate, Suki, Shopped, Claimed */}
 
-                <Picker
-                    style={styles.pickerStyle}
-                    selectedValue={currentStore}
-                    onValueChange={(itemValue, itemIndex) =>
-                       setCurrentStore(itemValue)
-                    }
-                >  
-                    {storeList.map((store, key) =>{
-                        return(<Picker.Item label={store.store_Name} value={store} key={key}/>)
-                    })}  
-                </Picker>
-
                 {/* QR code Scanner */}
-                <TouchableOpacity onPress={()=> props.navigation.navigate('QRCodeScanner', {store_ID: store_ID, owner_ID: owner_ID})}>
+                <TouchableOpacity onPress={()=> navigation.navigate('QRCodeScanner', {store_ID: store.store_ID, owner_ID: store.owner_ID, ptsPerAmount: store.ptsPerAmount})}>
                     <View style={styles.scanQRContainer}>
                         <View style={styles.scanQRWrap}>
                             <Icon name="qrcode" size={45} color="#fff" style={styles.scanQRIcon} />
@@ -179,7 +179,7 @@ function clientHomepage(props) {
                 {/* End of QR Code Scanner */}
 
                 {/* POS */}
-                <TouchableOpacity onPress={()=> props.navigation.navigate('selectCustomer', {store_ID: store_ID, owner_ID: owner_ID})}>
+                <TouchableOpacity onPress={()=> navigation.navigate('selectCustomer', {store_ID: store.store_ID, owner_ID: store.owner_ID, ptsPerAmount: store.ptsPerAmount})}>
                     <View style={styles.scanQRContainer}>
                         <View style={styles.scanQRWrap}>
                             <Icon2 name="shopping-pos-machine" size={45} color="#fff" style={styles.scanQRIcon} />
@@ -200,7 +200,7 @@ function clientHomepage(props) {
                         <Text style={styles.dualTitle}> APresto Products</Text>
                     </View>
                     <View style={styles.dual}>
-                        <TouchableOpacity onPress={() => navigation.navigate('clientProductList', {store_ID:store_ID})}>
+                        <TouchableOpacity onPress={() => navigation.navigate('clientProductList', {store_ID:store.store_ID})}>
                             <View style={styles.dualContent}>
                                 <ImageBackground style={styles.dualBgImage}
                                     imageStyle={{ borderRadius: 30}}
@@ -212,7 +212,7 @@ function clientHomepage(props) {
                                 </ImageBackground>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('clientProductAdd', {store_ID:store_ID})}>
+                        <TouchableOpacity onPress={()=>navigation.navigate('clientProductAdd', {store_ID:store.store_ID})}>
                             <View style={styles.dualContent}>
                                 <ImageBackground style={styles.dualBgImage}
                                     imageStyle={{ borderRadius: 30}}
@@ -235,7 +235,7 @@ function clientHomepage(props) {
                         <Text style={styles.dualTitle}> APresto Rewards</Text>
                     </View>
                     <View style={styles.dual}>
-                        <TouchableOpacity onPress={()=>navigation.navigate('clientRewardList', {store_ID:store_ID})}>
+                        <TouchableOpacity onPress={()=>navigation.navigate('clientRewardList', {store_ID:store.store_ID})}>
                             <View style={styles.dualContent}>
                                 <ImageBackground style={styles.dualBgImage}
                                     imageStyle={{ borderRadius: 30}}
@@ -247,7 +247,7 @@ function clientHomepage(props) {
                                 </ImageBackground>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>navigation.navigate('clientRewardAdd', {store_ID:store_ID})}>
+                        <TouchableOpacity onPress={()=>navigation.navigate('clientRewardAdd', {store_ID:store.store_ID})}>
                             <View style={styles.dualContent}>
                                 <ImageBackground style={styles.dualBgImage}
                                     imageStyle={{ borderRadius: 30}}

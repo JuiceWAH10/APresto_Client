@@ -16,7 +16,7 @@ import firebase from 'firebase';
 function SelectCustomer(props) {
     const navigation = useNavigation();
 
-    const {store_ID, owner_ID} = props.route.params;
+    const {store_ID, owner_ID, ptsPerAmount} = props.route.params;
 
     const [sukiList, setSukiList] = useState([]);
     const [pickedSuki, setPickedSuki] = useState('');
@@ -45,7 +45,9 @@ function SelectCustomer(props) {
                 suki_ID: suki_ID,
                 username: username,
                 points: points,
-                store_ID: store_ID
+                store_ID: store_ID,
+                owner_ID: owner_ID,
+                ptsPerAmount: ptsPerAmount
             }
         );
     };
@@ -84,7 +86,7 @@ function SelectCustomer(props) {
 
                     {/* <Text style={styles.qrLabel}>Not on list?</Text> */}
                     <View style={styles.buttonContainer} > 
-                        <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('QRCodeScanner', {store_ID:store_ID, owner_ID: owner_ID}) }>
+                        <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('QRCodeScanner', {store_ID:store_ID, owner_ID: owner_ID, ptsPerAmount: ptsPerAmount}) }>
                             <Text style={styles.buttonLabel}>Scan Customer's QR</Text>
                         </TouchableOpacity> 
                     </View>

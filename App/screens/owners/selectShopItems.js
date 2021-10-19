@@ -1,29 +1,34 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Image, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
+import { StoreContext } from '../../functions/storeProvider';
 
 function SelectShopItems(props){
     const navigation = useNavigation();
-
+    const {store, setStore} = useContext(StoreContext);
+    function navigateToHome(){
+        setStore( 
+            {
+                store_ID: props.store_ID,
+                owner_ID: props.owner_ID,
+                store_Name: props.store_Name,
+                address: props.address,
+                specialty: props.specialty,
+                imgLink: props.imgLink,
+                ptsPerAmount: props.ptsPerAmount,
+                contact_Number: props.contact_Number
+            }
+        );
+        console.log(store);
+        navigation.navigate('clientHomepage')
+    }
     return(
         <View>
         <TouchableOpacity 
-            onPress={()=> navigation.navigate('clientHomepage', 
-                {
-                    store_ID: props.store_ID,
-                    owner_ID: props.owner_ID,
-                    store_Name: props.store_Name,
-                    address: props.address,
-                    specialty: props.specialty,
-                    imgLink: props.imgLink,
-                    ptsPerAmount: props.ptsPerAmount,
-                    contact_Number: props.contact_Number
-                }
-                )
-            }>
+            onPress={navigateToHome}>
             <View style={styles.shopContainer}>
                 <View style={styles.shopWrap}>
                     <Icon name="home" size={45} color="#fff" style={styles.shopIcon} />

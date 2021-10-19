@@ -32,12 +32,10 @@ LogBox.ignoreAllLogs();
 const tabs = createMaterialTopTabNavigator();
 const POSstack = createStackNavigator();
 
-
-
 function POStabs(props){
     const navigation = useNavigation();
 
-    const {customer_ID, suki_ID, username, points, store_ID} = props.route.params;
+    const {customer_ID, suki_ID, username, points, store_ID, ptsPerAmount, owner_ID} = props.route.params;
 
     const [sukiPoints, setSukiPoints] = useState(points);
 
@@ -202,7 +200,9 @@ function POStabs(props){
                                     suki_ID: suki_ID, 
                                     username: username, 
                                     sukiPoints: points, 
-                                    store_ID: store_ID
+                                    store_ID: store_ID,
+                                    ptsPerAmount: ptsPerAmount,
+                                    owner_ID: owner_ID
                                 })
                             } 
                         > 

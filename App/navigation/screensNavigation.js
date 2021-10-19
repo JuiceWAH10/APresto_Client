@@ -19,6 +19,7 @@ import DoneTransaction from '../screens/doneTransaction';
 import ClientSukiTransactions from '../screens/owners/clientSuki/clientSukiTransactions';
 import SelectCustomer from '../screens/selectCustomer'
 import SelectShop from '../screens/selectShop';
+import ClientSales from '../screens/owners/clientSales';
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,7 @@ export default Screens = () => {
       <Stack.Screen name="Done" component={DoneTransaction} />
       <Stack.Screen name="clientSukiTransactions" component={ClientSukiTransactions} />
       <Stack.Screen name="selectCustomer" component={SelectCustomer} />
+      <Stack.Screen name="clientSales" component={ClientSales} />
     </Stack.Navigator>
     
   );

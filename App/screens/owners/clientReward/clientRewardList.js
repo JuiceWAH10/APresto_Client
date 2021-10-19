@@ -31,7 +31,7 @@ function clientRewardList(props) {
     const dispatch = useDispatch();
     //(juswa) fetch data from redux store in App.js using useSelector. the data is from the state managed by reducers
     //const rewards = useSelector(state => state.rewards.allRewards);
-
+    const [refRews, setRefRews] = React.useState([]); //for saving unfiltered data from firestore
     const [rewards, setRewards] = React.useState([]);
 
         React.useEffect(()=>{
@@ -40,13 +40,38 @@ function clientRewardList(props) {
             .where("shop_ID","==",store_ID)
             .onSnapshot(querySnapshot => {
                 const rew = [];
+                const available =[];
                 querySnapshot.forEach(function (reward){         
                     rew.push(reward.data());
+                    if(reward.data().status == "available"){
+                        available.push(reward.data());
+                    };
                 });
-                setRewards(rew);
+                setRefRews(rew);
+                setRewards(available);
             });
             return () => subscriber();
         }, []);
+
+    function liveRewards(){
+        const rew = [];
+        refRews.map(item => {
+            if(item.status == "available"){
+                rew.push(item);
+            }
+        });
+        setRewards(rew);
+    }
+    
+    function delistedRewards(){
+        const rew = [];
+        refRews.map(item => {
+            if(item.status == "delisted"){
+                rew.push(item);
+            }
+        });
+        setRewards(rew);
+    }
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -67,19 +92,14 @@ function clientRewardList(props) {
 
             {/* Header */}
             <View style={styles.headContainer}>
-                <TouchableOpacity onPress={() => "pressed"} >
+                <TouchableOpacity onPress={liveRewards} >
                     <View style={styles.headIndivContainer}>
                         <Text style={styles.headLabelSmall}>Live</Text>
                         <Icon style={styles.headIcons} name="box" size={35} color="#29312e" />
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => "pressed"} >
-                    <View style={styles.headIndivContainer}>
-                        <Text style={styles.headLabelSmall}>Sold</Text>
-                        <Icon style={styles.headIcons} name="wallet" size={35} color="#29312e" />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => "pressed"} >    
+
+                <TouchableOpacity onPress={delistedRewards} >    
                     <View style={styles.headIndivContainer}>
                         <Text style={styles.headLabelSmall}>Delisted</Text>
                         <Icon style={styles.headIcons} name="archive" size={35} color="#29312e" />
@@ -102,6 +122,7 @@ function clientRewardList(props) {
                         quantity = {itemData.item.quantity}
                         status = {itemData.item.status}
                         imgLink = {itemData.item.imgLink}
+                        sold = {itemData.item.sold}
                     />
                 }
             />

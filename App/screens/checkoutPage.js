@@ -124,48 +124,52 @@ function checkoutPage(props) {
             {/* End of Top Navigation */}
             
             <View style={[styles.formContainer, {flex:15}]}>
+                <ScrollView>
+            {!cartItems.length == 0 ? 
                 <Text style={styles.cartTitle}>Products</Text>
+                   
+              :null
+            }
 
-                <FlatList style ={styles.cartContainer}
-                    ListHeaderComponent={<Text></Text>}
-                    data={cartItems}
-                    keyExtractor={item => item.product_ID}
-                    renderItem={itemData => 
+                {cartItems.map(item =>{
+                    return(
                         <CartItems
-                            type = {itemData.item.type}
-                            quantity = {itemData.item.quantity} 
-                            product_Name = {itemData.item.productTitle}
-                            price = {itemData.item.productPrice}
-                            total = {itemData.item.total}
-                            imgLink= {itemData.item.imgLink}
+                            type = {item.type}
+                            quantity = {item.quantity} 
+                            product_Name = {item.productTitle}
+                            price = {item.productPrice.toFixed(2)}
+                            total = {item.total.toFixed(2)}
+                            imgLink= {item.imgLink}
                             removeFromCart = {() => {
-                                dispatch(cartAction.removeFromCart(itemData.item.product_ID))
+                                dispatch(cartAction.removeFromCart(item.product_ID))
                             }}
-                            addToCart = {() => {dispatch(cartAction.addToCart(itemData.item))}}
-                        />}
-                />
-
-                <Text style={styles.cartTitle}>Rewards</Text>
-                {rewCartItems ?
-                    <FlatList style ={styles.cartContainer}
-                        ListHeaderComponent={<Text></Text>}
-                        data={rewCartItems}
-                        keyExtractor={item => item.reward_ID}
-                        renderItem={itemData => 
-                            <CartItems
-                                type = {itemData.item.type}
-                                quantity = {itemData.item.quantity}
-                                product_Name = {itemData.item.productTitle}
-                                price = {itemData.item.productPrice}
-                                total = {itemData.item.total}
-                                imgLink= {itemData.item.imgLink}
-                                removeFromCart = {() => {
-                                    dispatch(rewardCart.cancelRedeem(itemData.item.reward_ID))
-                                }}
-                                addToCart = {() => {dispatch(rewardCart.redeemToCart(itemData.item))}}
-                            />}
-                    />
+                            addToCart = {() => {dispatch(cartAction.addToCart(item))}}
+                        />
+                    )}
+                )}
+                
+                
+                {!rewCartItems.length == 0 ?
+                    <Text style={styles.cartTitle}>Rewards</Text>
                 : null }
+                {rewCartItems.map(item =>{
+                    return (
+                        <CartItems
+                            type = {item.type}
+                            quantity = {item.quantity}
+                            product_Name = {item.productTitle}
+                            price = {item.productPrice.toFixed(2)}
+                            total = {item.total.toFixed(2)}
+                            imgLink= {item.imgLink}
+                            removeFromCart = {() => {
+                                dispatch(rewardCart.cancelRedeem(item.reward_ID))
+                            }}
+                            addToCart = {() => {dispatch(rewardCart.redeemToCart(item))}}
+                        />
+                    )}
+                )}
+                </ScrollView>
+                            
                 
                 
             </View>

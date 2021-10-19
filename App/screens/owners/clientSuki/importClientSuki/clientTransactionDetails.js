@@ -15,17 +15,18 @@ import { useNavigation } from '@react-navigation/native';
 import { Searchbar } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import firebase from 'firebase';
-import {StoreContext} from '../../functions/storeProvider';
+import {StoreContext} from '../../../../functions/storeProvider';
 
 
-function clientSales(props) {
+function clientTransactionDetails(props) {
     const [searchQuery, setSearchQuery] = useState('');
     const [sukiList, setSukiList] = useState([]);
     const onChangeSearch = query => setSearchQuery(query);
     const navigation = useNavigation();
     const {store} = useContext(StoreContext);
-    const {Products, Rewards, owner_ID, redeemTally, salesTally, store_ID, store_Name, totalRedeem,totalSales, transTally} = props.route.params;
-
+    const {customer_ID, ptsDeduct, ptsEarned, purchasedProducts, redeemedRewards, store_ID, trans_ID, total, date} = props.route.params;
+    var ctr = 0;
+    var Rctr = 0;
     return (
         <SafeAreaView style={styles.droidSafeArea}>
 
@@ -34,36 +35,52 @@ function clientSales(props) {
                 <TouchableOpacity onPress={() => navigation.goBack()} >
                     <Icon2 name="left" size={30} color="#ee4b43" />
                 </TouchableOpacity>
-                <Text style={styles.title}>Shop Summary</Text>   
+                <Text style={styles.title}>Transaction Details</Text>   
             </View>  
             {/* End of Top Navigation */}
-
-            {/* Banner */}
-            <ImageBackground style={styles.bannerBgImage}
-                    imageStyle={{ borderRadius: 30}}
-                    source={require('../../assets/bannerImages/banner_LikedShops.jpg')}>
-                    <View style={styles.darken}>
-                        <Text style={styles.bannerLabel}>{store_Name} </Text>
-                        <Text style={styles.bannerLabelSmall}>Sales Report</Text>
-                    </View>    
-            </ImageBackground>
-            {/* End of Banner */}
 
             <View style={styles.contentContainer}>
                 <ScrollView style={styles.scrollStyle}>
 
-                    <Text style={styles.textTitle}>Transaction Summary</Text>  
-                    <Text style={styles.textContent}>Total number of transactions: <Text style={styles.textBold}>{transTally}</Text></Text>
-                    <Text style={styles.textContent}>Total amount of sold items: <Text style={styles.textBold}>{totalSales}</Text></Text>
-                    <Text style={styles.textContent}>Total amount of redeemed rewards: <Text style={styles.textBold}>{totalRedeem} </Text></Text>
-                    <Text style={styles.textContent}>Total quantity of sold items: <Text style={styles.textBold}>{salesTally}</Text></Text>
-                    <Text style={styles.textContent}>Total quantity of redeemed rewards: <Text style={styles.textBold}>{redeemTally}</Text></Text>
-                    
-                    <Text style={styles.textTitle}>Tally of quantity sold per items </Text>      
-                    {Object.keys(Products).map(function(key) {return(<Text key={key}>{key+" "} <Text style={styles.textBold}>{Products[key]}</Text></Text>)})}
+                    <Text style={styles.textTitle}>Transaction Details</Text>  
+                    <Text style={styles.textContent}>Transaction ID: <Text style={styles.textBold}>{trans_ID}</Text></Text>
+                    <Text style={styles.textContent}>Customer ID: <Text style={styles.textBold}>{customer_ID} </Text></Text>
+                    <Text style={styles.textContent}>Date: <Text style={styles.textBold}>{date.toDate().toString()}</Text></Text>
+                    <Text style={styles.textContent}>Total: <Text style={styles.textBold}>{total}</Text></Text>
+                    <Text style={styles.textContent}>Points Earned: <Text style={styles.textBold}>{ptsEarned}</Text></Text>
+                    <Text style={styles.textContent}>Points Used: <Text style={styles.textBold}>{ptsDeduct}</Text></Text>
 
-                    <Text style={styles.textTitle}>Tally of quantity redeemed per rewards: </Text>
-                    {Object.keys(Rewards).map(function(key) {return(<Text key={key}>{key+" "}<Text style={styles.textBold}>{Rewards[key]}</Text></Text>)})}
+                    <Text style={styles.textTitle}>Purchased Products: </Text>
+                    {/* cancel  na yung charts hahaha */}
+                    {Object.keys(purchasedProducts).map(
+                        function(key) {
+                            
+                            return(
+                                <View key={key}>
+                                    <Text >{++ctr}</Text>
+                                    <Text>{"Product Name: "}<Text style={styles.textBold}>{purchasedProducts[key].productTitle}</Text></Text>
+                                    <Text>{"Price: "}<Text style={styles.textBold}>{purchasedProducts[key].productPrice}</Text></Text>
+                                    <Text>{"Quantity: "}<Text style={styles.textBold}>{purchasedProducts[key].quantity}</Text></Text>
+                                    <Text>{"Total: "}<Text style={styles.textBold}>{purchasedProducts[key].total}</Text></Text>
+                                </View>
+                            )
+                        })
+                    }
+
+                    <Text style={styles.textTitle}>Redeemed Rewards: </Text>
+                    {Object.keys(redeemedRewards).map(
+                        function(key) {
+                            return(
+                                <View key={key}>
+                                    <Text>{++Rctr}</Text>
+                                    <Text>{"Product Name: "}<Text style={styles.textBold}>{redeemedRewards[key].productTitle}</Text></Text>
+                                    <Text>{"Price: "}<Text style={styles.textBold}>{redeemedRewards[key].productPrice}</Text></Text>
+                                    <Text>{"Quantity: "}<Text style={styles.textBold}>{redeemedRewards[key].quantity}</Text></Text>
+                                    <Text>{"Total: "}<Text style={styles.textBold}>{redeemedRewards[key].total}</Text></Text>
+                                </View>
+                            )
+                        })
+                    }
                     
                 </ScrollView>
             </View>
@@ -191,4 +208,4 @@ const styles = StyleSheet.create({
         elevation: 7,
     },
 })
-export default clientSales;
+export default clientTransactionDetails;

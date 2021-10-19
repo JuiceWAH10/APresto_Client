@@ -315,8 +315,20 @@ export function deleteReward(reward_ID, imgLink, shop_ID, product_Name){
     });
 }
 
-export function updateProductStatus(){
-    
+export function updateProductStatus(product_ID, status){
+    firebase.firestore().collection('Products')
+    .doc(product_ID)
+    .update({
+        status: status
+    })
+}
+
+export function updateRewardStatus(reward_ID, status){
+    firebase.firestore().collection('Rewards')
+    .doc(reward_ID)
+    .update({
+        status: status
+    })
 }
 
 export function editStore(imgLink, store_ID, address, contact_Number, ptsPerAmount, specialty, store_Name){
@@ -411,7 +423,8 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
                 [product.productTitle]: firebase.firestore.FieldValue.increment(product.quantity)
             }
         }, {merge:true}),
-        updateProductQuantity(product.product_ID, product.quantity)}
+        updateProductQuantity(product.product_ID, product.quantity),
+        updateProductSold(product.product_ID, product.quantity)}
     )
 
     redeemedRewards.map(reward => {
@@ -421,7 +434,8 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
             } 
         }, {merge:true}),
         rewTally = rewTally + reward.quantity,
-        updateRewardQuantity(reward.reward_ID, reward.quantity)}
+        updateRewardQuantity(reward.reward_ID, reward.quantity),
+        updateRewardSold(reward.reward_ID, reward.quantity)}
     )
 
     ref.set({
@@ -441,6 +455,14 @@ export function updateProductQuantity(product_ID, quantity){
     })
 }
 
+export function updateProductSold(product_ID, quantity){
+    firebase.firestore().collection('Products')
+    .doc(product_ID)
+    .set({
+        sold: firebase.firestore.FieldValue.increment(quantity)
+    },{merge:true})
+}
+
 export function updateRewardQuantity(reward_ID, quantity){
     const qty = Math.abs(quantity) * -1
     firebase.firestore().collection('Rewards')
@@ -448,6 +470,14 @@ export function updateRewardQuantity(reward_ID, quantity){
     .update({
         quantity: firebase.firestore.FieldValue.increment(qty)
     })
+}
+
+export function updateRewardSold(reward_ID, quantity){
+    firebase.firestore().collection('Rewards')
+    .doc(reward_ID)
+    .set({
+        sold: firebase.firestore.FieldValue.increment(quantity)
+    },{merge:true})
 }
 
 export function incrementSukiTrans(suki_ID){

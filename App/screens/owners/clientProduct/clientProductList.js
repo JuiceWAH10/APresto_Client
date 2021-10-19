@@ -35,6 +35,7 @@ function clientProductList(props) {
     //const products = useSelector(state => state.products.allProducts);
 
     //fetch data from firestore
+    const [refProds, setRefProds] = React.useState([]); //for saving unfiltered data from firestore
     const [products, setProducts] = React.useState([]);
 
         React.useEffect(()=>{
@@ -43,15 +44,41 @@ function clientProductList(props) {
             .where("shop_ID","==",store_ID)
             .onSnapshot(querySnapshot => {
                 const prod = [];
-                querySnapshot.forEach(function (product){         
+                const available = [];
+                querySnapshot.forEach(function (product){    
                     prod.push(product.data());
+                    if(product.data().status == "available"){
+                        available.push(product.data());
+                    }
                 });
-                setProducts(prod);
+                setRefProds(prod);
+                console.log("apoy "+ prod +" ref " + refProds)
+                setProducts(available);
             });
 
             return ()=> subsciber()
             
         }, []);
+
+    function liveProducts(){
+        const prod = [];
+        refProds.map(item => {
+            if(item.status == "available"){
+                prod.push(item);
+            }
+        });
+        setProducts(prod);
+    }
+
+    function delistedProducts(){
+        const prod = [];
+        refProds.map(item => {
+            if(item.status == "delisted"){
+                prod.push(item);
+            }
+        });
+        setProducts(prod);
+    }
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -63,7 +90,7 @@ function clientProductList(props) {
                 </TouchableOpacity>   
                 <Searchbar
                         style={styles.searchBar}
-                        placeholder={store_ID}
+                        placeholder={'Search'}
                         onChangeText={onChangeSearch}
                         value={searchQuery}
                 />
@@ -72,19 +99,21 @@ function clientProductList(props) {
 
             {/* Header */}
             <View style={styles.headContainer}>
-                <TouchableOpacity onPress={() => "pressed"} >
+                <TouchableOpacity onPress={liveProducts} >
                     <View style={styles.headIndivContainer}>
                         <Text style={styles.headLabelSmall}>Live</Text>
                         <Icon style={styles.headIcons} name="box" size={35} color="#29312e" />
                     </View>
                 </TouchableOpacity>
+                {/*can't  think of function to apply to this
                 <TouchableOpacity onPress={() => "pressed"} >
                     <View style={styles.headIndivContainer}>
                         <Text style={styles.headLabelSmall}>Sold</Text>
                         <Icon style={styles.headIcons} name="wallet" size={35} color="#29312e" />
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => "pressed"} >    
+                */}
+                <TouchableOpacity onPress={delistedProducts} >    
                     <View style={styles.headIndivContainer}>
                         <Text style={styles.headLabelSmall}>Delisted</Text>
                         <Icon style={styles.headIcons} name="archive" size={35} color="#29312e" />
@@ -107,6 +136,7 @@ function clientProductList(props) {
                         stock = {itemData.item.quantity}
                         status = {itemData.item.status}
                         imgLink = {itemData.item.imgLink}
+                        sold = {itemData.item.sold}
                     />
                 }
             />

@@ -34,15 +34,13 @@ const POSstack = createStackNavigator();
 
 function POStabs(props){
     const navigation = useNavigation();
-
+    const dispatch = useDispatch();
     const {customer_ID, suki_ID, username, points, store_ID, ptsPerAmount, owner_ID} = props.route.params;
 
     const [sukiPoints, setSukiPoints] = useState(points);
 
     function ProductPOS(){
         const scrollPosition = useRef(new Animated.Value(0)).current;
-    
-        const dispatch = useDispatch();
         const [sortedProducts, setProducts] = useState([]);
     
         //fetch data from firestore
@@ -76,19 +74,19 @@ function POStabs(props){
                     <View style={styles.allItemsContainer}>
                         {/* List of all items !note that items in Popular Items is also included here* */}
                         <Text style={styles.allItemsTitle}>All Items</Text>
-                            <FlatList
-                                data={sortedProducts}
-                                keyExtractor={item => item.product_ID}
-                                renderItem={itemData => 
+                            {sortedProducts.map(item=>{
+                                return(
                                     <POSItems
-                                        type={itemData.item.type}
-                                        product_Name = {itemData.item.product_Name}
-                                        price = {itemData.item.price}
-                                        description = {itemData.item.description}
-                                        imgLink = {itemData.item.imgLink}
-                                        addToCart = {() => {dispatch(cartAction.addToCart(itemData.item))}}
-                                    />}
-                            />
+                                        type={item.type}
+                                        product_Name = {item.product_Name}
+                                        price = {item.price}
+                                        description = {item.description}
+                                        imgLink = {item.imgLink}
+                                        addToCart = {() => {dispatch(cartAction.addToCart(item))}}
+                                    />
+                                )})
+                            }
+                            
                         {/* End of List */}
                     </View>
                 {/* End of All Items
@@ -117,7 +115,7 @@ function POStabs(props){
     function RewardsPOS(){
         const scrollPosition = useRef(new Animated.Value(0)).current;
     
-        const dispatch = useDispatch();
+        
         const [sortedProducts, setProducts] = useState([]);
     
         //fetch data from firestore
@@ -153,19 +151,18 @@ function POStabs(props){
                     <View style={styles.allItemsContainer}>
                         {/* List of all items !note that items in Popular Items is also included here* */}
                         <Text style={styles.allItemsTitle}>All Rewards</Text>
-                            <FlatList
-                                data={sortedProducts}
-                                keyExtractor={item => item.reward_ID}
-                                renderItem={itemData => 
+                            {sortedProducts.map(item =>{
+                                return(
                                     <POSItems
-                                        type={itemData.item.type}
-                                        product_Name = {itemData.item.reward_Name}
-                                        price = {itemData.item.pointsReq}
-                                        description = {itemData.item.description}
-                                        imgLink = {itemData.item.imgLink}
-                                        addToCart = {() => {dispatch(rewardCart.redeemToCart(itemData.item))}}
-                                    />}
-                            />
+                                        type={item.type}
+                                        product_Name = {item.reward_Name}
+                                        price = {item.pointsReq}
+                                        description = {item.description}
+                                        imgLink = {item.imgLink}
+                                        addToCart = {() => {dispatch(rewardCart.redeemToCart(item))}}
+                                    />
+                                )})
+                            }
                         {/* End of List */}
                     </View>
                 {/* End of All Items */}
@@ -182,12 +179,18 @@ function POStabs(props){
             </tabs.Navigator>
         );
     }
+
+    function clearOnBack(){
+        dispatch(cartAction.clearCart());
+        dispatch(rewardCart.clearCart());
+        navigation.goBack();
+    }
     
     return(
         <POSstack.Navigator 
             screenOptions={{
                 headerLeft: props =>
-                <TouchableOpacity onPress={() => navigation.goBack()} >
+                <TouchableOpacity onPress={clearOnBack} >
                         <Icon2 name="left" size={30} color="#ee4b43" />
                     </TouchableOpacity>,
                 headerTitle: 'Serving: ' + username,

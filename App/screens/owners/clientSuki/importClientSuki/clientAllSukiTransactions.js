@@ -11,16 +11,30 @@ import {useNavigation} from '@react-navigation/native';
 //map shit keme of purchaseProducts and redeemedRewards is not functioning well, maybe just add transaction details screen
 function ClientAllSukiTransactions(props) {
     const navigation = useNavigation();
+    const date = props.date.toDate()
     return (
-        <View style={styles.container}>
-            <Image style={styles.sukiImage}
-                    source={require('../../../../assets/eat.jpg')}>
-            </Image>
+        <TouchableOpacity 
+            style={styles.container} 
+            onPress={() => navigation.navigate("clientTransactionDetails", 
+                {
+                    customer_ID: props.customer_ID,
+                    ptsDeduct: props.ptsDeduct,
+                    ptsEarned: props.ptsEarned,
+                    purchasedProducts: props.purchasedProducts,
+                    redeemedRewards: props.redeemedRewards,
+                    store_ID: props.store_ID,
+                    trans_ID: props.trans_ID,
+                    total: props.total,
+                    date: props.date
+                }
+            )}
+        >
             <View style={styles.sukiContainer}>
                 <Text style={styles.sukiName}>Transaction ID: {props.trans_ID}</Text>
                 <Text style={styles.sukiInfo}>Total Amount: {props.total}</Text>
                 <Text style={styles.sukiInfo}>Points Earned: {props.ptsEarned}</Text>
                 <Text style={styles.sukiInfo}>Points Used: {props.ptsDeduct}</Text>
+                <Text style={styles.sukiInfo}>Date: {date.toString()}</Text>
                 {props.purchasedProducts.map((store, key) =>{
                     <Text style={styles.sukiInfo}>{store.productTitle, store.productPrice, store.quantity, store.total}</Text>
                 })}
@@ -28,7 +42,7 @@ function ClientAllSukiTransactions(props) {
                     <Text style={styles.sukiInfo}>{store[key]}</Text>
                 })}
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }
 
@@ -66,7 +80,7 @@ const styles = StyleSheet.create({
     },
     sukiContainer:{
         flexDirection: "column",
-        width: wp('50%'),
+        width: wp('90%'),
     },
     sukiImage: {
         alignSelf: "center",

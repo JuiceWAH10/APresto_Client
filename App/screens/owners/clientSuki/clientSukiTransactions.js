@@ -75,6 +75,7 @@ function clientSukiTransactions(props) {
                             store_ID = {itemData.item.store_ID}
                             trans_ID = {itemData.item.trans_ID}
                             total = {itemData.item.totalAmount}
+                            date = {itemData.item.date}
                         />
                     }
                 />

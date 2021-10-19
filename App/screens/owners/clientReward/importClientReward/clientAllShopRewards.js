@@ -38,7 +38,7 @@ function clientAllShopRewards(props) {
                 </View>
                 <View style={styles.itemDetailsWrapValuesSmall}>
                     <Icon3 style={styles.itemDetailsIcon} name="wallet" size={18} />
-                    <Text style={styles.itemDetailsText}>Sold: 23</Text>
+                    <Text style={styles.itemDetailsText}>Sold: {props.sold}</Text>
                 </View>
             </View>
             {/* <View style={styles.itemDetailsWrapValues}>
@@ -75,10 +75,20 @@ function clientAllShopRewards(props) {
                     <Icon2 name="pencil" size={20} color="#fff" />
                     <Text style={styles.buttonLabel}>Edit Info</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => "pressed"} >
-                    <Icon3 name="archive" size={20} color="#fff" />
-                    <Text style={styles.buttonLabel}>Delist</Text>
-                </TouchableOpacity>
+                {props.status != "available"?
+                    
+                    <TouchableOpacity style={styles.button} onPress={() => crud.updateRewardStatus(props.reward_ID, "available")} >
+                        <Icon3 name="archive" size={20} color="#fff" />
+                        <Text style={styles.buttonLabel}>Relist</Text>
+                    </TouchableOpacity>
+                    
+                    :
+
+                    <TouchableOpacity style={styles.button} onPress={() => crud.updateRewardStatus(props.reward_ID, "delisted")} >
+                        <Icon3 name="archive" size={20} color="#fff" />
+                        <Text style={styles.buttonLabel}>Delist</Text>
+                    </TouchableOpacity>
+                }
                 <TouchableOpacity style={styles.button} onPress={() =>  crud.deleteReward(props.reward_ID, props.imgLink, props.shop_ID, props.product_Name)} >
                     <Icon2 name="trash" size={20} color="#fff" />
                     <Text style={styles.buttonLabel}>Delete</Text>

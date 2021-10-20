@@ -46,21 +46,27 @@ function clientSukiTransactions(props) {
     return (
         <SafeAreaView style={styles.droidSafeArea}>
 
-            {/* Top Navigation and Search Bar */}
-            <View style={styles.topNav}>
+             {/* Top Navigation */}
+             <View style={styles.topNav}>
                 <TouchableOpacity onPress={() => navigation.goBack()} >
-                    <Icon2 style={styles.backButton} name="left" size={30} color="#fff" />
-                </TouchableOpacity>   
-                <Searchbar
-                        style={styles.searchBar}
-                        placeholder="Search"
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
-                />
-            </View>
-            {/* End of Top Nav and Search Bar */}
+                    <Icon2 name="left" size={30} color="#ee4b43" />
+                </TouchableOpacity>
+                <Text style={styles.title}>Transaction Summary</Text>   
+            </View>  
+            {/* End of Top Navigation */}
 
             <ScrollView style={styles.container}>
+                {/* Banner */}
+                <ImageBackground style={styles.bannerBgImage}
+                        imageStyle={{ borderRadius: 30}}
+                        source={require('../../../assets/bannerImages/banner_Suki.jpg')}>
+                        <View style={styles.darken}>
+                            <Text style={styles.bannerLabel}>Suki</Text>
+                            <Text style={styles.bannerLabel2}>Transactions</Text>
+                            <Text style={styles.bannerLabelSmall}>Keep Track of your Sukis</Text>
+                        </View>    
+                </ImageBackground>
+                {/* End of Banner */}
                 <FlatList
                     style={styles.container}
                     data={transList}
@@ -80,17 +86,6 @@ function clientSukiTransactions(props) {
                     }
                 />
                 
-                {/* Banner */}
-                {/* <ImageBackground style={styles.bannerBgImage}
-                    imageStyle={{ borderRadius: 30}}
-                    source={require('../../assets/bannerImages/banner_Suki.jpg')}>
-                    <View style={styles.darken}>
-                        <Text style={styles.bannerLabel}>Sukis are essential for your business growth</Text>
-                        <Text style={styles.bannerLabelSmall}>You can know who among your suki loves you most.</Text>
-                    </View>    
-                </ImageBackground> */}
-                {/* End of Banner */}
-                
             </ScrollView>
 
         </SafeAreaView>
@@ -104,26 +99,41 @@ const styles = StyleSheet.create({
     bannerBgImage: {
         alignSelf: "center",
         borderRadius: 30,
-        marginBottom: 15,
+        marginBottom: 10,
+        marginTop: 10,
         height: 150,
         width: wp('90%'),
     },
     bannerLabel: {
-        textAlign: "center",
-        marginTop: 35,
-        color: "#29312e",
-        fontSize: 20,
+        textAlign: "right",
+        marginTop: 30,
+        color: "#fff",
+        fontSize: 25,
+        fontWeight: "bold",
+        paddingLeft: wp('5%'),
+        paddingRight: wp('5%'),
+    },
+    bannerLabel2: {
+        textAlign: "right",
+        marginTop: -10,
+        color: "#fff",
+        fontSize: 25,
         fontWeight: "bold",
         paddingLeft: wp('5%'),
         paddingRight: wp('5%'),
     },
     bannerLabelSmall: {
-        textAlign: "center",
+        textAlign: "right",
         marginTop: 2,
-        color: "#29312e",
-        fontSize: 12,
+        color: "#fff",
+        fontSize: 14,
         paddingLeft: wp('5%'),
         paddingRight: wp('5%'),
+    },
+    darken:{
+        // flex: 1,
+        // backgroundColor: 'rgba(0,0,0,0.12)',
+        // borderRadius: 30,
     },
     darken:{
         flex: 1,
@@ -133,8 +143,6 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         alignSelf: "center",
-        // borderWidth: 1,
-        // borderColor: "red",
         width: wp('100%'),
     },
     droidSafeArea: {
@@ -143,27 +151,24 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: 'white',
     },
-    searchBar: {
-        // alignSelf: "center",
-        color: "#fd4140",
-        width: wp('80%'),
-        borderColor: "#fd4140",
-        marginBottom: 10,
-        marginTop: 5,   
+    title: {
+        color: "#ee4b43",
+        textAlign: "center",
+        marginBottom: 5,
+        marginTop: 5,
+        fontSize: 20,
+        fontWeight: "bold"
     },
     topNav: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-        // height: 40,
-        width: wp('100%'),
         paddingLeft: 10,
-        paddingRight: wp('5%'),
-        // paddingTop: 5,
-
+        paddingRight: 10,
         paddingTop: 8,
+        flexDirection: "row",
+        justifyContent: "space-between",
         marginBottom: 5,
 
-        backgroundColor: '#ee4b43',
+        backgroundColor: 'white',
+        height: 50,
         shadowColor: "#000",
         shadowOffset: {
         width: 0,

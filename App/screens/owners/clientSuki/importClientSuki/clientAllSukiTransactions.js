@@ -30,7 +30,8 @@ function ClientAllSukiTransactions(props) {
             )}
         >
             <View style={styles.sukiContainer}>
-                <Text style={styles.sukiName}>Transaction ID: {props.trans_ID}</Text>
+                <Text style={styles.sukiNameTitle}>Transaction ID</Text>
+                <Text style={styles.sukiName}>{props.trans_ID}</Text>
                 <Text style={styles.sukiInfo}>Total Amount: {props.total}</Text>
                 <Text style={styles.sukiInfo}>Points Earned: {props.ptsEarned}</Text>
                 <Text style={styles.sukiInfo}>Points Used: {props.ptsDeduct}</Text>
@@ -98,8 +99,14 @@ const styles = StyleSheet.create({
     sukiName: {
         alignSelf: "center",
         marginBottom: 2,
-        marginTop: 6,
+        marginTop: 2,
         fontSize: 18,
+        fontWeight: "bold"
+    },
+    sukiNameTitle: {
+        alignSelf: "center",
+        marginTop: 2,
+        fontSize: 16,
         fontWeight: "bold"
     },
     sukiStatus: {

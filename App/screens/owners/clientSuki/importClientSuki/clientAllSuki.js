@@ -22,7 +22,7 @@ function clientAllSuki(props) {
                 <Text style={styles.sukiName}>{props.username}</Text>
                 <Text style={styles.sukiInfo}>Points: {props.points.toFixed(2)}</Text>
                 <Text style={styles.sukiInfo}>Used Points: {props.points_Used.toFixed(2)}</Text>
-                <TouchableOpacity 
+                <TouchableOpacity style={styles.sukiButton}
                     onPress={() => navigation.navigate('clientSukiTransactions', 
                         {
                             customer_ID: props.customer_ID,
@@ -36,7 +36,7 @@ function clientAllSuki(props) {
                         })
                     }
                 >
-                    <Text style={styles.sukiInfo}>Transactions: {props.transactions}</Text>
+                    <Text style={styles.sukiButtonLabel}>Transactions: {props.transactions}</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     sukiInfo: {
         alignSelf: "center",
         fontSize: 14,
-        marginRight: 10
+        marginRight: 10,
     },
     sukiNameTitle: {
         alignSelf: "center",
@@ -110,6 +110,21 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         fontSize: 14,
         fontWeight: "bold"
+    },
+    sukiButton: {
+        alignSelf: "center",
+        borderColor: "#071964",
+        borderRadius: 30,
+        borderWidth: 1,
+        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: 'space-evenly',
+        width: 100,
+        height: 35,
+    },
+    sukiButtonLabel: {
+        color: "#071964",
+        fontSize: 12
     },
 })
 export default clientAllSuki;

@@ -3,6 +3,7 @@ import firebase from "firebase";
 import Toast from 'react-native-toast-message';
 import React, {useState} from 'react';
 
+import * as tulak from './notifications';
 import Products from '../models/products';
 
 
@@ -458,6 +459,7 @@ export function updateProductQuantity(product_ID, quantity){
             if(!newQuantity > 0){
                 alert("0 quantity,delisted");
                 transaction.update(ref, {quantity: 0, status: "delisted"});
+                tulak.sendPushNotification();
             }
             else{
                 transaction.update(ref, {quantity: firebase.firestore.FieldValue.increment(qty)})

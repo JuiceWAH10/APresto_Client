@@ -7,13 +7,15 @@ export const AuthProvider = ({children}) => {
 
 //user state
 const [user, setUser] = useState(null);
+const [expoToken, setExpoToken] = useState('');
 
 return(
-
     <AuthContext.Provider
         value={{ 
             user, 
             setUser,
+            expoToken,
+            setExpoToken,
             //login function to have access
             login: async(email, password) => {
                 try{

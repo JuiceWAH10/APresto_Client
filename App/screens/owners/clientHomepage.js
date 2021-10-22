@@ -9,6 +9,7 @@ import { AuthContext } from '../../functions/authProvider';
 import { StoreContext } from '../../functions/storeProvider';
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 import * as crud from '../../functions/firebaseCRUD';
+import * as tulak from '../../functions/notifications';
 import Dialog from "react-native-dialog";
 
 function clientHomepage(props) {
@@ -35,6 +36,10 @@ function clientHomepage(props) {
         logout();
         setVisible(false);
     };
+
+    useEffect(()=>{
+        tulak.registerForPushNotificationsAsync();
+    }, []);
 
     useEffect(() => {
         const uID = user.uid;

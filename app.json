@@ -5,7 +5,27 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./local/assets/notification-icon.png",
+          "color": "#ffffff",
+          "sounds": [
+            "./local/assets/notification-sound.wav",
+            "./local/assets/notification-sound-other.wav"
+          ],
+          "mode": "production"
+        }
+      ]
+    ],
+    "android": {
+      "package": "com.APresto.APresto_Client"
+    }
+  },
+  "android": {
+    "googleServicesFile": "./google-services.json"
   },
   "name": "APresto_Client"
 }

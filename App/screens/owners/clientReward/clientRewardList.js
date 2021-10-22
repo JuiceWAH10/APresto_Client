@@ -23,7 +23,6 @@ import ClientAllShopRewards from '././importClientReward/clientAllShopRewards';
 
 function clientRewardList(props) {
     const [searchQuery, setSearchQuery] = React.useState('');
-    const onChangeSearch = query => setSearchQuery(query);
     const navigation = useNavigation();
 
     const {store_ID} = props.route.params;
@@ -33,6 +32,19 @@ function clientRewardList(props) {
     //const rewards = useSelector(state => state.rewards.allRewards);
     const [refRews, setRefRews] = React.useState([]); //for saving unfiltered data from firestore
     const [rewards, setRewards] = React.useState([]);
+
+    const onChangeSearch = (query) => {
+        if(query != " "){
+            setRewards(
+                refRews.filter(shop => {
+                    return shop.reward_Name.toLowerCase().includes(query.toLowerCase()) || shop.description.toLowerCase().includes(query.toLowerCase()) || shop.status.toLowerCase().includes(query.toLowerCase())
+                })
+            );       
+        }
+        if(query==""){
+            setRewards(refRews);
+        }
+    }
 
         React.useEffect(()=>{
             const subscriber = firebase.firestore()
@@ -84,8 +96,7 @@ function clientRewardList(props) {
                 <Searchbar
                         style={styles.searchBar}
                         placeholder="Search"
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
+                        onChangeText={(e)=>onChangeSearch(e)}
                 />
             </View>
             {/* End of Top Nav and Search Bar */}

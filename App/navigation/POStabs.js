@@ -49,6 +49,7 @@ function POStabs(props){
             const subscriber = firebase.firestore()
             .collection('Products')
             .where("shop_ID","==",store_ID)
+            .where("status", "==", "available")
             .onSnapshot(querySnapshot => {
                 const prod = [];
                 querySnapshot.forEach(function (product){         
@@ -124,6 +125,7 @@ function POStabs(props){
             const subscriber = firebase.firestore()
             .collection('Rewards')
             .where("shop_ID","==",store_ID)
+            .where("status", "==", "available")
             .onSnapshot(querySnapshot => {
                 const prod = [];
                 querySnapshot.forEach(function (product){         

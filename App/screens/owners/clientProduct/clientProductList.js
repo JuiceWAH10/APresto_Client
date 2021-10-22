@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { 
     ImageBackground,
     LogBox,
@@ -12,7 +12,7 @@ import {
     FlatList
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import Icon2 from 'react-native-vector-icons/AntDesign';
+import Icon2 from 'react-native-vector-icons/AntDesign';    
 import { useNavigation } from '@react-navigation/native';
 import { Searchbar } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -25,9 +25,8 @@ import ClientAllShopItems from '././importClientProduct/clientAllShopItems';
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 
 function clientProductList(props) {
-    const [searchQuery, setSearchQuery] = React.useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const {store_ID} = props.route.params;
-    const onChangeSearch = query => setSearchQuery(query);
     const navigation = useNavigation();
 
     const dispatch = useDispatch();
@@ -35,10 +34,23 @@ function clientProductList(props) {
     //const products = useSelector(state => state.products.allProducts);
 
     //fetch data from firestore
-    const [refProds, setRefProds] = React.useState([]); //for saving unfiltered data from firestore
-    const [products, setProducts] = React.useState([]);
+    const [refProds, setRefProds] = useState([]); //for saving unfiltered data from firestore
+    const [products, setProducts] = useState([]);
 
-        React.useEffect(()=>{
+    const onChangeSearch = (query) => {
+        if(query != " "){
+            setProducts(
+                refProds.filter(shop => {
+                    return shop.product_Name.toLowerCase().includes(query.toLowerCase()) || shop.description.toLowerCase().includes(query.toLowerCase()) || shop.status.toLowerCase().includes(query.toLowerCase())
+                })
+            );       
+        }
+        if(query==""){
+            setProducts(refProds);
+        }
+    }
+
+        useEffect(()=>{
             const subsciber = firebase.firestore()
             .collection('Products')
             .where("shop_ID","==",store_ID)
@@ -91,8 +103,7 @@ function clientProductList(props) {
                 <Searchbar
                         style={styles.searchBar}
                         placeholder={'Search'}
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
+                        onChangeText={(e) => onChangeSearch(e)}
                 />
             </View>
             {/* End of Top Nav and Search Bar */}

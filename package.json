@@ -36,6 +36,7 @@
     "react-native-gesture-handler": "~1.10.2",
     "react-native-pager-view": "5.0.12",
     "react-native-paper": "^4.9.2",
+    "react-native-push-notification": "^8.1.1",
     "react-native-reanimated": "~2.2.0",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "3.2.0",
@@ -50,6 +51,7 @@
     "react-native-web": "~0.13.12",
     "react-qr-code": "^2.0.2",
     "react-redux": "^7.2.4",
+    "react-usestateref": "^1.0.8",
     "validator": "^13.6.0"
   },
   "devDependencies": {

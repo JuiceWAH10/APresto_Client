@@ -447,12 +447,24 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
 }
 
 export function updateProductQuantity(product_ID, quantity){
-    const qty = Math.abs(quantity) * -1
-    firebase.firestore().collection('Products')
-    .doc(product_ID)
-    .update({
-        quantity: firebase.firestore.FieldValue.increment(qty)
+    const db = firebase.firestore();
+    const ref = db.collection('Products').doc(product_ID);
+
+    const qty = Math.abs(quantity) * -1;
+
+    db.runTransaction((transaction)=>{
+        return transaction.get(ref).then((refDoc)=>{
+            var newQuantity = refDoc.quantity + qty;
+            if(!newQuantity > 0){
+                alert("0 quantity,delisted");
+                transaction.update(ref, {quantity: 0, status: "delisted"});
+            }
+            else{
+                transaction.update(ref, {quantity: firebase.firestore.FieldValue.increment(qty)})
+            }
+        })
     })
+    .catch((err)=> console.error(err, " bobo mo"))
 }
 
 export function updateProductSold(product_ID, quantity){
@@ -464,12 +476,24 @@ export function updateProductSold(product_ID, quantity){
 }
 
 export function updateRewardQuantity(reward_ID, quantity){
+    const db = firebase.firestore();
+    const ref = db.collection('Rewards').doc(reward_ID);
+
     const qty = Math.abs(quantity) * -1
-    firebase.firestore().collection('Rewards')
-    .doc(reward_ID)
-    .update({
-        quantity: firebase.firestore.FieldValue.increment(qty)
+
+    db.runTransaction((transaction)=>{
+        return transaction.get(ref).then((refDoc)=>{
+            var newQuantity = refDoc.quantity + qty;
+            if(!newQuantity > 0){
+                alert("0 quantity,delisted");
+                transaction.update(ref, {quantity: 0, status: "delisted"});
+            }
+            else{
+                transaction.update(ref, {quantity: firebase.firestore.FieldValue.increment(qty)})
+            }
+        })
     })
+    .catch((err)=> console.error(err, " bobo mo"))
 }
 
 export function updateRewardSold(reward_ID, quantity){

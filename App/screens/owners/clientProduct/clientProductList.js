@@ -18,6 +18,8 @@ import { Searchbar } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import * as firebase from 'firebase';
 
+import { LocalNotification } from '../../../functions/notification';
+
 import { useDispatch, useSelector } from 'react-redux';
 
 import ClientAllShopItems from '././importClientProduct/clientAllShopItems';
@@ -110,7 +112,7 @@ function clientProductList(props) {
 
             {/* Header */}
             <View style={styles.headContainer}>
-                <TouchableOpacity onPress={liveProducts} >
+                <TouchableOpacity onPress={LocalNotification} >
                     <View style={styles.headIndivContainer}>
                         <Text style={styles.headLabelSmall}>Live</Text>
                         <Icon style={styles.headIcons} name="box" size={35} color="#29312e" />

@@ -257,7 +257,7 @@ function clientEditProfile(props) {
                             //Re-enter password input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'lock' }}
-                            //secureTextEntry={true}
+                            secureTextEntry={true}
                             placeholder="Re-enter Password"
                             onChangeText={(text) => setTextPasswordReentry(text)}
                             value={passwordReentry}

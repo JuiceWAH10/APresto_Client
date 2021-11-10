@@ -67,7 +67,7 @@ function SelectCustomer(props) {
 
                     <Text style={styles.qrPick}>Pick a suki</Text>
                        
-                    <Picker
+                    <Picker style={styles.pick}
                         style={{ height: 10, width: 180 }}
                         selectedValue={pickedSuki}
                         onValueChange={(itemValue, itemIndex) =>
@@ -78,25 +78,27 @@ function SelectCustomer(props) {
                             return(<Picker.Item label={suki.username} value={suki} key={key}/>)
                         })}  
                     </Picker>
-                    <View style={styles.buttonContainer} > 
-                        <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS(pickedSuki.customer_ID, pickedSuki.suki_ID, pickedSuki.username, pickedSuki.points) }>
-                            <Text style={styles.buttonLabel}>Sell to Suki</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <View style={styles.allbuttonContainer} > 
+                        <View style={styles.buttonContainer} > 
+                            <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS(pickedSuki.customer_ID, pickedSuki.suki_ID, pickedSuki.username, pickedSuki.points) }>
+                                <Text style={styles.buttonLabel}>Sell to Suki</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                    {/* <Text style={styles.qrLabel}>Not on list?</Text> */}
-                    <View style={styles.buttonContainer} > 
-                        <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('QRCodeScanner', {store_ID:store_ID, owner_ID: owner_ID, ptsPerAmount: ptsPerAmount}) }>
-                            <Text style={styles.buttonLabel}>Scan Customer's QR</Text>
-                        </TouchableOpacity> 
-                    </View>
+                        {/* <Text style={styles.qrLabel}>Not on list?</Text> */}
+                        <View style={styles.buttonContainer} > 
+                            <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('QRCodeScanner', {store_ID:store_ID, owner_ID: owner_ID, ptsPerAmount: ptsPerAmount}) }>
+                                <Text style={styles.buttonLabel}>Scan Customer's QR</Text>
+                            </TouchableOpacity> 
+                        </View>
 
-                    <View style={styles.buttonContainer} > 
-                        <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS("Guest", "Guest", "Guest", 0) }>
-                            <Text style={styles.buttonLabel}>Sell to Guest</Text>
-                        </TouchableOpacity> 
-                    </View>
-                    <Text style={styles.qrLabel}>Customer is a guest?</Text>
+                        <View style={styles.buttonContainer} > 
+                            <TouchableOpacity style={styles.button} onPress={ ()=>navigateToPOS("Guest", "Guest", "Guest", 0) }>
+                                <Text style={styles.buttonLabel}>Sell to Guest</Text>
+                            </TouchableOpacity> 
+                        </View>
+                        <Text style={styles.qrLabel}>Customer is a guest?</Text>
+                    </View>    
                     
                 </View>
             </ImageBackground>
@@ -111,6 +113,27 @@ const styles = StyleSheet.create({
     droidSafeArea: {
         flex: 1,
         paddingTop: Platform.OS === 'android' ? 32 : 0
+    },
+    pick: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        alignSelf: "center",
+        borderRadius: 30,
+        marginTop: -20,
+        marginBottom: 20,
+        width: '90%',
+        height: hp('6%'),
+    },
+    allbuttonContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        alignSelf: "center",
+        borderRadius: 30,
+        justifyContent: 'space-between',
+        marginTop: 180,
+        marginBottom: 20,
+        width: '90%',
+        height: hp('6%'),
     },
     button: {
         alignItems: 'center',
@@ -128,8 +151,8 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         borderRadius: 30,
         justifyContent: 'space-between',
-        marginTop: 10,
-        marginBottom: 20,
+        marginTop: 5,
+        marginBottom: 5,
         width: '90%',
         height: hp('6%'),
     },
@@ -146,27 +169,24 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         backgroundColor: '#fff',
         borderRadius: 30,
-        height: 400,
+        height: 450,
         width: wp('90%'),
         alignItems: "center",
         paddingTop: hp('2%'),
         paddingBottom: hp('2%'),
-        top: hp('20%')
+        top: hp('10%')
     },
     qrLabel:{
         textAlign: "center",
         fontSize: 14,
-        marginTop: 5,
+        marginTop: 14,
         marginBottom: 5
     },
     qrPick:{
         textAlign: "center",
         fontSize: 20,
         marginTop: 10,
-        marginBottom: 10,
         fontWeight: "bold",
-        
-
     },
     topNav: {
         flexDirection: "row",

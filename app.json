@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "APresto_Client",
-    "slug": "APresto_Client",
+    "name": "APresto Shop",
+    "icon": "App/assets/images/Logo_Client.png",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
-  },
-  "name": "APresto_Client"
+    "slug": "apresto-shop",
+    "ios": {
+      "bundleIdentifier": "com.apresto.aprestoshop",
+      "buildNumber": "1.0.0"
+    }
+   }
 }

@@ -5,8 +5,10 @@ import Icon2 from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import firebase, { auth } from 'firebase';
-import { AuthContext } from '../../functions/authProvider';
+import { useSelector } from 'react-redux';
+import { AuthContext} from '../../functions/authProvider';
 import { StoreContext } from '../../functions/storeProvider';
+
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 import * as crud from '../../functions/firebaseCRUD';
 import Dialog from "react-native-dialog";
@@ -20,10 +22,20 @@ function clientHomepage(props) {
 
     const [visible, setVisible] = useState(false);
 
+    const [show, setShow] = useState(Boolean);
+
     const [sales, setSales] = useState({});
+
+    const [delist, setDel] = useState("");
+
+    var strDel = "";
   
     const showDialog = () => {
         setVisible(true);
+    };
+
+    const showDialog2 = () => {
+        setShow(true);
     };
 
     const handleCancel = () => {
@@ -35,6 +47,42 @@ function clientHomepage(props) {
         logout();
         setVisible(false);
     };
+
+    const handleOK = () => {
+        setDel([]);
+        deleteDelisted();
+    };
+
+    const deleteDelisted = () =>{
+        firebase.firestore()
+        .collection('Delisted')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.docs.forEach(snapshot => {
+                snapshot.ref.delete();
+            });
+        });
+    }
+
+    useEffect(() => {
+        setDel([]);
+        firebase.firestore()
+        .collection('Delisted')
+        .onSnapshot(querySnapshot => {
+            const del = [];
+            querySnapshot.forEach(function (product){    
+                if(!(del.includes(product.data().item))){
+                    del.push(product.data().item)
+                }
+            });
+            console.log("del " + del);
+            if(del.length!=0){
+                strDel = del.join(", ");
+                setDel(strDel);
+                console.log("strdel " + strDel);
+            }
+        });
+    },[])
 
     useEffect(() => {
         const uID = user.uid;
@@ -100,7 +148,12 @@ function clientHomepage(props) {
                                 <Dialog.Title style={{fontSize: 16, color: '#071964'}}>Do you really want to logout?</Dialog.Title>
                                 <Dialog.Button style={{marginRight: 15, marginLeft: 35, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Cancel" onPress={handleCancel} />
                                 <Dialog.Button style={{marginRight: 30, marginLeft: 20, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Logout" onPress={handleLogout} />
-                            </Dialog.Container>       
+                            </Dialog.Container>
+                            <Dialog.Container contentStyle={{paddingTop: 12, paddingRight: 20, alignItems: 'center', justifyContent:'center', borderRadius: 15}} visible={delist && delist.length}>
+                                <Dialog.Title style={{fontSize: 16, color: '#071964'}}>Delisted</Dialog.Title>
+                                <Dialog.Description>The following items has been delisted: {delist}</Dialog.Description>
+                                <Dialog.Button style={{marginRight: 30, marginLeft: 20, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="OK" onPress={handleOK} />
+                            </Dialog.Container>      
                         {/* End of Profile Informations */}
                         </View>                    
                     </View>    

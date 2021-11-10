@@ -1,10 +1,7 @@
 //iedit pa to
 import firebase from "firebase";
 import Toast from 'react-native-toast-message';
-import React, {useState} from 'react';
-
-import Products from '../models/products';
-
+import React, {useContext} from 'react';
 
 /*
 export async function getStoreList(){
@@ -164,7 +161,7 @@ export function createProduct(prodName, prodDes, prodPrice, prodQty, status, img
 export function createReward(rewName, rewDes, rewPoints, rewQty, status, imgLink, shop_ID){
 
     const db = firebase.firestore();
-    const ref = db.collection('Products').doc();
+    const ref = db.collection('Rewards').doc();
     const id = ref.id;
 
     <Toast ref={Toast.setRef} />
@@ -359,25 +356,29 @@ export function editStore(imgLink, store_ID, address, contact_Number, ptsPerAmou
 }
 
 export function addCustomerPoints(suki_ID, ptsEarned){
-    firebase.firestore()
-    .collection('Suki')
-    .doc(suki_ID)
-    .update({
-        points: firebase.firestore.FieldValue.increment(ptsEarned)
-    })
-    .catch()
+    if(suki_ID !== "Guest"){
+        firebase.firestore()
+        .collection('Suki')
+        .doc(suki_ID)
+        .update({
+            points: firebase.firestore.FieldValue.increment(ptsEarned)
+        })
+        .catch()
+    }
 }
 
 export function subtCustomerPoints(suki_ID, ptsDeduct){
-    const subt = Math.abs(ptsDeduct) * -1
-    firebase.firestore()
-    .collection('Suki')
-    .doc(suki_ID)
-    .update({
-        points: firebase.firestore.FieldValue.increment(subt),
-        points_Used: firebase.firestore.FieldValue.increment(ptsDeduct)
-    })
-    .catch()
+    const subt = Math.abs(ptsDeduct) * -1;
+    if(suki_ID !== "Guest"){
+        firebase.firestore()
+        .collection('Suki')
+        .doc(suki_ID)
+        .update({
+            points: firebase.firestore.FieldValue.increment(subt),
+            points_Used: firebase.firestore.FieldValue.increment(ptsDeduct)
+        })
+        .catch()
+    }
 }
 
 export function addNewProductToSales(store_ID, product_Name){
@@ -423,7 +424,7 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
                 [product.productTitle]: firebase.firestore.FieldValue.increment(product.quantity)
             }
         }, {merge:true}),
-        updateProductQuantity(product.product_ID, product.quantity),
+        updateProductQuantity(product.product_ID, product.quantity, product.productTitle),
         updateProductSold(product.product_ID, product.quantity)}
     )
 
@@ -434,7 +435,7 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
             } 
         }, {merge:true}),
         rewTally = rewTally + reward.quantity,
-        updateRewardQuantity(reward.reward_ID, reward.quantity),
+        updateRewardQuantity(reward.reward_ID, reward.quantity, reward.productTitle),
         updateRewardSold(reward.reward_ID, reward.quantity)}
     )
 
@@ -446,23 +447,39 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
     }, {merge:true})
 }
 
-export function updateProductQuantity(product_ID, quantity){
+export function addDelisted(item){
+    const db = firebase.firestore();
+    const ref = db.collection('Delisted').doc();
+    const id = ref.id;
+
+    firebase.firestore()
+    .collection('Delisted')
+    .doc(id)
+    .set({
+        item: item
+    })
+}
+
+export function updateProductQuantity(product_ID, quantity, productTitle){
     const db = firebase.firestore();
     const ref = db.collection('Products').doc(product_ID);
 
-    const qty = Math.abs(quantity) * -1;
-
     db.runTransaction((transaction)=>{
         return transaction.get(ref).then((refDoc)=>{
-            var newQuantity = refDoc.quantity + qty;
-            if(!newQuantity > 0){
-                alert("0 quantity,delisted");
-                transaction.update(ref, {quantity: 0, status: "delisted"});
+            console.log("refkwan " + refDoc.data().quantity + " kwan "+ quantity )
+            var newQuantity = refDoc.data().quantity - quantity;
+            console.log("nyukwantiti " + newQuantity);
+            if(newQuantity > 0){
+                transaction.update(ref, {quantity: newQuantity})
             }
             else{
-                transaction.update(ref, {quantity: firebase.firestore.FieldValue.increment(qty)})
+                addDelisted(productTitle);
+                transaction.update(ref, {quantity: 0, status: "delisted"});
             }
         })
+    })
+    .then(success => {
+
     })
     .catch((err)=> console.error(err, " bobo mo"))
 }
@@ -475,21 +492,20 @@ export function updateProductSold(product_ID, quantity){
     },{merge:true})
 }
 
-export function updateRewardQuantity(reward_ID, quantity){
+export function updateRewardQuantity(reward_ID, quantity, productTitle){
     const db = firebase.firestore();
     const ref = db.collection('Rewards').doc(reward_ID);
 
-    const qty = Math.abs(quantity) * -1
-
     db.runTransaction((transaction)=>{
         return transaction.get(ref).then((refDoc)=>{
-            var newQuantity = refDoc.quantity + qty;
-            if(!newQuantity > 0){
-                alert("0 quantity,delisted");
-                transaction.update(ref, {quantity: 0, status: "delisted"});
+            console.log("refkwan " + refDoc.data().quantity + " kwan "+ quantity );
+            var newQuantity = refDoc.data().quantity - quantity;
+            if(newQuantity > 0){
+                transaction.update(ref, {quantity: newQuantity})
             }
             else{
-                transaction.update(ref, {quantity: firebase.firestore.FieldValue.increment(qty)})
+                addDelisted(productTitle);
+                transaction.update(ref, {quantity: 0, status: "delisted"});
             }
         })
     })
@@ -505,12 +521,14 @@ export function updateRewardSold(reward_ID, quantity){
 }
 
 export function incrementSukiTrans(suki_ID){
-    firebase.firestore().collection('Suki')
-    .doc(suki_ID)
-    .update({
-        transactions: firebase.firestore.FieldValue.increment(1)
-    })
-    .catch()
+    if(suki_ID !== "Guest"){
+        firebase.firestore().collection('Suki')
+        .doc(suki_ID)
+        .update({
+            transactions: firebase.firestore.FieldValue.increment(1)
+        })
+        .catch()
+    }
 }
 
 export function incrementStoreTrans(store_ID){
@@ -543,7 +561,6 @@ export function afterTransAddNewSuki(customer_ID, totalAmount, ptsEarned, ptsDed
 }
 
 export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID){
-
     const db = firebase.firestore();
     const ref = db.collection('Transactions').doc();
     const id = ref.id;
@@ -571,10 +588,11 @@ export function recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, 
         subtCustomerPoints(suki_ID, ptsDeduct);
         updateSales(store_ID, purchasedProducts, redeemedRewards, totalAmount, ptsDeduct);
         incrementSukiTrans(suki_ID);
-        incrementStoreTrans(store_ID);
+        incrementStoreTrans(store_ID);       
     }).catch((error)=>{
         //error callback
         console.log('error ' , error)
     });
+    
     return id;
 }

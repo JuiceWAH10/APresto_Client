@@ -14,9 +14,6 @@ import { AuthProvider, AuthContext } from './App/functions/authProvider';
 import { StoreProvider, StoreContext } from './App/functions/storeProvider';
 
 //for reducers
-import productsReducer from './App/functions/productsReducer';
-import rewardsReducer from './App/functions/rewardsReducer';
-import shopReducer from './App/functions/shopReducer';
 import cartReducer from './App/functions/cartReducer';
 import rewCartReducer from './App/functions/rewardsCartReducer';
 import { createStore, combineReducers } from 'redux';
@@ -28,9 +25,6 @@ LogBox.ignoreLogs([
 
 // combine all reducers into one object
 const rootReducer = combineReducers({
-  shops: shopReducer,
-  products: productsReducer,
-  rewards: rewardsReducer,
   cart: cartReducer,
   rewCart: rewCartReducer
 });

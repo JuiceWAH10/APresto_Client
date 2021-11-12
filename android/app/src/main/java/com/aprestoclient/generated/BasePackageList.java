@@ -1,4 +1,4 @@
-package com.fsjbscs4a.APresto_Shops.generated;
+package com.aprestoclient.generated;
 
 import java.util.Arrays;
 import java.util.List;

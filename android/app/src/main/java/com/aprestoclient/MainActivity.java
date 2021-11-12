@@ -1,4 +1,4 @@
-package com.fsjbscs4a.APresto_Shops;
+package com.aprestoclient;
 
 import android.os.Bundle;
 

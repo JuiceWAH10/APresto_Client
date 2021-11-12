@@ -1,17 +1,11 @@
 {
   "expo": {
-    "name": "APresto Shops",
-    "icon": "./App/assets/images/Logo-Client.png",
+    "name": "APresto_Client",
     "slug": "APresto_Client",
     "version": "1.0.0",
-    "android": {
-      "package": "com.fsjbscs4a.APresto_Shops",
-      "versionCode": 1
-    },
     "assetBundlePatterns": [
       "**/*"
     ]
   },
-  "name": "APresto Shops"
+  "name": "APresto_Client"
 }
-

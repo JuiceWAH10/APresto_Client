@@ -251,6 +251,7 @@ export function readAllProducts(){
 
 //too slow needs adjustment
 export function updateProduct(prod_ID, prodName, prodDes, prodPrice, prodQty, status, imgLink){
+    if(prodQty <= 0) status="delisted";
     firebase.firestore()
     .collection('Products')
     .doc(prod_ID)
@@ -265,6 +266,7 @@ export function updateProduct(prod_ID, prodName, prodDes, prodPrice, prodQty, st
 }
 
 export function updateReward(rewID, rewName, rewDes, rewPoints, rewQty, status, imgLink){
+    if(prodQty <= 0) status="delisted";
     firebase.firestore()
     .collection('Rewards')
     .doc(rewID)

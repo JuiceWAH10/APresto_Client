@@ -3,7 +3,7 @@
     "name": "APresto Shop",
     "icon": "App/assets/images/Logo-Client.png",
     "version": "1.0.0",
-    "slug": "apresto-shop",
+    "slug": "apresto-client",
     "ios": {
       "bundleIdentifier": "com.apresto.aprestoshop",
       "buildNumber": "1.0.0"

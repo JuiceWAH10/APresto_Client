@@ -10,15 +10,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
-function allShopItem(props) {
+function POSItems(props) {
     return (
         <View style={styles.container}>
             <Image style={styles.itemImage}
                     source={{uri:props.imgLink}}>
             </Image>
             <View style={styles.itemContainer}>
-                <Text style={styles.itemName}>{props.product_Name}</Text>
-                <Text style={styles.itemPrice}>{props.type=='product' ? 'Php '+ props.price.toFixed(2) : props.price + ' Pts'}</Text>
+                <Text style={styles.itemName}>{props.productTitle}</Text>
+                <Text style={styles.itemPrice}>{props.type=='product' ? 'Php '+ props.productPrice.toFixed(2) : props.productPrice + ' Pts'}</Text>
                 <Text style={styles.itemInfo}>{props.description}</Text>
                 <View style={styles.buttonsContainer}>
                     <TouchableOpacity style={styles.button} onPress={props.addToCart}>
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
         marginRight: 4      
     },
 })
-export default allShopItem;
+export default POSItems;

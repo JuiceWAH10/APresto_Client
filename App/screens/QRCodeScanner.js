@@ -81,11 +81,11 @@ export default function QRCodeScanner(props){
                 console.log("reward",redeemedRewards);
 
                 purchasedProducts.map((store, key) =>{
-                    dispatch(cartAction.addToCart(store))
+                    dispatch(cartAction.addFromCustomerP(store))
                 })
 
                 redeemedRewards.map((store, key) =>{
-                    dispatch(rewardCart.redeemToCart(store))
+                    dispatch(rewardCart.addFromCustomerR(store))
                 })
 
                 navigation.navigate('POS', 

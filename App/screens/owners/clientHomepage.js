@@ -149,7 +149,7 @@ function clientHomepage(props) {
                                 <Dialog.Button style={{marginRight: 15, marginLeft: 35, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Cancel" onPress={handleCancel} />
                                 <Dialog.Button style={{marginRight: 30, marginLeft: 20, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="Logout" onPress={handleLogout} />
                             </Dialog.Container>
-                            <Dialog.Container contentStyle={{paddingTop: 12, paddingRight: 20, alignItems: 'center', justifyContent:'center', borderRadius: 15}} visible={delist && delist.length}>
+                            <Dialog.Container contentStyle={{paddingTop: 12, paddingRight: 20, alignItems: 'center', justifyContent:'center', borderRadius: 15}} visible={delist.length > 0}>
                                 <Dialog.Title style={{fontSize: 16, color: '#071964'}}>Delisted</Dialog.Title>
                                 <Dialog.Description>The following items has been delisted: {delist}</Dialog.Description>
                                 <Dialog.Button style={{marginRight: 30, marginLeft: 20, fontSize: 16, fontWeight: "bold", color: '#071964'}} label="OK" onPress={handleOK} />

@@ -111,10 +111,7 @@ function clientEditProfile(props) {
                     resolve('wew');
                 });
             });
-            var imageRef = firebase.storage().refFromURL(imgLink);
-            imageRef.delete().then(() => {
-                console.log("Deleted")
-            }).catch(err => console.log(err))
+                
         })
     };
 
@@ -202,7 +199,7 @@ function clientEditProfile(props) {
                             leftIcon={{ type: 'font-awesome', name: 'money' }}
                             placeholder="Amount required per Points"
                             onChangeText={text => setShopPts(text)}
-                            value={ptsPerAmount}
+                            value={shopPts}
                             keyboardType="numeric"
                         />
                     </View>

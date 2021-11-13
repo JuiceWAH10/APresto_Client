@@ -137,8 +137,8 @@ function checkoutPage(props) {
                             type = {item.type}
                             quantity = {item.quantity} 
                             product_Name = {item.productTitle}
-                            price = {item.productPrice.toFixed(2)}
-                            total = {item.total.toFixed(2)}
+                            price = {item.productPrice}
+                            total = {item.total}
                             imgLink= {item.imgLink}
                             removeFromCart = {() => {
                                 dispatch(cartAction.removeFromCart(item.product_ID))
@@ -158,8 +158,8 @@ function checkoutPage(props) {
                             type = {item.type}
                             quantity = {item.quantity}
                             product_Name = {item.productTitle}
-                            price = {item.productPrice.toFixed(2)}
-                            total = {item.total.toFixed(2)}
+                            price = {item.productPrice}
+                            total = {item.total}
                             imgLink= {item.imgLink}
                             removeFromCart = {() => {
                                 dispatch(rewardCart.cancelRedeem(item.reward_ID))

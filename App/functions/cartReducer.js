@@ -1,6 +1,6 @@
 //for handling cart items
 import {React} from 'react';
-import { ADD_TO_CART, REMOVE_FROM_CART, CLEAR_CART } from '../functions/cartFunction';
+import { ADD_TO_CART, REMOVE_FROM_CART, CLEAR_CART, ADD_FROM_CUSTOMERP } from '../functions/cartFunction';
 import CartItem from '../models/cartItem';
 //import cartItems
 
@@ -16,6 +16,7 @@ export default (state = initialState, action) => {
             const prodPrice = addedProduct.price;
             const prodTitle = addedProduct.product_Name;
             const imgLink = addedProduct.imgLink;
+            const quantity = addedProduct.quantity;
             const type = addedProduct.type;
             let cartItem;
             
@@ -66,6 +67,14 @@ export default (state = initialState, action) => {
 
         case CLEAR_CART:
             return initialState;
+
+        case ADD_FROM_CUSTOMERP:
+            console.log("addP " + action.product.product_ID);
+            return{
+                ...state,
+                items: { ...state.items, [action.product.product_ID]: action.product },
+                totalAmount: state.totalAmount + action.product.productPrice
+            }
 
     }
     return state;

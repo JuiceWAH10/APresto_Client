@@ -4,6 +4,7 @@
 export const ADD_TO_CART = 'ADD_TO_CART';
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const CLEAR_CART = 'CLEAR_CART';
+export const ADD_FROM_CUSTOMERP = 'ADD_FROM_CUSTOMERP';
 
 // export functions
 export const addToCart = product => {
@@ -17,3 +18,7 @@ export const removeFromCart = productID => {
 export const clearCart = () => {
     return {type: CLEAR_CART}
 };
+
+export const addFromCustomerP = product =>{
+    return {type: ADD_FROM_CUSTOMERP, product: product}
+}

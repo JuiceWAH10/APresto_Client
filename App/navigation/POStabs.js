@@ -75,12 +75,13 @@ function POStabs(props){
                     <View style={styles.allItemsContainer}>
                         {/* List of all items !note that items in Popular Items is also included here* */}
                         <Text style={styles.allItemsTitle}>All Items</Text>
-                            {sortedProducts.map(item=>{
+                            {sortedProducts.map((item, key)=>{
                                 return(
                                     <POSItems
+                                        key={key}
                                         type={item.type}
-                                        product_Name = {item.product_Name}
-                                        price = {item.price}
+                                        productTitle = {item.product_Name}
+                                        productPrice = {item.price}
                                         description = {item.description}
                                         imgLink = {item.imgLink}
                                         addToCart = {() => {dispatch(cartAction.addToCart(item))}}
@@ -153,12 +154,13 @@ function POStabs(props){
                     <View style={styles.allItemsContainer}>
                         {/* List of all items !note that items in Popular Items is also included here* */}
                         <Text style={styles.allItemsTitle}>All Rewards</Text>
-                            {sortedProducts.map(item =>{
+                            {sortedProducts.map((item, key) =>{
                                 return(
                                     <POSItems
+                                        key={key}
                                         type={item.type}
-                                        product_Name = {item.reward_Name}
-                                        price = {item.pointsReq}
+                                        productTitle = {item.reward_Name}
+                                        productPrice = {item.pointsReq}
                                         description = {item.description}
                                         imgLink = {item.imgLink}
                                         addToCart = {() => {dispatch(rewardCart.redeemToCart(item))}}

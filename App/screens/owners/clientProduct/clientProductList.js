@@ -18,22 +18,14 @@ import { Searchbar } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import * as firebase from 'firebase';
 
-import { useDispatch, useSelector } from 'react-redux';
-
 import ClientAllShopItems from '././importClientProduct/clientAllShopItems';
 
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 
 function clientProductList(props) {
-    const [searchQuery, setSearchQuery] = useState('');
     const {store_ID} = props.route.params;
     const navigation = useNavigation();
 
-    const dispatch = useDispatch();
-    //(juswa) fetch data from redux store in App.js using useSelector. the data is from the state managed by reducers
-    //const products = useSelector(state => state.products.allProducts);
-
-    //fetch data from firestore
     const [refProds, setRefProds] = useState([]); //for saving unfiltered data from firestore
     const [products, setProducts] = useState([]);
 

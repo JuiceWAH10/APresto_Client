@@ -5,27 +5,25 @@ import Icon2 from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import firebase, { auth } from 'firebase';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { AuthContext} from '../../functions/authProvider';
 import { StoreContext } from '../../functions/storeProvider';
 
 LogBox.ignoreAllLogs();// Ignore all Logs! Remove this when coding
 import * as crud from '../../functions/firebaseCRUD';
+import * as cartAction from '../../functions/cartFunction';
+import * as rewardCart from '../../functions/rewardsCartFunction';
 import Dialog from "react-native-dialog";
 
 function clientHomepage(props) {
     const navigation = useNavigation();
-    const {user} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     const {store} = useContext(StoreContext);
-
-    const {logout} = useContext(AuthContext);
+    const dispatch = useDispatch();
 
     const [visible, setVisible] = useState(false);
-
     const [show, setShow] = useState(Boolean);
-
     const [sales, setSales] = useState({});
-
     const [delist, setDel] = useState("");
 
     var strDel = "";
@@ -85,13 +83,14 @@ function clientHomepage(props) {
     },[])
 
     useEffect(() => {
+        dispatch(cartAction.clearCart());
+        dispatch(rewardCart.clearCart());
         const uID = user.uid;
         console.log(uID);
         firebase.firestore()
             .collection('Sales')
             .doc(store.store_ID)
-            .get()
-            .then((result) => 
+            .onSnapshot((result) => 
                 {
                     setSales(result.data()); 
                     console.log("set saless " + sales + " from firestore " + result)
@@ -115,7 +114,7 @@ function clientHomepage(props) {
                     <View style={styles.profileDarken}>
                         {/* Profile Informations */}
                         <Text style={styles.profileShopName}>{store.store_Name}</Text>
-                        <Text style={styles.profileLabelSmall}>Followers 478</Text>
+                        <Text style={styles.profileLabelSmall}>{store.specialty}</Text>
                         <View style={styles.profileButtonContainer}>
                             <TouchableOpacity 
                                 style={styles.profileButton} 

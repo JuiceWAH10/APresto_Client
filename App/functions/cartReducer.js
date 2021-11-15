@@ -73,7 +73,7 @@ export default (state = initialState, action) => {
             return{
                 ...state,
                 items: { ...state.items, [action.product.product_ID]: action.product },
-                totalAmount: state.totalAmount + action.product.productPrice
+                totalAmount: state.totalAmount + (action.product.productPrice * action.product.quantity)
             }
 
     }

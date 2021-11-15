@@ -92,6 +92,7 @@ function checkoutPage(props) {
             var trans = crud.afterTransAddNewSuki(customer_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID, owner_ID, username);
         }
         else{
+            console.log("cp proceed " + customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID)
             var trans_ID = crud.recordTransaction(customer_ID, suki_ID, totalAmount, ptsEarned, ptsDeduct, purchasedProducts, redeemedRewards, store_ID);
         }
 
@@ -125,7 +126,7 @@ function checkoutPage(props) {
             
             <View style={[styles.formContainer, {flex:15}]}>
                 <ScrollView>
-            {!cartItems.length == 0 ? 
+            {cartItems.length > 0 ? 
                 <Text style={styles.cartTitle}>Products</Text>
                    
               :null
@@ -149,7 +150,7 @@ function checkoutPage(props) {
                 )}
                 
                 
-                {!rewCartItems.length == 0 ?
+                {rewCartItems.length > 0 ?
                     <Text style={styles.cartTitle}>Rewards</Text>
                 : null }
                 {rewCartItems.map(item =>{

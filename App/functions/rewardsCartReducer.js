@@ -70,11 +70,11 @@ export default (state = initialState, action) => {
             return initialState;
 
         case ADD_FROM_CUSTOMERR:
-            console.log("addP " + action.reward.product_ID);
+            console.log("addR " + action.reward.reward_ID);
             return{
                 ...state,
-                items: { ...state.rewItems, [action.reward.product_ID]: action.reward },
-                totalAmount: state.totalPoints + action.reward.productPrice
+                rewItems: { ...state.rewItems, [action.reward.reward_ID]: action.reward },
+                totalPoints: state.totalPoints + (action.reward.productPrice * action.reward.quantity)
             }
 
     }

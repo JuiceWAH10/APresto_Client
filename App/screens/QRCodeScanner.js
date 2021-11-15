@@ -74,7 +74,7 @@ export default function QRCodeScanner(props){
                 points = 0;
             }
         
-            if(qrData.QR_Type == "transaction"){
+            if(qrData.QR_Type == "transaction" && qrData.store_ID == store_ID){
                 let purchasedProducts = qrData.purchasedProducts;
                 let redeemedRewards = qrData.redeemedRewards;
                 console.log("product",purchasedProducts);
@@ -115,7 +115,7 @@ export default function QRCodeScanner(props){
                 );
             }
             else{
-                alert("Invalid: Please scan Transaction and Customer QR code only.")
+                alert("Invalid:\nQR code is from another store; or\nQR code does not belong to APresto.")
             }
         }
         catch(e){

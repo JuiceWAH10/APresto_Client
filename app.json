@@ -1,9 +1,9 @@
 {
   "expo": {
     "name": "APresto Shop",
-    "icon": "App/assets/images/Logo_Client.png",
+    "icon": "./App/assets/images/Logo-Client.png",
     "version": "1.0.0",
-    "slug": "apresto-shop-android-v1.0.0",
+    "slug": "APresto_Client",
     "ios": {
       "bundleIdentifier": "com.apresto.aprestoshop",
       "buildNumber": "1.0.0"

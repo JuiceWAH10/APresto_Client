@@ -11,7 +11,7 @@ import {
     FlatList
 } from 'react-native';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Searchbar } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import firebase from 'firebase';
@@ -19,12 +19,41 @@ import firebase from 'firebase';
 import ClientAllSuki from './importClientSuki/clientAllSuki';
 
 function clientSukiList(props) {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [sukiList, setSukiList] = useState([]);
-    const onChangeSearch = query => setSearchQuery(query);
     const navigation = useNavigation();
+    const isFocused = useIsFocused()
 
     const {owner_ID, store_ID} = props.route.params;
+
+    const [suki, setSuki] = useState([]);
+
+    const [refSukiList, setRefSukiList] = useState([]); //for saving unfiltered data from firestore
+    const [sukiList, setSukiList] = useState([]);
+
+    const onChangeSearch = (query) => {
+        if(query != " "){
+            setSukiList(
+                refSukiList.filter(sk => {
+                    return sk.username.toLowerCase().includes(query.toLowerCase()) || sk.points.toString().includes(query) || sk.points_Used.toString().includes(query)
+                })
+            );       
+        }
+        if(query==""){
+            setSukiList(refSukiList);
+        }
+    }
+
+    function getSuki(){
+        firebase.firestore()
+        .collection('Customers')
+        .onSnapshot(querySnapshot => {
+            const prod = [];
+            querySnapshot.forEach(function (product){         
+                prod.push(product.data());
+            });
+            setSuki(prod);
+            console.log("soke " + prod);
+        });
+    };
 
     useEffect(() => {
         firebase.firestore()
@@ -37,9 +66,10 @@ function clientSukiList(props) {
                 });
                 console.log(st);
                 setSukiList(st);
-                console.log(sukiList);
+                setRefSukiList(st);
+                getSuki();
             });
-    }, [])
+    }, [isFocused])
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -52,8 +82,7 @@ function clientSukiList(props) {
                 <Searchbar
                         style={styles.searchBar}
                         placeholder="Search"
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
+                        onChangeText={(e) => onChangeSearch(e)}
                 />
             </View>
             {/* End of Top Nav and Search Bar */}
@@ -71,6 +100,7 @@ function clientSukiList(props) {
                             username = {itemData.item.username}
                             transactions = {itemData.item.transactions}
                             store_ID = {store_ID}
+                            imgLink={suki.filter(obj => obj.customer_ID == itemData.item.customer_ID).map(x=> x.userImg)[0]}
                         />
                     }
                 />

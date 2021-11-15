@@ -15,7 +15,7 @@ function clientAllSuki(props) {
     return (
         <View style={styles.container}>
             <Image style={styles.sukiImage}
-                    source={require('../../../../assets/eat.jpg')}>
+                    source={{uri:props.imgLink}}>
             </Image>
             <View style={styles.sukiContainer}>
                 <Text style={styles.sukiNameTitle}>Suki Name:</Text>
@@ -36,7 +36,7 @@ function clientAllSuki(props) {
                         })
                     }
                 >
-                    <Text style={styles.sukiButtonLabel}>Transactions: {props.transactions}</Text>
+                    <Text style={styles.sukiButtonLabel}>Transactions</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -57,15 +57,15 @@ function clientHomepage(props) {
         .get()
         .then(querySnapshot => {
             querySnapshot.docs.forEach(snapshot => {
-                snapshot.ref.delete();
+                if(snapshot.data().store_ID == store.store_ID) snapshot.ref.delete();
             });
         });
     }
-
     useEffect(() => {
         setDel([]);
         firebase.firestore()
         .collection('Delisted')
+        .where("store_ID", "==", store.store_ID)
         .onSnapshot(querySnapshot => {
             const del = [];
             querySnapshot.forEach(function (product){    
@@ -92,11 +92,9 @@ function clientHomepage(props) {
             .doc(store.store_ID)
             .onSnapshot((result) => 
                 {
-                    setSales(result.data()); 
-                    console.log("set saless " + sales + " from firestore " + result)
+                    setSales(result.data());
                 }
             );
-        console.log("after " + sales);
     }, []);
     
     return (

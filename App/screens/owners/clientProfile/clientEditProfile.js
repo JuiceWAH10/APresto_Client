@@ -4,6 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Icon from 'react-native-vector-icons/AntDesign';
 import firebase from 'firebase';
 import { AuthContext } from '../../../functions/authProvider';
+import { StoreContext } from '../../../functions/storeProvider';
 import { Input } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import uuid from 'react-native-uuid';
@@ -17,16 +18,32 @@ function clientEditProfile(props) {
 
     //user state
     const {user} = useContext(AuthContext);
+    const {store, setStore} = useContext(StoreContext);
     const [userData, setUserData] = useState(null);
 
-    const {store_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
-
-    const [shopName, setTextStoreName] = React.useState(store_Name);
-    const [shopDetails, setTextShopDetails] = React.useState(specialty);
-    const [shopAddress, setTextShopAddress] = React.useState(address);
-    const [contactNo, setTextContactNo] = React.useState(contact_Number);
+    const {store_ID, owner_ID, store_Name, address, specialty, imgLink, ptsPerAmount, contact_Number} = props.route.params;
+    
+    const [shopName, setTextStoreName] = React.useState({
+        text: store_Name,
+        errorMessage: ""
+    });
+    const [shopDetails, setTextShopDetails] = React.useState({
+        text: specialty,
+        errorMessage: ""
+    });
+    const [shopAddress, setTextShopAddress] = React.useState({
+        text: address,
+        errorMessage: ""
+    });
+    const [contactNo, setTextContactNo] = React.useState({
+        text: contact_Number.toString(),
+        errorMessage: ""
+    });
     const [tags, setTextTags] = React.useState('');
-    const [shopPts, setShopPts] = React.useState(ptsPerAmount);
+    const [shopPts, setShopPts] = React.useState({
+        text: ptsPerAmount.toString(),
+        errorMessage: ""
+    });
     const [email, setTextEmail] = React.useState('');
     const [password, setTextPassword] = React.useState('');
     const [passwordReentry, setTextPasswordReentry] = React.useState('');
@@ -111,6 +128,15 @@ function clientEditProfile(props) {
                     resolve('wew');
                 });
             });
+            try{
+                var imageRef = firebase.storage().refFromURL(imgLink);
+                imageRef.delete().then(() => {
+                console.log("Deleted")
+            }).catch(err => console.log(err))
+            }catch(e){
+                console.log("error " + e);
+            }
+            
                 
         })
     };
@@ -142,7 +168,19 @@ function clientEditProfile(props) {
         await uploadImage(URI.link, imageUUID)
 
         console.log('from add function: ', image.gURL);
-        crud.editStore(image.gURL, store_ID, address, contact_Number, ptsPerAmount, specialty, store_Name);
+        crud.editStore(image.gURL, store_ID, shopAddress.text, contactNo.text, shopPts.text, shopDetails.text, shopName.text);
+        setStore( 
+            {
+                store_ID: store_ID,
+                owner_ID: store.owner_ID,
+                store_Name: shopName.text,
+                address: shopAddress.text,
+                specialty: shopDetails.text,
+                imgLink: image.gURL,
+                ptsPerAmount: shopPts.text,
+                contact_Number: contactNo.text
+            }
+        );
         navigation.goBack();
     };
 
@@ -177,8 +215,8 @@ function clientEditProfile(props) {
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'list-alt' }}
                             placeholder="Shop Name"
-                            onChangeText={text => setTextShopName(text)}
-                            value={shopName}
+                            onChangeText={text => setTextStoreName(state => ({...state,text}))}
+                            value={shopName.text}
                         />
                     </View>
                     <View style={styles.textView}>
@@ -188,8 +226,8 @@ function clientEditProfile(props) {
                             placeholder="Shop Details"
                             multiline={true}
                             scrollEnabled={true}
-                            onChangeText={text => setTextShopDetails(text)}
-                            value={shopDetails}
+                            onChangeText={text => setTextShopDetails(state => ({...state,text}))}
+                            value={shopDetails.text}
                         />
                     </View>
 
@@ -198,8 +236,8 @@ function clientEditProfile(props) {
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'money' }}
                             placeholder="Amount required per Points"
-                            onChangeText={text => setShopPts(text)}
-                            value={shopPts}
+                            onChangeText={text => setShopPts(state => ({...state,text}))}
+                            value={shopPts.text}
                             keyboardType="numeric"
                         />
                     </View>
@@ -209,8 +247,8 @@ function clientEditProfile(props) {
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'home' }}
                             placeholder="Address"
-                            onChangeText={text => setTextAddress(text)}
-                            value={address}
+                            onChangeText={text => setTextShopAddress(state => ({...state,text}))}
+                            value={shopAddress.text}
                         />
                     </View>
                     <View style={styles.textView}>
@@ -218,8 +256,8 @@ function clientEditProfile(props) {
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'phone' }}
                             placeholder="Contact Number"
-                            onChangeText={text => setTextContactNo(text)}
-                            value={contactNo}
+                            onChangeText={text => setTextContactNo(state => ({...state,text}))}
+                            value={contactNo.text}
                             keyboardType="numeric"
                         />
                     </View>

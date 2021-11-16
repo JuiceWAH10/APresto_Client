@@ -1,8 +1,7 @@
 //iedit pa to
 import firebase from "firebase";
 import Toast from 'react-native-toast-message';
-import React, {useContext} from 'react';
-
+import React from 'react';
 /*
 export async function getStoreList(){
     let storeList = [];
@@ -332,7 +331,7 @@ export function editStore(imgLink, store_ID, address, contact_Number, ptsPerAmou
 
     const id = store_ID;
 
-    <Toast ref={Toast.setRef} />
+    <Toast ref={Toast.setRef} />  
 
     firebase.firestore()
     .collection('Stores')
@@ -340,15 +339,14 @@ export function editStore(imgLink, store_ID, address, contact_Number, ptsPerAmou
     .update({
         imgLink: imgLink,
         address: address,
-        contact_Number: contact_Number,
-        ptsPerAmount: ptsPerAmount,
+        contact_Number: parseInt(contact_Number),
+        ptsPerAmount: parseInt(ptsPerAmount),
         specialty: specialty,
         store_Name: store_Name
     })
     .then((data)=>{
         //success callback
-        console.log('data ' , data)
-        
+        console.log('data ' , data)     
     }).catch((error)=>{
         //error callback
         console.log('error ' , error)
@@ -424,7 +422,7 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
                 [product.productTitle]: firebase.firestore.FieldValue.increment(product.quantity)
             }
         }, {merge:true}),
-        updateProductQuantity(product.product_ID, product.quantity, product.productTitle),
+        updateProductQuantity(product.product_ID, product.quantity, product.productTitle, store_ID),
         updateProductSold(product.product_ID, product.quantity)}
     )
 
@@ -435,7 +433,7 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
             } 
         }, {merge:true}),
         rewTally = rewTally + reward.quantity,
-        updateRewardQuantity(reward.reward_ID, reward.quantity, reward.productTitle),
+        updateRewardQuantity(reward.reward_ID, reward.quantity, reward.productTitle, store_ID),
         updateRewardSold(reward.reward_ID, reward.quantity)}
     )
 
@@ -447,7 +445,7 @@ export function updateSales(store_ID, purchasedProducts, redeemedRewards, totalA
     }, {merge:true})
 }
 
-export function addDelisted(item){
+export function addDelisted(item, store_ID){
     const db = firebase.firestore();
     const ref = db.collection('Delisted').doc();
     const id = ref.id;
@@ -456,11 +454,12 @@ export function addDelisted(item){
     .collection('Delisted')
     .doc(id)
     .set({
-        item: item
+        item: item,
+        store_ID: store_ID
     })
 }
 
-export function updateProductQuantity(product_ID, quantity, productTitle){
+export function updateProductQuantity(product_ID, quantity, productTitle, store_ID){
     const db = firebase.firestore();
     const ref = db.collection('Products').doc(product_ID);
 
@@ -473,7 +472,7 @@ export function updateProductQuantity(product_ID, quantity, productTitle){
                 transaction.update(ref, {quantity: newQuantity})
             }
             else{
-                addDelisted(productTitle);
+                addDelisted(productTitle, store_ID);
                 transaction.update(ref, {quantity: 0, status: "delisted"});
             }
         })
@@ -492,7 +491,7 @@ export function updateProductSold(product_ID, quantity){
     },{merge:true})
 }
 
-export function updateRewardQuantity(reward_ID, quantity, productTitle){
+export function updateRewardQuantity(reward_ID, quantity, productTitle, store_ID){
     const db = firebase.firestore();
     const ref = db.collection('Rewards').doc(reward_ID);
 
@@ -504,7 +503,7 @@ export function updateRewardQuantity(reward_ID, quantity, productTitle){
                 transaction.update(ref, {quantity: newQuantity})
             }
             else{
-                addDelisted(productTitle);
+                addDelisted(productTitle, store_ID);
                 transaction.update(ref, {quantity: 0, status: "delisted"});
             }
         })

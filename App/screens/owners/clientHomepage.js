@@ -115,7 +115,6 @@ function clientHomepage(props) {
                     <View style={styles.profileDarken}>
                         {/* Profile Informations */}
                         <Text style={styles.profileShopName}>{store.store_Name}</Text>
-                        <Text style={styles.profileLabelSmall}>Followers 478</Text>
                         <View style={styles.profileButtonContainer}>
                             <TouchableOpacity 
                                 style={styles.profileButton} 

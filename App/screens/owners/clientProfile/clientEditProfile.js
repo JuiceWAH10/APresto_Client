@@ -47,6 +47,10 @@ function clientEditProfile(props) {
     const [email, setTextEmail] = React.useState('');
     const [password, setTextPassword] = React.useState('');
     const [passwordReentry, setTextPasswordReentry] = React.useState('');
+    const [currentPassword, setCurrentPassword] = useState("")
+    const [newPassword, setNewPassword] = useState("");
+    const [newEmail, setNewEmail] = useState("");
+
     
     //access current user
     const getUser = async() => {
@@ -64,7 +68,7 @@ function clientEditProfile(props) {
 
     //For Dialog Box
     const [visible, setVisible] = useState(false);
-
+    
     const showDialog = () => {
         setVisible(true);
     };
@@ -75,6 +79,10 @@ function clientEditProfile(props) {
 
     const handleUpdate = () => {
         editProfile();
+        if(currentPassword!=""){
+            onChangePassword();
+            onChangeEmail();
+        }
         setVisible(false);
     };
     //End of Dialogbox
@@ -143,7 +151,7 @@ function clientEditProfile(props) {
 
     const editProfile = async () => {
 
-        firebase.firestore()
+        /*firebase.firestore()
         .collection('Owners')
         .doc(user.uid)
         .update({
@@ -152,7 +160,7 @@ function clientEditProfile(props) {
         })
         .then(() => {
             console.log("User account updated...");
-        })
+        })*/
 
         showMessage({
             message: "Profile updated successfully",
@@ -183,6 +191,44 @@ function clientEditProfile(props) {
         );
         navigation.goBack();
     };
+
+    const reauthenticate = (currentPassword) => {
+        var profile = firebase.auth().currentUser;
+        var credentials = firebase.auth.EmailAuthProvider.credential(profile.email, currentPassword);
+        return profile.reauthenticateWithCredential(credentials);
+    }
+
+    const onChangePassword = () => {
+        console.log(currentPassword)
+        console.log(newPassword)
+        reauthenticate(currentPassword).then(() => {
+            console.log(currentPassword)
+            console.log(newPassword)
+            var profile = firebase.auth().currentUser;
+            profile.updatePassword(newPassword).then(() => {
+                console.log("Password updated!");
+            }).catch((error) => {
+                console.log(error);
+            });
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    const onChangeEmail = () => {
+        console.log(newEmail)
+        reauthenticate(currentPassword).then(() => {
+            console.log(newEmail)
+            var profile = firebase.auth().currentUser;
+            profile.updateEmail(newEmail).then(() => {
+                console.log("Email updated!");
+            }).catch((error) => {
+                console.log(error);
+            });
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
 
     useEffect(() => {
         getUser();
@@ -270,8 +316,8 @@ function clientEditProfile(props) {
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'envelope' }}
                             placeholder="Email"
-                            onChangeText={(text) => {setUserData({...userData, email: text});}}
-                            value={userData ? userData.email : ''}
+                            onChangeText={(text) => {setNewEmail(text)}}
+                            value={newEmail}
                             autoCompleteType="email" 
                         />
                     </View>
@@ -281,21 +327,21 @@ function clientEditProfile(props) {
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'lock' }}
                             secureTextEntry={true}
-                            placeholder="Password"
-                            onChangeText={(text) => {setUserData({...userData, password: text});}}
-                            value={userData ? userData.password : ''}
-                            autoCompleteType="password"
+                            placeholder="New Password"
+                            onChangeText={(text) => {setNewPassword(text)}}
+                            value={newPassword}
+                            //autoCompleteType="password"
                         />
                     </View>
                     <View style={styles.textView}>
                         <Input
-                            //Re-enter password input
+                            //Current password input
                             style={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'lock' }}
                             secureTextEntry={true}
-                            placeholder="Re-enter Password"
-                            onChangeText={(text) => setTextPasswordReentry(text)}
-                            value={passwordReentry}
+                            placeholder="Current Password"
+                            onChangeText={(text) => {setCurrentPassword(text)}}
+                            value={currentPassword}
                         />
                     </View>
                     

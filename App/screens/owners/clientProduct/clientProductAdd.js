@@ -8,7 +8,8 @@ import {
     StyleSheet,
     Text, 
     TouchableOpacity, 
-    View, 
+    View,
+    FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
@@ -44,19 +45,17 @@ function clientProductAdd(props) {
         errorMessage: ""
     });
 
-    const [URI, setURI] = React.useState(null);
+    const [URI, setURI] = React.useState([]);
 
     const image = {
-        url: "wew",
+        url: [],
         get gURL(){
             return this.url;
         },
         set sURL(u){
-            this.url = u;
+            this.url = [...this.url, u];
         }
     }
-    
-    var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
 
     const navigation = useNavigation();
         
@@ -71,7 +70,7 @@ function clientProductAdd(props) {
                 quality: 1,
             });
         if (!result.cancelled) {
-            setURI(result.uri);
+            setURI(oldArray => [...oldArray, result.uri]);
         }
         console.log(result); // To Display the information of image on the console
 
@@ -134,12 +133,26 @@ function clientProductAdd(props) {
             autoHide:"true", 
             duration: 1000,
         });
-        const result = await uploadImage(URI, imageUUID)
 
-        console.log('from add function: ', store_ID);
-        crud.createProduct(prodName, prodDes, prodPrice, prodQty, status, image.gURL, store_ID);
+        let count = 0;
+        URI.forEach(async function (url){
+            var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
+            await uploadImage(url, imageUUID);
+            count+=1;
+            if (count == URI.length) {
+                console.log('from add function: ', image.gURL);
+                crud.createProduct(prodName, prodDes, prodPrice, prodQty, status, image.gURL, store_ID);
+            }
+        })
+
+
         navigation.goBack();
     };
+
+    const removeImgInArr = (id) => {
+        const filtered = URI.filter(item => item !== id);
+        setURI(filtered);
+    }
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -160,7 +173,22 @@ function clientProductAdd(props) {
                 <View style={styles.shadowContainer}>
                     <Text style={styles.formTitles}>Upload Image</Text>
                     {/* Display the selected Image*/}
-                    {URI && <Image source={{ uri: URI }} style={styles.imageUpload} />} 
+
+                    {/*apply flatlist heree */}
+                    <FlatList
+                        horizontal={true}   
+                        data={URI}
+                        keyExtractor={item => item}
+                        renderItem={itemData => 
+                            <View>
+                                <Image source={{ uri: itemData.item }} style={styles.imageUpload} />
+                                <TouchableOpacity onPress={()=>removeImgInArr(itemData.item)}>
+                                    {/*plz fix position*/}
+                                    <Icon name="closecircleo" size={20} color="black"></Icon>
+                                </TouchableOpacity>
+                            </View>
+                        }
+                    />
 
                     {/* Button for Image Picker */}
                     <TouchableOpacity style={styles.imageButton} onPress={pickImage} >

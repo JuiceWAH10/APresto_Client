@@ -8,7 +8,8 @@ import {
     StyleSheet,
     Text, 
     TouchableOpacity, 
-    View, 
+    View,
+    FlatList
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
@@ -21,13 +22,12 @@ import { showMessage } from "react-native-flash-message";
 import Toast from 'react-native-toast-message';
 import { isIOS } from 'react-native-elements/dist/helpers';
 import * as crud from '../../../functions/firebaseCRUD';
+import { func } from 'prop-types';
 
 LogBox.ignoreLogs(['Setting a timer']);// To ignore the warning on uploading
 
 function clientProductEdit(props) {
     const {product_ID, shop_ID, product_Name, price, description, stock, status, img} = props.route.params;
-    
-    var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
 
     const navigation = useNavigation();
 
@@ -49,16 +49,22 @@ function clientProductEdit(props) {
     });
 
     const image = {
-        url: img,
+        url: [...img],
         get gURL(){
             return this.url;
         },
         set sURL(u){
-            this.url = u;
+            this.url = [...this.url, u];
+        },
+        set dURL(u){
+            this.url = this.url.filter(item => item !== u);
         }
     }
 
-    const [URI, setURI] = React.useState({link:image.gURL});
+    const [URI, setURI] = React.useState([...img]);
+    const [upURI, setUpURI] = React.useState([]);
+    const [delURL, setDelURL] = React.useState([]);
+    const [URL, setURL] =React.useState([...img]);
     const [changedIMG, setChangedIMG] = React.useState({bool: false});
     
     // Code for Image Picker and Uploading to Firebase storage
@@ -72,11 +78,12 @@ function clientProductEdit(props) {
                 quality: 1,
             });
         if (!result.cancelled) {
-            setURI({link: result.uri});
+            setURI(oldArray => [...oldArray, result.uri]);
+            setUpURI(oldArray => [...oldArray, result.uri]);
             setChangedIMG({bool: true});
         }
         console.log(result, changedIMG.bool); // To Display the information of image on the console
-
+        console.log('url' + URL)
     };
 
     //Function to upload to Firebase storage
@@ -94,12 +101,16 @@ function clientProductEdit(props) {
                     resolve('wew');
                 });
             });
-            var imageRef = firebase.storage().refFromURL(img);
-            imageRef.delete().then(() => {
-                console.log("Deleted")
-            }).catch(err => console.log(err))
+            
         })
     };
+    
+    const deleteImage = (url) =>{
+        var imageRef = firebase.storage().refFromURL(url);
+        imageRef.delete().then(() => {
+            console.log("Deleted")
+        }).catch(err => console.log(err))
+    }
 
     //Display flash message 
     const successAdded = () => {
@@ -140,15 +151,49 @@ function clientProductEdit(props) {
             autoHide:"true", 
             duration: 1000,
         });
-        console.log(changedIMG.bool)
-        if(changedIMG.bool){
-            const result = await uploadImage(URI.link, imageUUID)
-        }
-        
-        console.log('from add function: ', image.gURL);
-        crud.updateProduct(product_ID, prodName, prodDes, prodPrice, prodQty, prodStatus, image.gURL);
+            let count = 0;
+            let done = false;
+            if(upURI.length == 0) {
+                updateProduct22o(prodName, prodDes, prodPrice, prodQty, prodStatus);
+                delImg();
+            }
+            upURI.forEach(async function (url){
+                console.log("FIRST")
+                var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
+                await uploadImage(url, imageUUID);
+                count+=1;
+                if (count == upURI.length) {
+                    updateProduct22o(prodName, prodDes, prodPrice, prodQty, prodStatus);
+                    delImg();
+                }
+            })
         navigation.goBack();
     };
+
+    const updateProduct22o = (prodName, prodDes, prodPrice, prodQty, prodStatus) => {
+        crud.updateProduct(product_ID, prodName, prodDes, prodPrice, prodQty, prodStatus, image.gURL);
+    }
+
+    const delImg = () =>{
+        console.log("delllll");
+        delURL.forEach(function(url){
+            deleteImage(url);
+            crud.deleteProdImg(product_ID, url);
+        })
+    }
+
+    const removeImgInArr = (id) => {
+        console.log("id", id);
+        if(isValidUrl(id)) setDelURL(prev => [...prev, id]);
+        const filtered = URI.filter(item => item !== id);
+        setURI([...filtered]);
+        setChangedIMG({bool: true});
+    }
+
+    function isValidUrl(_string) {
+        const matchpattern = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/gm;
+        return matchpattern.test(_string);
+      }
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -169,7 +214,20 @@ function clientProductEdit(props) {
                 <View style={styles.shadowContainer}>
                 <Text style={styles.formTitles}>Upload Image</Text>
                     {/* Display the selected Image*/}
-                    {URI && <Image source={{ uri: URI.link }} style={styles.imageUpload} />} 
+                    <FlatList
+                        horizontal={true}   
+                        data={URI}
+                        keyExtractor={item => item}
+                        renderItem={itemData => 
+                            <View>
+                                <Image source={{ uri: itemData.item }} style={styles.imageUpload} />
+                                <TouchableOpacity onPress={()=>removeImgInArr(itemData.item)}>
+                                    {/*plz fix position*/}
+                                    <Icon name="closecircleo" size={20} color="black"></Icon>
+                                </TouchableOpacity>
+                            </View>
+                        }
+                    />
 
                     {/* Button for Image Picker */}
                     <TouchableOpacity style={styles.imageButton} onPress={pickImage} >

@@ -15,7 +15,7 @@ export default (state = initialState, action) => {
             const addedProduct = action.product;
             const prodPrice = addedProduct.price;
             const prodTitle = addedProduct.product_Name;
-            const imgLink = addedProduct.imgLink;
+            const imgLink = Array.isArray(addedProduct.imgLink)?addedProduct.imgLink[0]: addedProduct.imgLink;
             const quantity = addedProduct.quantity;
             const type = addedProduct.type;
             let cartItem;

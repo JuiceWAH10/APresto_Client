@@ -15,7 +15,7 @@ export default (state = initialState, action) => {
             const claimReward = action.reward;
             const pointsReq = claimReward.pointsReq;
             const rewName = claimReward.reward_Name;
-            const imgLink = claimReward.imgLink;
+            const imgLink = Array.isArray(claimReward.imgLink)?claimReward.imgLink[0]: claimReward.imgLink;
             const type = claimReward.type;
             let cartItem;
             

@@ -144,7 +144,8 @@ export function createProduct(prodName, prodDes, prodPrice, prodQty, status, img
         quantity: parseInt(prodQty),
         status: status,
         imgLink: imgLink,
-        type: 'product'
+        type: 'product',
+        sold: 0
     })
     .then((data)=>{
         //success callback
@@ -177,7 +178,8 @@ export function createReward(rewName, rewDes, rewPoints, rewQty, status, imgLink
         quantity: parseInt(rewQty),
         status: status,
         imgLink: imgLink,
-        type: 'reward'
+        type: 'reward',
+        sold: 0
     })
     .then((data)=>{
         //success callback
@@ -263,6 +265,15 @@ export function updateProduct(prod_ID, prodName, prodDes, prodPrice, prodQty, st
     });
 }
 
+export function deleteProdImg(prod_ID, imgLink){
+    firebase.firestore()
+    .collection('Products')
+    .doc(prod_ID)
+    .update({
+        imgLink: firebase.firestore.FieldValue.arrayRemove(imgLink)
+    });
+}
+
 export function updateReward(rewID, rewName, rewDes, rewPoints, rewQty, status, imgLink){
     firebase.firestore()
     .collection('Rewards')
@@ -284,13 +295,15 @@ export function deleteProduct(product_ID, imgLink, shop_ID, product_Name){
     .delete()
     .then(() => {
         console.log("Document successfully deleted!");
-        var imageRef = firebase.storage().refFromURL(imgLink);
+        imgLink.forEach(element => {
+            var imageRef = firebase.storage().refFromURL(element);
         
-        imageRef.delete()
-            .then(() => {
-                console.log("Deleted")
-            })
-            .catch(err => console.log(err))
+            imageRef.delete()
+                .then(() => {
+                    console.log("Deleted")
+                })
+                .catch(err => console.log(err))
+        });
         
         deleteProductSales(shop_ID, product_Name);
     })

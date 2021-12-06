@@ -14,7 +14,7 @@ function POSItems(props) {
     return (
         <View style={styles.container}>
             <Image style={styles.itemImage}
-                    source={{uri:props.imgLink}}>
+                    source={Array.isArray(props.imgLink)?{uri: props.imgLink[0]}: {uri: props.imgLink}}>
             </Image>
             <View style={styles.itemContainer}>
                 <Text style={styles.itemName}>{props.productTitle}</Text>

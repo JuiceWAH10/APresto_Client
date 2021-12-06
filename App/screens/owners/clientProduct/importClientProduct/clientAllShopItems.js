@@ -20,7 +20,7 @@ function clientAllShopItems(props) {
             {/* Product Image and Infos */}
             <View style={styles.containerInfos}>
                 <Image style={styles.itemImage}
-                        source={{uri: props.imgLink}}>
+                        source={Array.isArray(props.imgLink)?{uri: props.imgLink[0]}: {uri: props.imgLink}}>
                 </Image>
                 <View style={styles.itemContainer} >
                     <Text style={styles.itemName}>{props.product_Name}</Text>

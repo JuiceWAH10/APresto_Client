@@ -8,7 +8,8 @@ import {
     StyleSheet,
     Text, 
     TouchableOpacity, 
-    View, 
+    View,
+    FlatList
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
@@ -46,17 +47,19 @@ function clientRewardEdit(props) {
     const navigation = useNavigation();
 
     const image = {
-        url: img,
+        url: [...img],
         get gURL(){
             return this.url;
         },
         set sURL(u){
-            this.url = u;
+            this.url = [...this.url, u];
         }
     }
 
-    const [URI, setURI] = React.useState({link:image.gURL});
-    const [changedIMG, setChangedIMG] = React.useState({bool: false});
+    const [URI, setURI] = React.useState([...img]);
+    const [upURI, setUpURI] = React.useState([]);
+    const [delURL, setDelURL] = React.useState([]);
+    const [URL, setURL] =React.useState([...img]);
     
     // Code for Image Picker and Uploading to Firebase storage
     const pickImage = async () => {
@@ -69,10 +72,10 @@ function clientRewardEdit(props) {
                 quality: 1,
             });
         if (!result.cancelled) {
-            setURI({link: result.uri});
-            setChangedIMG({bool: true});
+            setURI(oldArray => [...oldArray, result.uri]);
+            setUpURI(oldArray => [...oldArray, result.uri]);
         }
-        console.log(result, changedIMG.bool); // To Display the information of image on the console
+        console.log(result); // To Display the information of image on the console
 
     };
 
@@ -80,7 +83,7 @@ function clientRewardEdit(props) {
     const uploadImage = async(uri, imageName) => {
         const response = await fetch(uri);
         const blob = await response.blob(); 
-        console.log('oof nakapasok pa din here');
+
         return new Promise(function(resolve) {
             var ref = firebase.storage().ref().child("images_Reward/" + imageName);
             ref.put(blob).then((snapshot) => {
@@ -91,12 +94,15 @@ function clientRewardEdit(props) {
                     resolve('wew');
                 });
             });
-            var imageRef = firebase.storage().refFromURL(img);
-            imageRef.delete().then(() => {
-                console.log("Deleted")
-            }).catch(err => console.log(err))
         })
     };
+
+    const deleteImage = (url) =>{
+        var imageRef = firebase.storage().refFromURL(url);
+        imageRef.delete().then(() => {
+            console.log("Deleted")
+        }).catch(err => console.log(err))
+    }
 
     //Display flash message 
     const successAdded = () => {
@@ -137,15 +143,51 @@ function clientRewardEdit(props) {
             autoHide:"true", 
             duration: 1000,
         });
-        console.log(changedIMG.bool)
-        if(changedIMG.bool){
-            const result = await uploadImage(URI.link, imageUUID)
-        }
         
         console.log('from add function: ', image.gURL);
         crud.updateReward(reward_ID, rewName, rewDes, rewPoints, rewQty, status, image.gURL);
+
+        let count = 0;
+        if(upURI.length == 0) {
+            updateProduct22o(rewName, rewDes, rewPoints, rewQty, status);
+            delImg();
+        }
+        upURI.forEach(async function (url){
+            var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
+            await uploadImage(url, imageUUID);
+            count+=1;
+            if (count == upURI.length) {
+                updateProduct22o(rewName, rewDes, rewPoints, rewQty, status);
+                delImg();
+            }
+        })
+
         navigation.goBack();
     };
+
+    const updateProduct22o = (rewName, rewDes, rewPoints, rewQty, status) => {
+        crud.updateReward(reward_ID, rewName, rewDes, rewPoints, rewQty, status, image.gURL);
+    }
+
+    const delImg = () =>{
+        console.log("delllll");
+        delURL.forEach(function(url){
+            deleteImage(url);
+            crud.deleteRewImg(reward_ID, url);
+        })
+    }
+
+    const removeImgInArr = (id) => {
+        console.log("id", id);
+        if(isValidUrl(id)) setDelURL(prev => [...prev, id]);
+        const filtered = URI.filter(item => item !== id);
+        setURI([...filtered]);
+    }
+
+    function isValidUrl(_string) {
+        const matchpattern = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/gm;
+        return matchpattern.test(_string);
+    }
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>
@@ -166,7 +208,20 @@ function clientRewardEdit(props) {
                 <View style={styles.shadowContainer}>
                     <Text style={styles.formTitles}>Upload Image</Text>
                     {/* Display the selected Image*/}
-                    {URI && <Image source={{ uri: URI.link }} style={styles.imageUpload} />} 
+                    <FlatList
+                        horizontal={true}   
+                        data={URI}
+                        keyExtractor={item => item}
+                        renderItem={itemData => 
+                            <View>
+                                <Image source={{ uri: itemData.item }} style={styles.imageUpload} />
+                                <TouchableOpacity onPress={()=>removeImgInArr(itemData.item)}>
+                                    {/*plz fix position*/}
+                                    <Icon name="closecircleo" size={20} color="black"></Icon>
+                                </TouchableOpacity>
+                            </View>
+                        }
+                    />
 
                     {/* Button for Image Picker */}
                     <TouchableOpacity style={styles.imageButton} onPress={pickImage} >

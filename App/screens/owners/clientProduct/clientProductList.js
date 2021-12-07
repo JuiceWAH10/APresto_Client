@@ -56,7 +56,6 @@ function clientProductList(props) {
                     }
                 });
                 setRefProds(prod);
-                console.log("apoy "+ prod +" ref " + refProds)
                 setProducts(available);
             });
 

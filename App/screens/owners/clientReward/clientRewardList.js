@@ -22,7 +22,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import ClientAllShopRewards from '././importClientReward/clientAllShopRewards';
 
 function clientRewardList(props) {
-    const [searchQuery, setSearchQuery] = React.useState('');
     const navigation = useNavigation();
 
     const {store_ID} = props.route.params;

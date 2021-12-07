@@ -55,9 +55,6 @@ function clientProductEdit(props) {
         },
         set sURL(u){
             this.url = [...this.url, u];
-        },
-        set dURL(u){
-            this.url = this.url.filter(item => item !== u);
         }
     }
 
@@ -65,7 +62,6 @@ function clientProductEdit(props) {
     const [upURI, setUpURI] = React.useState([]);
     const [delURL, setDelURL] = React.useState([]);
     const [URL, setURL] =React.useState([...img]);
-    const [changedIMG, setChangedIMG] = React.useState({bool: false});
     
     // Code for Image Picker and Uploading to Firebase storage
     const pickImage = async () => {
@@ -80,17 +76,15 @@ function clientProductEdit(props) {
         if (!result.cancelled) {
             setURI(oldArray => [...oldArray, result.uri]);
             setUpURI(oldArray => [...oldArray, result.uri]);
-            setChangedIMG({bool: true});
         }
-        console.log(result, changedIMG.bool); // To Display the information of image on the console
-        console.log('url' + URL)
+        console.log(result); // To Display the information of image on the console
     };
 
     //Function to upload to Firebase storage
     const uploadImage = async(uri, imageName) => {
         const response = await fetch(uri);
         const blob = await response.blob(); 
-        console.log('oof nakapasok pa din here');
+
         return new Promise(function(resolve) {
             var ref = firebase.storage().ref().child("images_Product/" + imageName);
             ref.put(blob).then((snapshot) => {
@@ -151,22 +145,20 @@ function clientProductEdit(props) {
             autoHide:"true", 
             duration: 1000,
         });
-            let count = 0;
-            let done = false;
-            if(upURI.length == 0) {
+        let count = 0;
+        if(upURI.length == 0) {
+            updateProduct22o(prodName, prodDes, prodPrice, prodQty, prodStatus);
+            delImg();
+        }
+        upURI.forEach(async function (url){
+            var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
+            await uploadImage(url, imageUUID);
+            count+=1;
+            if (count == upURI.length) {
                 updateProduct22o(prodName, prodDes, prodPrice, prodQty, prodStatus);
                 delImg();
             }
-            upURI.forEach(async function (url){
-                console.log("FIRST")
-                var imageUUID = uuid.v4(); // generates UUID (Universally Unique Identifier)
-                await uploadImage(url, imageUUID);
-                count+=1;
-                if (count == upURI.length) {
-                    updateProduct22o(prodName, prodDes, prodPrice, prodQty, prodStatus);
-                    delImg();
-                }
-            })
+        })
         navigation.goBack();
     };
 
@@ -187,13 +179,12 @@ function clientProductEdit(props) {
         if(isValidUrl(id)) setDelURL(prev => [...prev, id]);
         const filtered = URI.filter(item => item !== id);
         setURI([...filtered]);
-        setChangedIMG({bool: true});
     }
 
     function isValidUrl(_string) {
         const matchpattern = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/gm;
         return matchpattern.test(_string);
-      }
+    }
 
     return (
         <SafeAreaView style={styles.droidSafeArea}>

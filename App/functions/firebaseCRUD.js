@@ -288,6 +288,15 @@ export function updateReward(rewID, rewName, rewDes, rewPoints, rewQty, status, 
     });
 }
 
+export function deleteRewImg(reward_ID, imgLink){
+    firebase.firestore()
+    .collection('Rewards')
+    .doc(reward_ID)
+    .update({
+        imgLink: firebase.firestore.FieldValue.arrayRemove(imgLink)
+    });
+}
+
 export function deleteProduct(product_ID, imgLink, shop_ID, product_Name){
     firebase.firestore()
     .collection('Products')
@@ -312,13 +321,25 @@ export function deleteProduct(product_ID, imgLink, shop_ID, product_Name){
     });
 }
 
-export function deleteReward(reward_ID, imgLink, shop_ID, product_Name){
-    firebase.firestore().collection('Rewards').doc(reward_ID).delete().then(() => {
+export function deleteReward(reward_ID, imgLink, shop_ID, reward_Name){
+    firebase.firestore()
+    .collection('Rewards')
+    .doc(reward_ID)
+    .delete()
+    .then(() => {
         console.log("Document successfully deleted!");
-        var imageRef = firebase.storage().refFromURL(imgLink);
-            imageRef.delete().then(() => {
-                console.log("Deleted")
-            }).catch(err => console.log(err))
+        
+        imgLink.forEach(element => {
+            var imageRef = firebase.storage().refFromURL(element);
+            
+            imageRef.delete()
+                .then(() => {
+                    console.log("Deleted")
+                })
+                .catch(err => console.log(err))
+        });
+
+        deleteRewardSales(shop_ID, reward_Name);
     }).catch((error) => {
         console.error("Error removing document: ", error);
     });
@@ -412,11 +433,21 @@ export function addNewRewardToSales(store_ID, reward_Name){
       }, {merge:true})
 }
 
-export function deleteProductSales(store_ID, product_Name){
+export function deleteProductSales(store_ID, reward_Name){
     firebase.firestore().collection("Sales")
     .doc(store_ID)
     .set({
         Products: {
+            [reward_Name]: firebase.firestore.FieldValue.delete(),
+        }
+    }, {merge:true})
+}
+
+export function deleteRewardSales(store_ID, product_Name){
+    firebase.firestore().collection("Sales")
+    .doc(store_ID)
+    .set({
+        Rewards: {
             [product_Name]: firebase.firestore.FieldValue.delete(),
         }
     }, {merge:true})

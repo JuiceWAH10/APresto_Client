@@ -109,7 +109,7 @@ function clientRewardAdd(props) {
     };
 
     const addReward = async (rewName, rewDes, rewPrice, rewQty, status) => {
-        if (rewName == '' || rewDes == '' || rewPrice == '' || rewQty == '' ) {
+        if (rewName == '' || rewDes == '' || rewPrice == '' || rewQty == '' || URI.length == 0 ) {
             showMessage({
                 message: "All Fields must be filled",
                 type: "danger",

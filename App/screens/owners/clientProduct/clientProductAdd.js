@@ -109,7 +109,7 @@ function clientProductAdd(props) {
     };
 
     const addProduct = async (prodName, prodDes, prodPrice, prodQty, status) => {
-        if (prodName == '' || prodDes == '' || prodPrice == '' || prodQty == '' ) {
+        if (prodName == '' || prodDes == '' || prodPrice == '' || prodQty == '' || URI.length == 0 ) {
             showMessage({
                 message: "All Fields must be filled",
                 type: "danger",

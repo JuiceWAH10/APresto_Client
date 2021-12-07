@@ -89,7 +89,7 @@ function clientAllShopRewards(props) {
                         <Text style={styles.buttonLabel}>Delist</Text>
                     </TouchableOpacity>
                 }
-                <TouchableOpacity style={styles.button} onPress={() =>  crud.deleteReward(props.reward_ID, props.imgLink, props.shop_ID, props.product_Name)} >
+                <TouchableOpacity style={styles.button} onPress={() =>  crud.deleteReward(props.reward_ID, props.imgLink, props.shop_ID, props.reward_Name)} >
                     <Icon2 name="trash" size={20} color="#fff" />
                     <Text style={styles.buttonLabel}>Delete</Text>
                 </TouchableOpacity>

@@ -321,16 +321,16 @@ function clientHomepage(props) {
                 <View style={styles.dualShadow}>
                     <View style={styles.dualTitleContainer}>
                         <Icon name="smileo" size={25} color="#37375e" />
-                        <Text style={styles.dualTitle}> My Suki</Text>
+                        <Text style={styles.dualTitle}> My Loyal Customers</Text>
                     </View>
                     <ImageBackground style={styles.sukiBgImage}
                         imageStyle={{ borderRadius: 30}}
                         source={require('../../assets/bannerImages/banner_Suki.jpg')}>
                         <View style={styles.sukiDarken}>
-                            <Text style={styles.sukiLabel}>Sukis are essential for your business growth</Text>
-                            <Text style={styles.sukiLabelSmall}>You can know who among your suki loves you most.</Text>
+                            <Text style={styles.sukiLabel}>Loyal Customers are essential for your business growth</Text>
+                            <Text style={styles.sukiLabelSmall}>You can know who among your loyal customers loves you most.</Text>
                             <TouchableOpacity style={styles.sukiButton} onPress={() => navigation.navigate('clientSukiList', {owner_ID:store.owner_ID, store_ID: store.store_ID})} >
-                                <Text style={styles.sukiButtonLabel}>View Suki</Text>
+                                <Text style={styles.sukiButtonLabel}>View Loyal Customers</Text>
                             </TouchableOpacity>
                         </View>    
                     </ImageBackground>
@@ -724,7 +724,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: 'space-evenly',
         marginTop: 15,
-        width: 110,
+        width: 150,
         height: 35,
     },
     sukiButtonLabel: {

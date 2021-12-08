@@ -61,9 +61,9 @@ function clientSukiTransactions(props) {
                         imageStyle={{ borderRadius: 30}}
                         source={require('../../../assets/bannerImages/banner_Suki.jpg')}>
                         <View style={styles.darken}>
-                            <Text style={styles.bannerLabel}>Suki</Text>
+                            <Text style={styles.bannerLabel}>Loyal Customer</Text>
                             <Text style={styles.bannerLabel2}>Transactions</Text>
-                            <Text style={styles.bannerLabelSmall}>Keep Track of your Sukis</Text>
+                            <Text style={styles.bannerLabelSmall}>Keep Track of your Loyal Customers</Text>
                         </View>    
                 </ImageBackground>
                 {/* End of Banner */}
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     },
     bannerLabel2: {
         textAlign: "right",
-        marginTop: -10,
+        marginTop: -5,
         color: "#fff",
         fontSize: 25,
         fontWeight: "bold",

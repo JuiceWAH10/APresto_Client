@@ -18,7 +18,7 @@ function clientAllSuki(props) {
                     source={{uri:props.imgLink}}>
             </Image>
             <View style={styles.sukiContainer}>
-                <Text style={styles.sukiNameTitle}>Suki Name:</Text>
+                <Text style={styles.sukiNameTitle}>Loyal Customer Name:</Text>
                 <Text style={styles.sukiName}>{props.username}</Text>
                 <Text style={styles.sukiInfo}>Points: {props.points.toFixed(2)}</Text>
                 <Text style={styles.sukiInfo}>Used Points: {props.points_Used.toFixed(2)}</Text>

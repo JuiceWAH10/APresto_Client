@@ -182,9 +182,8 @@ function clientProductAdd(props) {
                         renderItem={itemData => 
                             <View>
                                 <Image source={{ uri: itemData.item }} style={styles.imageUpload} />
-                                <TouchableOpacity onPress={()=>removeImgInArr(itemData.item)}>
-                                    {/*plz fix position*/}
-                                    <Icon name="closecircleo" size={20} color="black"></Icon>
+                                <TouchableOpacity style={styles.imageRemoveButton} onPress={()=>removeImgInArr(itemData.item)}>
+                                    <Text style={styles.imageRemoveButtonLabel}>Remove</Text>
                                 </TouchableOpacity>
                             </View>
                         }
@@ -376,6 +375,22 @@ const styles = StyleSheet.create({
     imageButtonLabel: {
         color: "#fff",
         fontSize: 14
+    },
+    imageRemoveButton: {
+        alignSelf: "center",
+        borderColor: "#071964",
+        borderRadius: 30,
+        borderWidth: 1,
+        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: 'space-evenly',
+        marginBottom: 8,
+        width: 100,
+        height: 30,
+    },
+    imageRemoveButtonLabel: {
+        color: "#071964",
+        fontSize: 12
     },
     imageUpload: {
         alignSelf: "center",
